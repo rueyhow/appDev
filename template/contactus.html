@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% extends "base.html" %}
+    {% block title %}Library Loan System - Home{% endblock %}
+    
+    {% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <style>
+       
+        body{
+            margin:0;
+            padding:0;
+            min-height:100vh;
+            background-color: lightblue;
+        }
+        #note{
+          position: relative;
+          top:30px;
+        }
+        #note a{
+          color:black;
+        }
+        .tab-content{
+          position: relative;
+          margin-top: 30px;
+        }
+
+    </style>
+</head>
+<body>
+    
+        <!-- Nav tabs -->
+<ul class="nav nav-tabs" id = "note">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#aboutus">About us</a>
+    </li>
+      <!-- For practical (not part of app dev) -->
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#DIT">DIT</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#DSF">DSF</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#DCS">DCS</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#DBFT">DBFT</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#CIP">CIP</a>
+      </li>
+
+
+
+  </ul>
+  
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <br>
+    <h2>IT1166 App Development Project</h2>
+    <br>
+
+    <div class="tab-pane container active" id="aboutus">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mr. Chai Min Shiung</td>
+            <td>Module Leader</td>
+            <td><a href="mailto:chai_min_shiung@nyp.edu.sg">chai_min_shiung@nyp.edu.sg</a></td>
+          </tr>
+          <tr>
+            <td>Mr. Andrea Chua</td>
+            <td>Module Tutor</td>
+            <td><a       href="mailto:andrea_chua@nyp.edu.sg">andrea_chua@nyp.edu.sg</a></td>
+          </tr>
+          <tr>
+            <td>Mr. Chan Yuen Loong</td>
+            <td>Module Tutor</td>
+            <td><a href="mailto:chan_yuen_loong@nyp.edu.sg">chan_yuen_loong@nyp.edu.sg</a></td>
+          </tr>
+          <tr>
+            <td>Ms. Li Haiyun</td>
+            <td>Module Tutor</td>
+            <td><a href="mailto:li_haiyun@nyp.edu.sg">li_haiyun@nyp.edu.sg</a></td>
+          </tr>
+        </tbody>
+  </table>
+</div>
+  <!-- DIT -->
+  <div class = "tab-pane container fade" id = "DIT">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mr Bobby Liu Jian Rong</td>
+        <td>Module Leader</td>
+        <td><a href="mailto:liu_jianrong@nyp.edu.sg">liu_jianrong@nyp.edu.sg</a></td>
+      </tr>
+      <tr>
+        <td>Mr Choy Wai Leong</td>
+        <td>Module Tutor</td>
+        <td><a href="mailto:choy_wai_leong@nyp.edu.sg">choy_wai_leong@nyp.edu.sg</a></td>
+      </tr>
+
+      <tr>
+        <td>Mr Koh Wing Onn</td>
+        <td>Module Tutor</td>
+        <td><a href="mailto:Koh_Wing_onn@nyp.edu.sg">Koh_Wing_onn@nyp.edu.sg</a></td>
+      </tr>
+
+      <tr>
+
+    </tbody>
+</table>
+</div>
+
+
+<!-- DSF -->
+<div class = "tab-pane container fade" id = "DSF">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mr Andrew Tan</td>
+        <td>Module Leader</td>
+        <td><a href="mailto:andrew_tan@nyp.edu.sg">andrew_tan@nyp.edu.sg</a></td>
+      </tr>
+      <tr>
+        <td>Mr Tan See Lian</td>
+        <td>Module Tutor</td>
+        <td><a href="mailto:see_lian@nyp.edu.sg">see_lian@nyp.edu.sg</a></td>
+      </tr>
+
+
+
+      <tr>
+
+    </tbody>
+</table>
+</div>
+
+
+<!-- DCS -->
+<div class = "tab-pane container fade" id = "DCS">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mr Andrew Tan</td>
+        <td>Module Leader</td>
+        <td><a href="mailto:andrew_tan@nyp.edu.sg">andrew_tan@nyp.edu.sg</a></td>
+      </tr>
+      <tr>
+        <td>Mr Kang Rui Jia</td>
+        <td>Module Tutor</td>
+        <td><a href="mailto:kang_rui_jia@nyp.edu.sg">see_lian@nyp.edu.sg</a></td>
+      </tr>
+
+
+
+      <tr>
+
+    </tbody>
+</table>
+</div>
+
+
+
+
+<!-- random -->
+
+
+
+
+
+
+<!-- CIP -->
+
+<div class = "tab-pane container fade" id = "DSF">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mr Andrew Tan</td>
+        <td>Module Leader</td>
+        <td><a href="mailto:andrew_tan@nyp.edu.sg">andrew_tan@nyp.edu.sg</a></td>
+      </tr>
+      <tr>
+        <td>Mr Tan See Lian</td>
+        <td>Module Tutor</td>
+        <td><a href="mailto:see_lian@nyp.edu.sg">see_lian@nyp.edu.sg</a></td>
+      </tr>
+
+
+
+      <tr>
+
+    </tbody>
+</table>
+</div>
+
+
+<!-- DCS -->
+<div class = "tab-pane container fade" id = "CIP">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mr Govindaraju Thooyavan</td>
+        <td>Module Leader</td>
+        <td><a href="mailto:thooyavan@nyp.edu.sg">thooyavan@nyp.edu.sg</a></td>
+      </tr>
+      <tr>
+        <td>Mr Ong Ruey How</td>
+        <td>Module Tutor</td>
+        <td><a href="mailto:ong_ruey_how@nyp.edu.sg">ong_ruey_how@nyp.edu.sg</a></td>
+      </tr>
+
+      <tr>
+        <td>Mr Irfan</td>
+        <td>Module Tutor</td>
+        <td><a href="mailto:Irfan@nyp.edu.sg">Irfan@nyp.edu.sg</a></td>
+      </tr>
+      <tr>
+        <td>Mr Putra Ammar</td>
+        <td>Module Tutor</td>
+        <td><a href="mailto:putra@nyp.edu.sg">putra@nyp.edu.sg</a></td>
+      </tr>
+
+
+      <tr>
+
+    </tbody>
+</table>
+</div>
+
+    <div class="tab-pane container active" id="aboutus"></div>
+    <div class="tab-pane container fade" id="DIT"></div>
+    <div class="tab-pane container fade" id="DSF"></div>
+    <div class="tab-pane container fade" id="DCS"></div>
+    <div class="tab-pane container fade" id="DBFT"></div>
+    <div class="tab-pane container fade" id="CIP"></div>
+  </div>
+
+      {% endblock %}
+</body>
+</html>

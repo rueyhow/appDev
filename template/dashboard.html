@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+
+
+{% block content %}
+<div class="card-deck">
+
+
+<div class="card" style = 'margin-top:20px;'>
+  <h5 class="card-header"><strong>Username:</strong>{{name}}<br/></h5>
+  <div class="card-body">
+    <h5 class="card-title"><strong>Email:</strong>{{email}}<br/></h5>
+    <p class="card-text"><strong>Gender:</strong>{{gender}}<br/></p>
+    <a href="updateUser.html">update User</a>
+
+  </div>
+
+
+</div>
+
+</div>
+
+
+  
+
+
+
+
+{% endblock %}
