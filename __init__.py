@@ -20,6 +20,16 @@ from werkzeug.security import generate_password_hash , check_password_hash
 from flask_login import LoginManager , UserMixin, login_user , login_required , logout_user , current_user
 from werkzeug.utils import secure_filename
 import os
+import tkinter
+from tkinter import messagebox
+import PIL.Image as Image
+from io import BytesIO
+import io
+import base64
+
+
+
+
 
 
 
@@ -33,6 +43,7 @@ pip install email_validator
 pip install flask
 pip install flask-bootstrap
 pip install pandas
+pip install pillow
 pip install flask-wtf
 """
 
@@ -51,6 +62,12 @@ login_manager.init_app(app)
 login_manager.login_view = 'index'
 
 
+
+ICON = (b'\x00\x00\x01\x00\x01\x00\x10\x10\x00\x00\x01\x00\x08\x00h\x05\x00\x00'
+b'\x16\x00\x00\x00(\x00\x00\x00\x10\x00\x00\x00 \x00\x00\x00\x01\x00'
+b'\x08\x00\x00\x00\x00\x00@\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+b'\x00\x01\x00\x00\x00\x01') + b'\x00'*1282 + b'\xff'*64
+base = ('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
 # def User1(username , password , email):
 #     users_dict = {}
 #     db = shelve.open('user.db', 'c')
@@ -75,9 +92,15 @@ class User(UserMixin,db.Model):
     email = db.Column(db.String(50))
     password = db.Column(db.String(80))
     gender = db.Column(db.String(6))
-    profile_pic = db.Column(db.String(),nullable= True)
+    phone_number = db.Column(db.Integer() , unique = True)
+    profile_pic = db.Column(db.LargeBinary, nullable= True , default = ICON)
+    base64 = db.Column(db.String(64) , nullable = True , default = base )
 
-
+# def save_image(profile_pic):
+#     f_text = os.path.splitext(profile_pic.filename)
+#     picture_fn = str(uuid.uuid1()) + str(f_text)
+#     picture_path = os.path.join(app.root_path + 'static/profilepics/' + str(picture_fn))
+#     return picture_fn
 
 @login_manager.user_loader
 def loaded(id_user):
@@ -89,7 +112,7 @@ def Home_Page():
     if form2.validate_on_submit():
         hash = generate_password_hash(form2.password.data , method = 'sha256')
         user_ID = int(id(form2.username.data))
-        new_user = User(username = form2.username.data , email = form2.email.data , password = hash , gender = form2.gender.data , id = user_ID)
+        new_user = User(username = form2.username.data , email = form2.email.data , password = hash , gender = form2.gender.data , id = user_ID , phone_number = form2.phone_number.data)
         db.session.add(new_user)
         db.session.commit()
         return '<h1> New user has been added! </h1>'
@@ -126,25 +149,23 @@ def dash():
         # UPDATING USER INFORMATION
         name_to_update.username = request.form['username']
         name_to_update.email = request.form['email']
-        name_to_update.profile_pic = request.files['profile_pic']
 
-        pic_filename = secure_filename(name_to_update.profile_pic.filename)
-        # pic_name = str(str(uuid.uuid1()) + "_" + str(pic_filename))
+        #convert to bytes
+        
+        name_to_update.profile_pic = request.files['profile_pic'].read()
+        
 
-        # SAVING PICTURE INTO STATIC FILE
-        saver = request.files['profile_pic']
-        # name_to_update.profile_pic.save(os.path.join(app.config['upload_folder'])  , pic_filename)
+        base64_encoded_data = base64.b64encode(name_to_update.profile_pic)
+        base64_message = base64_encoded_data.decode('utf-8')
 
-
-        name_to_update.profile_pic = pic_filename
+        name_to_update.base64 = base64_message
         try:
             db.session.commit()
-            
             flash('User updated successfully')
-            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form)
+            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , profile_pic = base64_message)
         except:
             flash('error')
-            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form)
+            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , profile_pic = base64_message)
     else:
         return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form)
 

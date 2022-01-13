@@ -8,7 +8,8 @@ class CreateUserForm(FlaskForm):
     password = PasswordField('password' , [validators.Length(min=1 , max=100) , validators.DataRequired()])
     email = EmailField('Email' , [validators.Length(min = 5 , max = 100) , validators.DataRequired()])
     gender = RadioField('Gender', choices=[('F', 'Female'), ('M', 'Male'), ('O', 'Others')], default='None')
-    profile_pic = FileField('PROFILE PIC')
+    profile_pic = FileField('PROFILE PIC' , validators = [FileAllowed(['jpg' , 'png'])])
+    phone_number = StringField('Phone Number' , [validators.Length(min=1 , max = 8) , validators.DataRequired()])
     submit = SubmitField('Submit')
 
 
