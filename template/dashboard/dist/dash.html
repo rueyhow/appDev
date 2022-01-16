@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -11,6 +12,7 @@
         <link href="{{url_for('static' , filename = 'css/styles.css')}}" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
     </head>
+
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
@@ -103,11 +105,12 @@
                                         <strong>Email : </strong>{{current_user.email}} <br>
                                         <strong>Gender : </strong>{{current_user.gender}} <br>
                                         <strong>Phone Number : </strong> {{current_user.phone_number}} <br>
+                                        <strong>Date Joined : </strong>{{current_user.date}}
                                         <!-- <strong>Profile Picture : </strong>{{current_user.profile_pic}} -->
                                         </div>
 
                                         <div class="col-4">
-                                        <img src="data:image/png;base64, {{current_user.base64}}" align = 'right' class ='src'>
+                                        <img src="data:image/png;base64, {{current_user.base64}}" align = 'right' class ='rounded-circle'>
                                         
                                         </div>
                                     </div>
@@ -155,6 +158,7 @@
                             </form>
                             <br>
                         </div>
+                        {% if current_user.username == 'rueyhow' %}
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -164,27 +168,37 @@
                                 <table id="datatablesSimple">
                                     <thead>
                                         <tr>
-                                            <th>Username</th>
-                                            <th>Email</th>
-                                            <th>Gender</th>
+                                            
+                                            <th>username</th>
+                                            <th>email</th>
+                                            <th>gender</th>
+                                            <th>Date Joined</th>
+                                            
                                         </tr>
                                     </thead>
                                 
                                     <tbody>
+                                        {% for user in users_table %}
                                         <tr>
-                                            <!-- accounts created -->
+                                            
+                                            <td>{{user.username}}</td>
+                                            <td>{{user.email}}</td>
+                                            <td>{{user.gender}}</td>
+                                            <td>{{user.date}}</td>
+                                            
                                         </tr>
-                                        <tr>
-                                            <!-- accounts created -->
-                                        </tr>
-                                        <tr>
-                                            <!-- accounts createds -->
-                                        </tr>
+                                        
+                                        {% endfor %}
+                                        
+                                            
+                                        
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                        {% endif %}
                     </div>
+                    
                 </main>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
