@@ -26,6 +26,8 @@ import PIL.Image as Image
 from io import BytesIO
 import io
 import base64
+from wtforms.validators import ValidationError
+
 
 
 
@@ -67,7 +69,8 @@ ICON = (b'\x00\x00\x01\x00\x01\x00\x10\x10\x00\x00\x01\x00\x08\x00h\x05\x00\x00'
 b'\x16\x00\x00\x00(\x00\x00\x00\x10\x00\x00\x00 \x00\x00\x00\x01\x00'
 b'\x08\x00\x00\x00\x00\x00@\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 b'\x00\x01\x00\x00\x00\x01') + b'\x00'*1282 + b'\xff'*64
-base = ('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
+# base = ('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
+
 # def User1(username , password , email):
 #     users_dict = {}
 #     db = shelve.open('user.db', 'c')
@@ -94,8 +97,9 @@ class User(UserMixin,db.Model):
     gender = db.Column(db.String(6))
     phone_number = db.Column(db.Integer() , unique = False)
     profile_pic = db.Column(db.LargeBinary, nullable= True , default = ICON)
-    base64 = db.Column(db.String(64) , nullable = True , default = base )
+    base64 = db.Column(db.String(64) , nullable = True , default = 'None' )
     date = db.Column(db.String(10) , unique = False , nullable = False)
+    status = db.Column(db.Integer() , nullable = False , default = 'Enabled')
 
 
 # table = inspect(User)
@@ -117,7 +121,7 @@ def Home_Page():
         user_ID = int(id(form2.username.data))
         user_by_name = User.query.filter_by(username=form2.username.data).first()
         if user_by_name:
-            return '<h1> Username taken </h1>'
+            flash('username already taken')
         else:
             today = date.today()
             new_user = User(username = form2.username.data , email = form2.email.data , password = hash , gender = form2.gender.data , id = user_ID , phone_number = form2.phone_number.data , date = today.strftime("%d/%m/%Y"))
@@ -130,18 +134,13 @@ def Home_Page():
         if user:
             if check_password_hash(user.password , forms.password.data):
                 login_user(user , remember = forms.remember.data)
-                return render_template('index.html' , form1 = form2 , form = forms)
-            return '<h1> Invalid password </h1>'
-        return '<h1> Invalid username</h1>'
+                if user.status == 'Enabled':
+                    return render_template('index.html' , form1 = form2 , form = forms)
+                return '<h1> your account has been disabled </h1>'
+            return '<h1> invalid password </h1>'
+        return '<h1> invalid username </h1>'
         # return '<h1>' + form1.username.data + " " + form1.password.data + "</h1>"
     return render_template('index.html' , form1 = form2 , form = forms)
-
-
-
-
-
-
-   
 
 @app.route('/logout')
 @login_required
@@ -150,18 +149,16 @@ def logout():
     flash('You have been logged out')
     return redirect('/')
 
-# @app.route('/delete')
-# def delete():
-#     user_to_delete = User.query.filter_by(username = current_user.username).first()
-#     form = CreateUserForm()
-#     users_table = User.query.all()
-#     try:
-#         db.session.delete(user_to_delete)
-#         db.session.commit()
-#         flash('User has been deleted')
-#     except:
-#         return redirect('/')
-
+@app.route('/delete')
+def delete():
+    user_to_delete = User.query.filter_by(id = current_user.id).first()
+    try:
+        db.session.delete(user_to_delete)
+        db.session.commit()
+    except:
+        return redirect('/')
+    return redirect('/')
+    
 @app.route('/dashboard/dist/dash.html' , methods = ['POST' , 'GET'])
 def dash():
     form = CreateUserForm()
@@ -188,17 +185,49 @@ def dash():
         except:
             flash('error')
             return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , profile_pic = base64_message , users_table = users_table)
-    else:
-        return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table)
+    return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table)
     
+@app.route('/dashboard/dist/dash/enable/<int:id>' , methods = ['POST'])
+@login_required
+def user_enable(id):
+    ID = User.query.filter_by(id = id).first()
+    ID.status = 'Enabled'
+    db.session.commit()
+    return redirect(url_for('dash'))
 
+@app.route('/dashboard/dist/dash/disable/<int:id>' , methods = ['POST'])
+@login_required
+def user_disable(id):
+    ID = User.query.filter_by(id = id).first()
+    ID.status = 'Disabled'
+    flash('Account has been disabled')
+    db.session.commit()
+    return redirect(url_for('dash'))
 
 @app.route('/sp/shopping/dist/index2.html')
 def shopping():
     return render_template('/sp/shopping/dist/index2.html')
+
+
 @app.route('/index.html')
 def home():
     return render_template('index.html')
+
+
+@app.route('/updateuser/<int:id>' , methods = ['POST' , 'GET'])
+@login_required
+def updateuser(id):
+    ID = User.query.filter_by(id=id).first()
+    updateForm = CreateUserForm()
+
+    if request.method == 'POST':
+        ID.username = updateForm.username.data
+        ID.email = updateForm.email.data
+        db.session.commit()
+        return redirect(url_for('dash'))
+    if request.method == 'POST':
+        return render_template('updateuser.html' , form = updateForm , user = ID)
+    return render_template('updateuser.html' , form = updateForm , user = ID)
     
 if __name__ == '__main__':
     os.environ['FLASK_ENV'] = 'development'
