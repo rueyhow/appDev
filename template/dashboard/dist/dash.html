@@ -100,7 +100,7 @@ Login
                             </form>
                             <br>
                         </div>
-                        {% if current_user.username == 'rueyhow' %}
+                        {% if current_user.admin == 'yes' %}
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -110,11 +110,16 @@ Login
                                 <table id="datatablesSimple">
                                     <thead>
                                         <tr>
-                                            
                                             <th>username</th>
                                             <th>email</th>
                                             <th>gender</th>
                                             <th>Date Joined</th>
+                                            <th>Account Status</th>
+                                            <th>Admin Status</th>
+                                            <th>Ban/Unban User</th>
+                                            <th>Update User</th>
+                                            
+                                            <th>On Admin</th>
                                             
                                         </tr>
                                     </thead>
@@ -126,6 +131,8 @@ Login
                                             <td>{{user.email}}</td>
                                             <td>{{user.gender}}</td>
                                             <td>{{user.date}}</td>
+                                            <td>{{user.status}}</td>
+                                            <td>{{user.admin}}</td>
                                             
                                             <td>
                                                 {% if user.status == 'Disabled' %}
@@ -143,6 +150,17 @@ Login
                                                 <form action="{{url_for('updateuser' , id = user.id , user = user)}}" method = 'GET'>
                                                     <input type="submit" value = 'Update User' class = 'btn btn-outline btn-info'>
                                                 </form>
+                                            </td>
+                                            <td>
+                                                {% if user.admin == 'yes' %}
+                                                <form action="{{url_for('user_disable_admin' , id = user.id)}}" method = 'GET'>
+                                                    <input type="submit" value = 'Disable Admin' class = 'btn btn-outline btn-warning'>
+                                                </form>
+                                                {% elif user.admin == 'no' %}
+                                                <form action="{{url_for('user_enable_admin' , id = user.id)}}" method = 'GET'>
+                                                    <input type="submit" value = 'Enable Admin' class = 'btn btn-outline btn-success'>
+                                                </form>
+                                                {% endif %}
                                             </td>
                                             
                                         </tr>

@@ -100,6 +100,7 @@ class User(UserMixin,db.Model):
     base64 = db.Column(db.String(64) , nullable = True , default = 'None' )
     date = db.Column(db.String(10) , unique = False , nullable = False)
     status = db.Column(db.Integer() , nullable = False , default = 'Enabled')
+    admin = db.Column(db.Integer() , nullable = False , default = 'no')
 
 
 # table = inspect(User)
@@ -201,6 +202,22 @@ def user_disable(id):
     ID = User.query.filter_by(id = id).first()
     ID.status = 'Disabled'
     flash('Account has been disabled')
+    db.session.commit()
+    return redirect(url_for('dash'))
+
+@app.route('/dashboard/dist/dash/user_disable_admin/<int:id>' , methods = ['POST' , 'GET'])
+@login_required
+def user_disable_admin(id):
+    ID = User.query.filter_by(id = id).first()
+    ID.admin = 'no'
+    db.session.commit()
+    return redirect(url_for('dash'))
+
+@app.route('/dashboard/dist/dash/user_enable_admin/<int:id>' , methods = ['POST' , 'GET'])
+@login_required
+def user_enable_admin(id):
+    ID = User.query.filter_by(id = id).first()
+    ID.admin = 'yes'
     db.session.commit()
     return redirect(url_for('dash'))
 
