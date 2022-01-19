@@ -9,14 +9,53 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
 <link href="{{url_for('static' , filename = 'css/styles.css')}}" rel="stylesheet" />
+<link href="{{url_for('static' , filename = 'css/test.css')}}" rel="stylesheet" />
 </head>
+
 <body class = 'sb-nav-fixed'>
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <!-- Navbar Brand-->
         <a class="navbar-brand ps-3" href="index.html">Start Bootstrap</a>
         <!-- Sidebar Toggle-->
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <!-- profile icon -->
+        <div class="profileicon">
+            <div class="nav_right">
+                <ul>
+                    <li class="nr_li dd_main">
+                        <img src="{{url_for('static' , filename = 'images/profilepics/default.png')}}" alt="profile_img" class = 'rounded-circle'>
+                        
+                        <div class="dd_menu">
+                            <div class="dd_left bg-dark">
+                                <ul>
+                                    <li><i class="fas fa-map-marker-alt"></i></li>
+                                    <li><i class="far fa-star"></i></li>
+                                    <li><i class="far fa-plus-square"></i></li>
+                                    <li><i class="fas fa-cog"></i></li>
+                                    <li><i class="fas fa-download"></i></li>
+                                    <li><i class="fas fa-sign-out-alt"></i></li>
+                                </ul>
+                            </div>
+                            <div class="dd_right">
+                                <ul>
+                                    <li>Location</li>
+                                    <li>Favorites</li>
+                                    <li>Addpeople</li>
+                                    <li>Settings</li>
+                                    <li>Downloads</li>
+                                    <li><a href="{{url_for('logout')}}" style = 'text-decoration: none; color:#868686;;'>logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nr_li">
+                        <i class="fas fa-envelope-open-text"></i>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <!-- Navbar Search-->
+        
         <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
             <div class="input-group">
                 <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
@@ -24,17 +63,14 @@
             </div>
         </form>
         <!-- Navbar-->
-        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><img src="{}" alt=""></a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#!">Settings</a></li>
-                    <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
-                    <li><hr class="dropdown-divider" /></li>
-                </ul>
-            </li>
-        </ul>
+
+        <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+
+	
+	
+
+
+
     </nav>
     
     <div id="layoutSidenav">
@@ -86,6 +122,7 @@
         </div>
     
         <script src="{{url_for('static' , filename = 'js/scripts2.js')}}"></script>
+        <script src="{{url_for('static' , filename = 'js/navbar.js')}}"></script>
 </body>
 </html>
 
