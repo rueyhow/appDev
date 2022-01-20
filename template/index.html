@@ -34,8 +34,9 @@
                     <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                         <li class="nav-item"><a class="nav-link" href="contactus.html">Contact Us</a></li>
                         <li class="nav-item"><a class="nav-link" href="#help">Help</a></li>
-                        {% if current_user.is_authenticated %}
-                        <li class="nav-item"><a href="dashboard/dist/dash.html" class="btn btn-primary">Profile</a></li>
+                        {% if  ( (current_user.is_authenticated) and (current_user.status == 'Enabled') ) %}
+                        <!-- profile picture -->
+                        <li class="nav-item"><a href="dashboard/dist/dash.html"><img src="data:image/png;base64, {{current_user.base64}}" align = 'right' class ='rounded-circle' style = 'height:40px;width:40px;'></a></li>
                         {% else %}
                         <li class="nav-item"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">Log in</button></li>
                         <li class="nav-item"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">Sign Up</button></li>
@@ -47,7 +48,7 @@
 
         <!-- test navbar -->
         <!-- log in modal -->
-        {% if not current_user.is_authenticated %}
+    
         <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -104,7 +105,7 @@
               </div>
             </div>
           </div>
-          {% endif %}
+         
         <!-- Masthead-->
         <header class="masthead" style = "color:lightblue;" style = 'background-image: url(/static/images/img/main\ logo.jpg);'>
             <div class="container" id = "container1">

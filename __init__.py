@@ -51,17 +51,19 @@ pip install flask-wtf
 
 
 app = Flask(__name__, template_folder = 'template')
+# creation of database information
 app.config["SECRET_KEY"] = "Rahow3216"
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///login.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-upload_folder = 'static/images/profilepics'
-app.config['upload_folder'] = upload_folder
 b(app)
 db = SQLAlchemy(app)
+
 IS_DEV = app.env == 'development'
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'index'
+upload_folder = 'static/images/profilepics'
+app.config['upload_folder'] = upload_folder
 
 
 
@@ -137,7 +139,8 @@ def Home_Page():
                 login_user(user , remember = forms.remember.data)
                 if user.status == 'Enabled':
                     return render_template('index.html' , form1 = form2 , form = forms)
-                return '<h1> your account has been disabled </h1>'
+                else:
+                    return '<h1> your account has been disabled </h1>'
             return '<h1> invalid password </h1>'
         return '<h1> invalid username </h1>'
         # return '<h1>' + form1.username.data + " " + form1.password.data + "</h1>"
@@ -228,7 +231,9 @@ def shopping():
 
 @app.route('/index.html')
 def home():
-    return render_template('index.html')
+    forms = ExistingMember()
+    form2 = CreateUserForm()
+    return render_template('index.html' , form1 = form2 , form = forms)
 
 
 @app.route('/updateuser/<int:id>' , methods = ['POST' , 'GET'])
@@ -246,6 +251,8 @@ def updateuser(id):
         return render_template('updateuser.html' , form = updateForm , user = ID)
     return render_template('updateuser.html' , form = updateForm , user = ID)
     
+
+
 if __name__ == '__main__':
     os.environ['FLASK_ENV'] = 'development'
     db.create_all()
