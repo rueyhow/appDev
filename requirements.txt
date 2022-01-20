@@ -4,5 +4,5 @@ flask-bootstrap
 pandas
 pillow
 flask-wtf
-Flask-SQLAlchemy
 Flask-Login
+Flask-SQLAlchemy
