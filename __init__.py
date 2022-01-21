@@ -27,6 +27,8 @@ from io import BytesIO
 import io
 import base64
 from wtforms.validators import ValidationError
+import string
+import random
 
 
 
@@ -58,6 +60,10 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 b(app)
 db = SQLAlchemy(app)
 
+
+
+
+
 IS_DEV = app.env == 'development'
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -73,20 +79,20 @@ b'\x08\x00\x00\x00\x00\x00@\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 b'\x00\x01\x00\x00\x00\x01') + b'\x00'*1282 + b'\xff'*64
 # base = ('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
 
-# def User1(username , password , email):
-#     users_dict = {}
-#     db = shelve.open('user.db', 'c')
-#     try:
-#         users_dict = db['Users']
-#     except:
-#         print("Error in retrieving Users from user.db.")
-#     if username in users_dict:
-#         print("invalid creditentials")
-#     else:
-#         users_dict[username] = {'password' : password , 'email' : email}
-#         db['Users'] = users_dict
-#         print(users_dict)
-#         db.close()
+def Voucher(ID):
+    voucher_dict = {}
+    db = shelve.open('voucher.db', 'c')
+    try:
+        voucher_dict = db['Voucher']
+    except:
+        print("Error in retrieving Users from user.db.")
+    if ID in voucher_dict:
+        print("voucher already generated")
+    else:
+        voucher_dict[ID] = {'value' : 10}
+        db['voucher'] = voucher_dict
+        db.close()
+
 
 class User(UserMixin,db.Model):
     __table_args__ = (
@@ -103,6 +109,9 @@ class User(UserMixin,db.Model):
     date = db.Column(db.String(10) , unique = False , nullable = False)
     status = db.Column(db.Integer() , nullable = False , default = 'Enabled')
     admin = db.Column(db.Integer() , nullable = False , default = 'no')
+
+
+
 
 
 # table = inspect(User)
@@ -168,6 +177,7 @@ def dash():
     form = CreateUserForm()
     name_to_update = User.query.get(current_user.id)
     users_table = User.query.all()
+    
     if request.method == 'POST':
         # UPDATING USER INFORMATION
         name_to_update.username = request.form['username']
@@ -185,10 +195,10 @@ def dash():
         try:
             db.session.commit()
             flash('User updated successfully')
-            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , profile_pic = base64_message , users_table = users_table)
+            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table)
         except:
             flash('error')
-            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , profile_pic = base64_message , users_table = users_table)
+            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table)
     return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table)
     
 @app.route('/dashboard/dist/dash/enable/<int:id>' , methods = ['POST'])
@@ -196,6 +206,7 @@ def dash():
 def user_enable(id):
     ID = User.query.filter_by(id = id).first()
     ID.status = 'Enabled'
+    flash('Account ' + ID.username + ' has been unbanned' , category = 'success')
     db.session.commit()
     return redirect(url_for('dash'))
 
@@ -204,7 +215,7 @@ def user_enable(id):
 def user_disable(id):
     ID = User.query.filter_by(id = id).first()
     ID.status = 'Disabled'
-    flash('Account has been disabled')
+    flash('Account ' + ID.username + ' has been banned' , category = 'danger')
     db.session.commit()
     return redirect(url_for('dash'))
 
@@ -252,6 +263,13 @@ def updateuser(id):
     return render_template('updateuser.html' , form = updateForm , user = ID)
     
 
+# @app.route('/use')
+# def use():
+#     # generatin of voucher code
+#     S = 10  
+#     IDGenerated = ''.join(random.choices(string.ascii_uppercase + string.digits, k = S))
+#     Voucher(IDGenerated) 
+    
 
 if __name__ == '__main__':
     os.environ['FLASK_ENV'] = 'development'

@@ -8,9 +8,7 @@
         <meta name="author" content="" />
         <title>{% block title %}{% endblock %}</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="{{ url_for('static' , filename = 'css/dashboard.css') }}">
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link rel="stylesheet" href="{{ url_for('static' , filename = 'css/base.css') }}">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
         <link href="{{url_for('static' , filename = 'css/test.css')}}" rel="stylesheet" />
@@ -84,7 +82,7 @@
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="layout-static.html">Static Navigation</a>
+                                    <a class="nav-link" href="voucher.html">Static Navigation</a>
                                     <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
                                 </nav>
                             </div>
@@ -140,6 +138,7 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
+                       
                         <h1 class="mt-4">Dashboard</h1>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">Dashboard</li>
@@ -183,8 +182,22 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <!-- end colored cards -->
                         <div class="row">
+                            {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                            <ul class=flashes>
+                                {% for category, msg in messages %}
+                                <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                                    <strong>{{msg}}</strong> 
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                  </div>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        {% endwith %}
+                            <!-- flashed messages -->
                             <!-- content inside here -->
                             {% block content %}
                             {% endblock %}
@@ -209,12 +222,11 @@
                                         <!-- Grid column -->
                                         <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
                                           <h6 class="text-uppercase mb-4 font-weight-bold">
-                                            Company name
+                                            Syngery Soccer
                                           </h6>
                                           <p>
-                                            Here you can use rows and columns to organize your footer
-                                            content. Lorem ipsum dolor sit amet, consectetur adipisicing
-                                            elit.
+                                           Welcome to our official e-commerce site. We sell brand new soccer goods 
+                                           from clubs all over the world
                                           </p>
                                         </div>
                                         <!-- Grid column -->
@@ -247,10 +259,10 @@
                                         <!-- Grid column -->
                                         <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
                                           <h6 class="text-uppercase mb-4 font-weight-bold">Contact</h6>
-                                          <p><i class="fas fa-home mr-3"></i> New York, NY 10012, US</p>
-                                          <p><i class="fas fa-envelope mr-3"></i> info@gmail.com</p>
-                                          <p><i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
-                                          <p><i class="fas fa-print mr-3"></i> + 01 234 567 89</p>
+                                          <p><i class="fas fa-home mr-3"></i>NYP, Singapore</p>
+                                          <p><i class="fas fa-envelope mr-3"></i> rahow32@gmail.com</p>
+                                          <p><i class="fas fa-phone mr-3"></i>9725 9035</p>
+                                          <p><i class="fas fa-print mr-3"></i>6457 8792</p>
                                         </div>
                                         <!-- Grid column -->
                               
@@ -289,8 +301,8 @@
                                           <a
                                              class="btn btn-primary btn-floating m-1"
                                              style="background-color: #ac2bac"
-                                             href="#!"
-                                             role="button"
+                                             href="https://www.instagram.com/_thirty_two/"
+                                             role="button" target = '_blank'
                                              ><i class="fab fa-instagram"></i
                                             ></a>
                               
@@ -306,7 +318,7 @@
                                           <a
                                              class="btn btn-primary btn-floating m-1"
                                              style="background-color: #333333"
-                                             href="#!"
+                                             href="https://github.com/rueyhow"
                                              role="button"
                                              ><i class="fab fa-github"></i
                                             ></a>
