@@ -27,8 +27,12 @@ from io import BytesIO
 import io
 import base64
 from wtforms.validators import ValidationError
+<<<<<<< HEAD
 import string
 import random
+=======
+from datetime import datetime
+>>>>>>> 83339ee0ec79a16c5ff30b62cc36c6d9370c3b65
 
 
 
@@ -261,7 +265,37 @@ def updateuser(id):
     if request.method == 'POST':
         return render_template('updateuser.html' , form = updateForm , user = ID)
     return render_template('updateuser.html' , form = updateForm , user = ID)
-    
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///feedback.db'
+db1 = SQLAlchemy(app)
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable = False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"Feedback('{self.name}')"
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
 
 # @app.route('/use')
 # def use():
