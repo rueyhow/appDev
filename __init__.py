@@ -56,12 +56,27 @@ pip install flask-wtf
 
 
 app = Flask(__name__, template_folder = 'template')
-# creation of database information
+
+# creation of all database information
 app.config["SECRET_KEY"] = "Rahow3216"
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///login.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 b(app)
 db = SQLAlchemy(app)
+
+def Voucher(ID):
+    voucher_dict = {}
+    db = shelve.open('databases/voucher/voucher.db', 'c')
+    try:
+        voucher_dict = db['Voucher']
+    except:
+        print("Error in retrieving Users from user.db.")
+    if ID in voucher_dict:
+        print("voucher already generated")
+    else:
+        voucher_dict[ID] = {'value' : 10}
+        db['voucher'] = voucher_dict
+        db.close()
 
 
 
@@ -82,19 +97,7 @@ b'\x08\x00\x00\x00\x00\x00@\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 b'\x00\x01\x00\x00\x00\x01') + b'\x00'*1282 + b'\xff'*64
 # base = ('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
 
-def Voucher(ID):
-    voucher_dict = {}
-    db = shelve.open('voucher.db', 'c')
-    try:
-        voucher_dict = db['Voucher']
-    except:
-        print("Error in retrieving Users from user.db.")
-    if ID in voucher_dict:
-        print("voucher already generated")
-    else:
-        voucher_dict[ID] = {'value' : 10}
-        db['voucher'] = voucher_dict
-        db.close()
+
 
 
 class User(UserMixin,db.Model):
