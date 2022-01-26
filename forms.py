@@ -27,13 +27,16 @@ class Addproducts(Form):
     stock = IntegerField('Stock', [validators.DataRequired()])
     colors = StringField('Colors', [validators.DataRequired()])
     discription = TextAreaField('Discription', [validators.DataRequired()])
-
+    stock = IntegerField('Stock', [validators.DataRequired()])
     image_1 = FileField('Image 1', validators=[FileRequired(), FileAllowed(['jpg','png','gif','jpeg']), 'Images only please'])
     image_2 = FileField('Image 2', validators=[FileRequired(), FileAllowed(['jpg','png','gif','jpeg']), 'Images only please'])
     image_3 = FileField('Image 3', validators=[FileRequired(), FileAllowed(['jpg','png','gif','jpeg']), 'Images only please'])
 
 
-  
+class FeedbackForm(FlaskForm):
+    name = StringField('Name', [validators.DataRequired()])
+    email = StringField('Email' , [validators.Length(min = 5 , max = 100) , validators.DataRequired()])
+    feedback = StringField('Feedback' , [validators.Length(min = 1 , max = 300) , validators.DataRequired])
     
 
 

@@ -18,7 +18,7 @@
                     <a href="{{url_for('single_page',id=b.id)}}" class="float-left btn btn-sm btn-primary">Details</a>
                     <form action="{{url_for('AddCart')}}" method="post">
                       <input type="hidden" name="product_id" value="{{b.id}}">
-                      <button type="submit" class="btn btn-sm btn-warning float-right">Add to Cart</button>
+                      <button type="submit" class="btn btn-sm btn-success float-right">Add to Cart</button>
                       <input type="hidden" name="quantity" value="1" min="1" max="20">
                       {% set colors = b.colors.split(',') %}
                       <select name="colors" id="colors" style="visibility: hidden;">
@@ -95,7 +95,7 @@
       <div class="row mt-4">
         <div class="col text-center">
           {% if get_cat_prod.has_prev %}
-            <a href="{{url_for('get_category',id=get_cat.id, page=get_cat_prod.prev_num)}}"class="btn btn-sm btn-outline-info">previus</a>
+            <a href="{{url_for('get_category',id=get_cat.id, page=get_cat_prod.prev_num)}}"class="btn btn-sm btn-outline-info">previous</a>
           {% endif %}
           {% if get_cat_prod.total > 8 %}
          {% for page_num in get_cat_prod.iter_pages(left_edge=1, right_edge=2, left_current=1,right_current=2) %}
@@ -152,7 +152,7 @@
       <div class="row mt-4">
         <div class="col text-center">
           {% if products.has_prev %}
-            <a href="{{url_for('home', page=products.prev_num)}}"class="btn btn-sm btn-outline-info">previus</a>
+            <a href="{{url_for('home', page=products.prev_num)}}"class="btn btn-sm btn-outline-info">previous</a>
           {% endif %}
           {% if products.total> 8 %}
          {% for page_num in products.iter_pages(left_edge=1, right_edge=2, left_current=1,right_current=2) %}

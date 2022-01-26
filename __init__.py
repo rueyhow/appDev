@@ -30,7 +30,8 @@ import os
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from flask_msearch import Search
 from flask_bcrypt import Bcrypt
-
+from dataclasses import dataclass, field
+from typing import Tuple
 
 
 
@@ -72,7 +73,7 @@ photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 patch_request_class(app)
 
-db = SQLAlchemy(app)
+
 bcrypt = Bcrypt(app)
 search = Search()
 search.init_app(app)
@@ -162,7 +163,7 @@ class Addproduct(db.Model):
     def __repr__(self):
         return '<Post %r>' % self.name
 
-
+# brand model
 class Brand(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True, nullable=False)
@@ -170,7 +171,7 @@ class Brand(db.Model):
     def __repr__(self):
         return '<Brand %r>' % self.name
     
-
+#category model
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True, nullable=False)
@@ -308,7 +309,7 @@ def shopping():
     return render_template('/sp/shopping/dist/index2.html')
 
 
-@app.route('/index.html')
+@app.route('/')
 def home1():
     forms = ExistingMember()
     form2 = CreateUserForm()
@@ -331,10 +332,81 @@ def updateuser(id):
     return render_template('updateuser.html' , form = updateForm , user = ID)
 
 
-@app.route('/index.html')
-def index():
-    return render_template('index.html')
 
+
+# end user login/register part
+
+
+
+
+# feedback part stuff
+@dataclass(order= True)
+class Feedback:
+    '''Object to store products'''
+    _id : int
+    _name : str
+    _email : str 
+    _feedback : str = field(compare= True, default= None) #sets default to null
+
+    _sortID : int = field(init= False, repr= False)
+    def __post_init__(self):
+        object.__setattr__(self, '_sortID',  self._id)
+
+    @property
+    def id(self) -> int:
+        return self._id
+    @property
+    def name(self) -> str:
+        return self._name
+    @property
+    def email(self) -> str:
+        return self._email
+    @property
+    def description(self) -> str:
+        return self._feedback
+
+
+def insertRow(name: str, email :str, feedback: str) -> None:
+    with shelve.open('feedbackform') as db:
+        if db: #if db is not empty
+            id = int(list(db)[-1])+1
+            db[str(id)] = Feedback(id, name, email, feedback)
+        else: 
+            db[str(1)] = Feedback(1, name, email, feedback)
+
+def displayAllRows() -> None:
+    with shelve.open('feedbackform') as db:
+        for id, obj in db.items():
+            print(f'{id=}, {obj}')
+
+def getRow(id) -> Feedback:
+    with shelve.open('feedbackform') as db:
+        return db[str(id)]
+
+def getAll() ->Tuple[Feedback]:
+    with shelve.open('feedbackform') as db:
+        return tuple(db.values())
+
+def deleteRow(id : int) -> bool:
+    try:
+        with shelve.open('feedbackform') as db:
+            del db[str(id)]
+            return True
+    except KeyError: 
+        print(f'id of {id} is not inside database')
+        return False
+
+def deleteAll() -> bool: #is not imported with *
+     with shelve.open('feedbackform') as db:
+        try:
+            for id in db.keys():
+                del db[id]
+            return True
+        except KeyError: return False
+
+@app.route('/feedback.html')
+def feedback():
+    return render_template('feedback.html')
 
 
 # product page routes 
@@ -464,7 +536,7 @@ def deletecat(id):
     return redirect(url_for('admin'))
 
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/products/addproduct.html', methods=['GET','POST'])
 def addproduct():
     form = Addproducts(request.form)
     brands = Brand.query.all()
@@ -485,11 +557,16 @@ def addproduct():
         db.session.add(addproduct)
         flash(f'The product {name} was added in database','success')
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('addproduct'))
     return render_template('products/addproduct.html', form=form, title='Add a Product', brands=brands,categories=categories)
 
 
 
+
+
+@app.route('/products/addbrand.html')
+def branded():
+    return render_template('products/addbrand.html')
 
 @app.route('/updateproduct/<int:id>', methods=['GET','POST'])
 def updateproduct(id):
@@ -601,7 +678,7 @@ def AddCart():
 
 
 
-@app.route('/carts')
+@app.route('/products/carts.html')
 def getCart():
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
         return redirect(url_for('home'))
