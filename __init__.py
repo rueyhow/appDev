@@ -257,6 +257,10 @@ def updateuser(id):
 def index():
     return render_template('index.html')
 
+@app.route('/feedback.html')
+def feedback():
+    return render_template('feedback.html')
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///feedback.db'
 db1 = SQLAlchemy(app)
@@ -264,10 +268,12 @@ db1 = SQLAlchemy(app)
 class Feedback(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable = False)
+    email = db.Column(db.String(200), nullable = False)
+    
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"Feedback('{self.name}')"
+        return f"Feedback('{self.name}','{self.email})"
 
 
 
