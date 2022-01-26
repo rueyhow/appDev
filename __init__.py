@@ -1,3 +1,4 @@
+from re import S
 from flask import Flask, render_template, request , redirect , url_for , session , flash
 import os
 from flask.helpers import url_for
@@ -31,6 +32,7 @@ from flask_msearch import Search
 from flask_bcrypt import Bcrypt
 from dataclasses import dataclass, field
 from typing import Tuple
+import pickle as pickle
 
 
 
@@ -692,6 +694,8 @@ def AddCart():
 def getCart():
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
         return redirect(url_for('home'))
+    if len(session['Shoppingcart']) == 0:
+        flash('Your shopping cart is empty' , category = 'danger')
     subtotal = 0
     grandtotal = 0
     for key,product in session['Shoppingcart'].items():
@@ -717,7 +721,7 @@ def updatecart(code):
                 if int(key) == code:
                     item['quantity'] = quantity
                     item['color'] = color
-                    flash('Item is updated!')
+                    flash('Item is updated!' , 'success')
                     return redirect(url_for('getCart'))
         except Exception as e:
             print(e)
@@ -750,7 +754,15 @@ def clearcart():
 
 
 
-#for feedback page
+
+
+
+@app.route("/indexs.html", methods=["GET","POST"])
+def indexs():
+    return render_template("indexs.html")
+
+
+
 @dataclass(order= True)
 class Feedback:
     '''Object to store products'''
@@ -789,6 +801,7 @@ def displayAllRows() -> None:
     with shelve.open('feedbackform') as db:
         for id, obj in db.items():
             print(f'{id=}, {obj}')
+        return db.items()
 
 def getRow(id) -> Feedback:
     with shelve.open('feedbackform') as db:
@@ -802,13 +815,13 @@ def deleteRow(id : int) -> bool:
     try:
         with shelve.open('feedbackform') as db:
             del db[str(id)]
-            return True
+            return redirect('dash')
     except KeyError: 
         print(f'id of {id} is not inside database')
-        return False
+        return redirect('dash')
 
 def deleteAll() -> bool: #is not imported with *
-     with shelve.open('feedbackform') as db:
+    with shelve.open('feedbackform') as db:
         try:
             for id in db.keys():
                 del db[id]
@@ -820,26 +833,19 @@ if __name__ == '__main__':
     displayAllRows()
 __all__ = ['Feedback', 'insertRow', 'displayAllRows', 'deleteRow', 'getRow', 'getAll']
 
-
-@app.route("/", methods=["GET","POST"])
-def main():
-
-    return render_template("indexs.html")
-
-
-
-
-@app.route('/form', methods=["POST"])
+@app.route('/from.html', methods=["POST"])
 def form():
-    firstname=request.form.get("firstname")
-    email=request.form.get("lastname")
-    subject=request.form.get("subject")
-    Feedback.insertRow(firstname,email,subject)
+    firstname = request.form.get("firstname")
+    email = request.form.get("lastname")
+    subject = request.form.get("subject")
+    insertRow(firstname,email,subject)
     title = " Thank You!"
-    return render_template("form.html", title=title, firstname =firstname, lastname=email, subject=subject)
+    return render_template("from.html", title=title, firstname =firstname, lastname=email, subject=subject)
 
-
-
+@app.route('/displayFeedback')
+def displayFeedback():
+    feedback_table = getAll()
+    return render_template('/displayFeedback.html' , feedback_table = feedback_table)
 
 
 

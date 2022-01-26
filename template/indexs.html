@@ -1,3 +1,4 @@
+{% extends 'base.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
 <!DOCTYPE html>
@@ -9,7 +10,7 @@
 body {font-family: Arial, Helvetica, sans-serif;}
 * {box-sizing: border-box;}
 
-input[type=text], select, textarea {
+.text, select, textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #ccc;
@@ -33,7 +34,7 @@ input[type=submit]:hover {
   background-color: #45a049;
 }
 
-.container {
+#container {
   border-radius: 5px;
   background-color: #f2f2f2;
   padding: 20px;
@@ -43,13 +44,13 @@ input[type=submit]:hover {
 <body>
 <h3>Feedback Form</h3>
 
-<div class="container">
-  <form action="/form" method="POST" >
+<div class="container" id ='container'>
+  <form action="/from.html" method="POST" >
     <label>Name</label>
-    <input type="text" id="name" name="firstname" placeholder="Your name..">
+    <input type="text" class = 'text' id="name" name="firstname" placeholder="Your name..">
 
     <label >Email</label>
-    <input type="text" id="email" name="lastname" placeholder="Your email...">
+    <input type="text" id="email" class = 'text' name="lastname" placeholder="Your email...">
 
 
 
