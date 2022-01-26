@@ -333,9 +333,7 @@ def updateuser(id):
 
 
 
-@app.route('/feedback.html')
-def feedback():
-    return render_template('feedback.html')
+
 
 
 # end user login/register part
