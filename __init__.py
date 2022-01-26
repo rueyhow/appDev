@@ -332,8 +332,23 @@ def updateuser(id):
 
 
 
+@app.route('/feedback.html')
+def feedback():
+    return render_template('feedback.html')
+
 
 # end user login/register part
+
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable = False)
+    email = db.Column(db.String(200), nullable = False)
+    
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"Feedback('{self.name}','{self.email})"
 
 
 
@@ -736,6 +751,7 @@ def clearcart():
         return redirect(url_for('home'))
     except Exception as e:
         print(e)
+
 
 
 

@@ -1,5 +1,14 @@
-{% extends 'base.html' %}
+
+{% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
@@ -10,6 +19,12 @@
     <title>Document</title>
 </head>
 <body>
+
+    
+</body>
+</html>
+{% endblock %}
+
     <div class="container">
         <div class="row">
             <div class="card">
@@ -29,3 +44,4 @@
 </body>
 </html>
 {% endblock}
+
