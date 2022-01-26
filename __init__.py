@@ -182,12 +182,23 @@ class Category(db.Model):
 
 
 
+@app.route('/admin')
+def admin():
+    products = Addproduct.query.all()
+    return render_template('admin/index.html', title='Admin page',products=products)
 
-# table = inspect(User)
-# for column in table.c:
-#     print(column.name)
-# row = User.query.get('username')
-# print(row)
+@app.route('/brands')
+def brands():
+    brands = Brand.query.order_by(Brand.id.desc()).all()
+    return render_template('admin/brand.html', title='brands',brands=brands)
+
+
+@app.route('/categories')
+def categories():
+    categories = Category.query.order_by(Category.id.desc()).all()
+    return render_template('admin/brand.html', title='categories',categories=categories)
+
+
 
 
 @login_manager.user_loader
@@ -465,9 +476,9 @@ def get_category(id):
     return render_template('products/index.html',get_cat_prod=get_cat_prod,brands=brands(),categories=categories(),get_cat=get_cat)
 
 
-@app.route('/addbrand',methods=['GET','POST'])
+@app.route('/addbrand', methods=['GET','POST'])
 def addbrand():
-    if request.method =="POST":
+    if request.method == "POST":
         getbrand = request.form.get('brand')
         brand = Brand(name=getbrand)
         db.session.add(brand)
@@ -478,9 +489,6 @@ def addbrand():
 
 @app.route('/updatebrand/<int:id>',methods=['GET','POST'])
 def updatebrand(id):
-    if 'email' not in session:
-        flash('Login first please','danger')
-        return redirect(url_for('login'))
     updatebrand = Brand.query.get_or_404(id)
     brand = request.form.get('brand')
     if request.method =="POST":
@@ -517,9 +525,6 @@ def addcat():
 
 @app.route('/updatecat/<int:id>',methods=['GET','POST'])
 def updatecat(id):
-    if 'email' not in session:
-        flash('Login first please','danger')
-        return redirect(url_for('login'))
     updatecat = Category.query.get_or_404(id)
     category = request.form.get('category')  
     if request.method =="POST":
@@ -572,9 +577,6 @@ def addproduct():
 
 
 
-@app.route('/products/addbrand.html')
-def branded():
-    return render_template('products/addbrand.html')
 
 @app.route('/updateproduct/<int:id>', methods=['GET','POST'])
 def updateproduct(id):
@@ -639,9 +641,9 @@ def deleteproduct(id):
         db.session.delete(product)
         db.session.commit()
         flash(f'The product {product.name} was delete from your record','success')
-        return redirect(url_for('index'))
+        return redirect(url_for('admin'))
     flash(f'Can not delete the product','success')
-    return redirect(url_for('index'))
+    return redirect(url_for('admin'))
 
 
 
