@@ -18,7 +18,6 @@ import uuid as uuid
 import sys
 from werkzeug.security import generate_password_hash , check_password_hash
 from flask_login import LoginManager , UserMixin, login_user , login_required , logout_user , current_user
-from werkzeug.utils import secure_filename
 import os
 import base64
 from wtforms.validators import ValidationError
