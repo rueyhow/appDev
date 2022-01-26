@@ -34,6 +34,7 @@ pip install flask
 pip install flask-bootstrap
 pip install pandas
 pip install flask-wtf
+pip install flask_login
 """
 
 
