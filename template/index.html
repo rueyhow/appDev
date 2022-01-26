@@ -1,14 +1,4 @@
-{% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-
-{% block title %}
-Login
-{% endblock %}
-
-{% block styles %}
-{{super()}}
-{% endblock %}
-
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
@@ -30,9 +20,7 @@ Login
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     </head>
    
-    {% block navbar %}
-
-    {% endblock %}
+    
     <body id="page-top">
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
@@ -46,8 +34,9 @@ Login
                     <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                         <li class="nav-item"><a class="nav-link" href="contactus.html">Contact Us</a></li>
                         <li class="nav-item"><a class="nav-link" href="#help">Help</a></li>
-                        {% if current_user.is_authenticated %}
-                        <li class="nav-item"><a href="dashboard/dist/dash.html" class="btn btn-primary">Profile</a></li>
+                        {% if  ( (current_user.is_authenticated) and (current_user.status == 'Enabled') ) %}
+                        <!-- profile picture -->
+                        <li class="nav-item"><a href="dashboard/dist/dash.html"><img src="data:image/png;base64, {{current_user.base64}}" align = 'right' class ='rounded-circle' style = 'height:40px;width:40px;'></a></li>
                         {% else %}
                         <li class="nav-item"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">Log in</button></li>
                         <li class="nav-item"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">Sign Up</button></li>
@@ -56,8 +45,11 @@ Login
                 </div>
             </div>
         </nav>
+
+        <!-- end navbar -->
+    
         <!-- log in modal -->
-        {% if not current_user.is_authenticated %}
+    
         <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -66,6 +58,7 @@ Login
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                
                     <div class="container">
                         <form class="form-signin" , method = 'POST'>
                           <h2 class="form-signin-heading">Please sign in</h2>
@@ -103,6 +96,7 @@ Login
                             {{ wtf.form_field(form1.password , placeholder = '***********') }}
                             {{ wtf.form_field(form1.email , placeholder = 'example@gmail.com') }}
                             {{ wtf.form_field(form1.gender)}}
+                            {{ wtf.form_field(form1.phone_number , placeholder = 'Enter Phone number here')}}
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up!</button>
@@ -113,7 +107,7 @@ Login
               </div>
             </div>
           </div>
-          {% endif %}
+          
         <!-- Masthead-->
         <header class="masthead" style = "color:lightblue;" style = 'background-image: url(/static/images/img/main\ logo.jpg);'>
             <div class="container" id = "container1">
@@ -122,6 +116,7 @@ Login
                 <a class="btn btn-primary btn-xl text-uppercase" href="sp/shopping/dist/index2.html">Shop Now!</a>
             </div>
         </header>
+        
         <!-- Services-->
         <section class="page-section" id="services">
             <div class="container">

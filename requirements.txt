@@ -1,0 +1,12 @@
+email_validator
+flask
+flask-bootstrap
+pandas
+pillow
+flask-wtf
+Flask-Login
+Flask-SQLAlchemy
+flask_uploads
+flask_msearch
+flask_bcrypt 
+flask_migrate

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container" style = 'margin-top:30px;'>
+        <h2>Update {{user.username}}'s Profile</h2><br>
+        <div class = 'shadow p-3 mb-5 bg-body rounded'>
+            <form action="" method = 'POST' , enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            {{ form.username.label(class = 'form-label')}}
+            {{ form.username(class = 'form-control' , value = user.username)}}
+
+            <br>
+
+            {{ form.email.label(class='form-label')}}
+            {{ form.email(class = 'form-control' , value = user.email)}}
+
+            <br>
+
+            <br>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">upload picture</button>
+            <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="staticBackdropLabel">Synergy Soccer</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                            {{ form.profile_pic.label(class = 'form-label')}}
+                            {{ form.profile_pic(class = 'form-control' , value = user.profile_pic)}}
+                            {{ form.submit(class='btn btn-secondary') }}
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              {{ form.submit(class='btn btn-secondary') }}
+        </div>
+        
+    </form>
+    <br>
+</div>
+</body>
+</html>
+{% endblock %}
