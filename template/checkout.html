@@ -72,7 +72,8 @@
             </td>
                <td width="35%"></td>
                <td> <h5>Tax: ${{tax}}</h5></td>
-               <td> <h5>Grand total: ${{grandTotal}}</h3> </td>
+               <td> <h5>Grand total: ${{grandTotal}}</h5> </td>
+               <td><a href="{{url_for('get_pdf',invoice=orders.invoice)}}" class="btn btn-info">Get PDF</a></td>
            </tr>
         </table>
     </div>

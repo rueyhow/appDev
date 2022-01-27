@@ -1,7 +1,7 @@
 from concurrent.futures import process
 from re import S
 from unicodedata import name
-from flask import Flask, render_template, request , redirect , url_for , session , flash
+from flask import Flask, make_response, render_template, request , redirect , url_for , session , flash
 import os
 import json
 from flask.helpers import url_for
@@ -31,6 +31,7 @@ from forms import Addproducts
 import secrets
 import os
 import stripe
+import pdfkit
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from flask_msearch import Search
 from dataclasses import dataclass, field
@@ -957,6 +958,28 @@ def check_out(invoice):
          grandTotal = "%.2f" % (1.06 * float(subTotal))
 
     return render_template('checkout.html',customer=customer,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
+
+@app.route('/getpdf/<invoice>', methods=['GET'])
+def get_pdf(invoice):
+    grandTotal = 0
+    subTotal = 0
+    customer = ShippingInfo.query.filter_by(id=current_user.id).first()
+    orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
+    for key, product in orders.orders.items():
+         discount = (product['discount']/100) * float(product['price'])
+         subTotal += float(product['price']) * int(product['quantity'])
+         subTotal -= discount
+         tax =("%.2f" %(.06 * float(subTotal)))
+         grandTotal = "%.2f" % (1.06 * float(subTotal))
+
+    rendered = render_template('checkout.html',customer=customer,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
+    pdf = pdfkit.from_string(rendered)
+    response = make_response(pdf, False)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline;filename=output.pdf'
+    return response
+
+
 
 @app.route('/payment',methods=['POST'])
 def payment():
