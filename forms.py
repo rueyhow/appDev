@@ -3,6 +3,7 @@ from wtforms import Form, SubmitField,IntegerField,FloatField,StringField,TextAr
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField , FileAllowed, FileRequired
 from wtforms.fields.simple import FileField, SubmitField
+from wtforms.validators import DataRequired, Length
 
 class CreateUserForm(FlaskForm):
     username = StringField('username' , [validators.Length(min=1 , max=15) , validators.DataRequired()])
@@ -38,3 +39,12 @@ class FeedbackForm(FlaskForm):
     email = StringField('Email' , [validators.Length(min = 5 , max = 100) , validators.DataRequired()])
     feedback = StringField('Feedback' , [validators.Length(min = 1 , max = 300) , validators.DataRequired])
 
+class ShippingForm(FlaskForm):
+    name = StringField("Full Name: ",validators=[DataRequired(), Length(min=1,max=255)])
+    #email = EmailField("Email: ",validators=[DataRequired(), Email()])
+    address = StringField("Address: ",validators=[DataRequired()])
+    country = StringField("Country: ",validators=[DataRequired()])
+    city = StringField("City: ",validators=[DataRequired()])
+    state = StringField("State: ",validators=[DataRequired()])
+    zipcode = StringField("ZipCode: ",validators=[DataRequired()])
+    submit = SubmitField("Next")
