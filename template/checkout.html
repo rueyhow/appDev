@@ -7,6 +7,11 @@
             <br>
             Status : {{orders.status}}
             <br>
+            {{customer.name}}
+            <br>
+            {{customer.address}}
+            <br>
+            {{customer.city}},{{customer.state}} {{customer.postalcode}}
         <table class="table table-sm">
             <thead>
                 <th>Sr</th>
@@ -14,7 +19,6 @@
                 <th>Color</th>
                 <th>Price</th>
                 <th>Quantity</th>
-                <th>Discount</th>
                 <th>Subtotal</th>
             </thead>
             <tbody>
@@ -61,7 +65,7 @@
                      class="stripe-button"
                      data-key="pk_test_51KKN0tAEaRDjqb9soECAov6Nvp1AWg9aqDXcZ5hik5OYrJwPlOmu1Lnl1LoUmBSTp0nlCCGXyqjDeOLfv4aicseV00WQHYM3xK"
                      data-name="Synergy"
-                     data-amount="{{grandTotal}}"
+                     data-amount="{{amount}}"
                      data-currency="sgd">
                    </script>
              </form>
