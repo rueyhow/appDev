@@ -432,9 +432,7 @@ def deleteAll() -> bool: #is not imported with *
             return True
         except KeyError: return False
 
-@app.route('/feedback.html')
-def feedback():
-    return render_template('feedback.html')
+
 
 
 # product page routes 
