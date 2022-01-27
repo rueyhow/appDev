@@ -200,6 +200,10 @@ def categories():
     categories = Category.query.order_by(Category.id.desc()).all()
     return render_template('admin/brand.html', title='categories',categories=categories)
 
+@app.route('/contactus')
+def contactUs():
+    return render_template('/contactus.html')
+
 
 
 

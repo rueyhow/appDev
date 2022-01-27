@@ -47,15 +47,12 @@ input[type=submit]:hover {
 <div class="container" id ='container'>
   <form action="/indexs" method="POST" >
     <label>Name</label>
-    <input type="text" class = 'text' id="name" name="firstname" placeholder="Your name..">
+    <input type="text" class = 'text' id="name" name="firstname" placeholder="Your name.." required >
 
     <label >Email</label>
-    <input type="text" id="email" class = 'text' name="lastname" placeholder="Your email...">
-
-
-
+    <input type="email" id="email" class = 'text' name="lastname" placeholder="Your email..." required >
     <label for="subject">Subject</label>
-    <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea>
+    <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px" required></textarea>
 
     <input type="submit" value="Submit">
   </form>
