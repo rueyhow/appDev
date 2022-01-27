@@ -1,3 +1,4 @@
+from re import S
 from flask import Flask, render_template, request , redirect , url_for , session , flash
 import os
 from flask.helpers import url_for
@@ -31,6 +32,7 @@ from flask_msearch import Search
 from flask_bcrypt import Bcrypt
 from dataclasses import dataclass, field
 from typing import Tuple
+import pickle as pickle
 
 
 
@@ -182,12 +184,23 @@ class Category(db.Model):
 
 
 
+@app.route('/admin')
+def admin():
+    products = Addproduct.query.all()
+    return render_template('admin/index.html', title='Admin page',products=products)
 
-# table = inspect(User)
-# for column in table.c:
-#     print(column.name)
-# row = User.query.get('username')
-# print(row)
+@app.route('/brands')
+def brands():
+    brands = Brand.query.order_by(Brand.id.desc()).all()
+    return render_template('admin/brand.html', title='brands',brands=brands)
+
+
+@app.route('/categories')
+def categories():
+    categories = Category.query.order_by(Category.id.desc()).all()
+    return render_template('admin/brand.html', title='categories',categories=categories)
+
+
 
 
 @login_manager.user_loader
@@ -472,9 +485,9 @@ def get_category(id):
     return render_template('products/index.html',get_cat_prod=get_cat_prod,brands=brands(),categories=categories(),get_cat=get_cat)
 
 
-@app.route('/addbrand',methods=['GET','POST'])
+@app.route('/addbrand', methods=['GET','POST'])
 def addbrand():
-    if request.method =="POST":
+    if request.method == "POST":
         getbrand = request.form.get('brand')
         brand = Brand(name=getbrand)
         db.session.add(brand)
@@ -485,9 +498,6 @@ def addbrand():
 
 @app.route('/updatebrand/<int:id>',methods=['GET','POST'])
 def updatebrand(id):
-    if 'email' not in session:
-        flash('Login first please','danger')
-        return redirect(url_for('login'))
     updatebrand = Brand.query.get_or_404(id)
     brand = request.form.get('brand')
     if request.method =="POST":
@@ -524,9 +534,6 @@ def addcat():
 
 @app.route('/updatecat/<int:id>',methods=['GET','POST'])
 def updatecat(id):
-    if 'email' not in session:
-        flash('Login first please','danger')
-        return redirect(url_for('login'))
     updatecat = Category.query.get_or_404(id)
     category = request.form.get('category')  
     if request.method =="POST":
@@ -579,9 +586,6 @@ def addproduct():
 
 
 
-@app.route('/products/addbrand.html')
-def branded():
-    return render_template('products/addbrand.html')
 
 @app.route('/updateproduct/<int:id>', methods=['GET','POST'])
 def updateproduct(id):
@@ -646,9 +650,9 @@ def deleteproduct(id):
         db.session.delete(product)
         db.session.commit()
         flash(f'The product {product.name} was delete from your record','success')
-        return redirect(url_for('index'))
+        return redirect(url_for('admin'))
     flash(f'Can not delete the product','success')
-    return redirect(url_for('index'))
+    return redirect(url_for('admin'))
 
 
 
@@ -697,6 +701,8 @@ def AddCart():
 def getCart():
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
         return redirect(url_for('home'))
+    if len(session['Shoppingcart']) == 0:
+        flash('Your shopping cart is empty' , category = 'danger')
     subtotal = 0
     grandtotal = 0
     for key,product in session['Shoppingcart'].items():
@@ -722,7 +728,7 @@ def updatecart(code):
                 if int(key) == code:
                     item['quantity'] = quantity
                     item['color'] = color
-                    flash('Item is updated!')
+                    flash('Item is updated!' , 'success')
                     return redirect(url_for('getCart'))
         except Exception as e:
             print(e)
@@ -758,9 +764,107 @@ def clearcart():
 
 
 
+@app.route("/indexs.html", methods=["GET","POST"])
+def indexs():
+    return render_template("indexs.html")
 
 
 
+@dataclass(order= True)
+class Feedback:
+    '''Object to store products'''
+    _id : int
+    _name : str
+    _email : str 
+    _feedback : str = field(compare= True, default= None) #sets default to null
+
+    _sortID : int = field(init= False, repr= False)
+    def __post_init__(self):
+        object.__setattr__(self, '_sortID',  self._id)
+
+    @property
+    def id(self) -> int:
+        return self._id
+    @property
+    def name(self) -> str:
+        return self._name
+    @property
+    def email(self) -> str:
+        return self._email
+    @property
+    def description(self) -> str:
+        return self._feedback
+
+
+def insertRow(name: str, email :str, feedback: str) -> None:
+    with shelve.open('feedbackform') as db:
+        if db: #if db is not empty
+            id = int(list(db)[-1])+1
+            db[str(id)] = Feedback(id, name, email, feedback)
+        else: 
+            db[str(1)] = Feedback(1, name, email, feedback)
+
+def displayAllRows() -> None:
+    with shelve.open('feedbackform') as db:
+        for id, obj in db.items():
+            print(f'{id=}, {obj}')
+        return db.items()
+
+def getRow(id) -> Feedback:
+    with shelve.open('feedbackform') as db:
+        return db[str(id)]
+
+def getAll() ->Tuple[Feedback]:
+    with shelve.open('feedbackform') as db:
+        return tuple(db.values())
+
+def deleteRow(id : int) -> bool:
+    try:
+        with shelve.open('feedbackform') as db:
+            del db[str(id)]
+            return redirect('dash')
+    except KeyError: 
+        print(f'id of {id} is not inside database')
+        return redirect('dash')
+
+def deleteAll() -> bool: #is not imported with *
+    with shelve.open('feedbackform') as db:
+        try:
+            for id in db.keys():
+                del db[id]
+            return True
+        except KeyError: return False
+
+if __name__ == '__main__':
+    # print(deleteAll())
+    displayAllRows()
+__all__ = ['Feedback', 'insertRow', 'displayAllRows', 'deleteRow', 'getRow', 'getAll']
+
+@app.route('/indexs', methods=["POST"])
+def form():
+    firstname = request.form.get("firstname")
+    email = request.form.get("lastname")
+    subject = request.form.get("subject")
+    insertRow(firstname,email,subject)
+    flash('Thank you for your feedback' , 'success')
+    return render_template("indexs.html")
+
+@app.route('/displayFeedback')
+def displayFeedback():
+    feedback_table = getAll()
+    return render_template('/displayFeedback.html' , feedback_table = feedback_table)
+
+@app.route('/deleteFeedback/<int:id>')
+def deleteFeedback(id):
+    deleteRow(id)
+    flash("Feedback has been deleted" , 'success')
+    return redirect(url_for('displayFeedback'))
+
+@app.route('/deleteAllFeedback')
+def deleteAllFeedback():
+    deleteAll()
+    flash('All Feedback has been deleted' , 'success')
+    return redirect(url_for('dash'))
 
 
 

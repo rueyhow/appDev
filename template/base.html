@@ -17,15 +17,20 @@
         <!-- navbar -->
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.html">Start Bootstrap</a>
+            <a class="navbar-brand ps-3" href="{{url_for('Home_Page')}}">Syngery Soccer</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <a href="{{url_for('getCart')}}" class="nav-link"> Cart ({{ session['Shoppingcart']|length }}) </a>
             <div class="profileicon">
                 <div class="nav_right">
                     <ul>
                         <li class="nr_li dd_main">
                             <!-- <img src="{{url_for('static' , filename = 'images/profilepics/default.png')}}" alt="profile_img" class = 'rounded-circle'> -->
-                            <img src="data:image/png;base64, {{current_user.base64}}" align = 'right' class ='rounded-circle' alt = 'profile img'>
+                            {% if current_user.base64 == 'None' %}
+                            <img src="../../../static/images/profilepics/default.png" alt="" align = 'right' class = 'rounded-circle'>
+                            {% elif current_user.base64 != 'None' %}
+                            <img src="data:image/png;base64, {{current_user.base64}}" align = 'right' class ='rounded-circle'>
+                            {% endif %}
                             <div class="dd_menu">
                                 <div class="dd_left bg-dark">
                                     <ul>
@@ -36,6 +41,7 @@
                                         <li><i class="fas fa-download"></i></li>
                                         <li><i class="fas fa-sign-out-alt"></i></li>
                                     </ul>
+                                   
                                 </div>
                                 <div class="dd_right">
                                     <ul>
@@ -45,7 +51,7 @@
                                         <li>Settings</li>
                                         <li>Downloads</li>
                                         <li><a href="{{url_for('logout')}}" style = 'text-decoration: none; color:#868686;;'>logout</a></li>
-                                        <li><a href="{{url_for('getCart')}}" class="nav-link"> Cart ({{ session['Shoppingcart']|length }}) </a></li>
+                                        
                                     </ul>
                                 </div>
                             </div>
@@ -77,11 +83,12 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="{{url_for('Home_Page')}}">
+                            <a class="nav-link" href="{{url_for('dash')}}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
                             <div class="sb-sidenav-menu-heading">Interface</div>
+                            {% if current_user.admin == 'yes' %}
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Admin Panel
@@ -90,10 +97,14 @@
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="../../products/addproduct.html">Add product</a>
-                                    <a class="nav-link" href="../../products/addbrand.html">add brand</a>
-                                    <a class="nav-link" href="../../products/single_page.html">add category</a>
+                                    <a class="nav-link" href="{{url_for('addcat')}}">add category</a>
+                                    <a class="nav-link" href="{{url_for('addbrand')}}">add brand</a>
+                                    <a class="nav-link" href="{{url_for('brands')}}">update brand</a>
+                                    <a class="nav-link" href="{{url_for('admin')}}">update product</a>
+                                    <a class="nav-link" href="{{url_for('displayFeedback')}}">view feedback</a>
                                 </nav>
                             </div>
+                            {% endif %}
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
                                 Pages
@@ -108,11 +119,11 @@
                                     <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
                                             <a class="nav-link" href="../../products/index.html">Shopping Page</a>
-                                            <a class="nav-link" href="../../products/carts.html">Your Cart</a>
+                                            <a class="nav-link" href="{{url_for('getCart')}}">Your Cart</a>
                                             
                                         </nav>
                                     </div>
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                    <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
                                         Error
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
@@ -122,24 +133,24 @@
                                             <a class="nav-link" href="404.html">404 Page</a>
                                             <a class="nav-link" href="500.html">500 Page</a>
                                         </nav>
-                                    </div>
+                                    </div> -->
                                 </nav>
                             </div>
-                            <div class="sb-sidenav-menu-heading">Addons</div>
-                            <a class="nav-link" href="charts.html">
+                            <div class="sb-sidenav-menu-heading">Feedback</div>
+                            <a class="nav-link" href="{{url_for('indexs')}}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Charts
+                                Feedback
                             </a>
-                            <a class="nav-link" href="tables.html">
+                            <!-- <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Tables
-                            </a>
+                            </a> -->
                         </div>
                     </div>
-                    <div class="sb-sidenav-footer">
+                    <!-- <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        Start Bootstrap
-                    </div>
+                        Syngery Soccer
+                    </div> -->
                 </nav>
             </div>
         <!-- endnavbar -->
@@ -218,8 +229,8 @@
                           
                                 <!-- Footer -->
                                 <footer
-                                        class="text-center text-lg-start text-white"
-                                        style="background-color: #929fba;
+                                        class="text-center text-lg-start text-white bg-dark"
+                                        style="
                                         margin-top:150px;"
                                         >
                                   <!-- Grid container -->
@@ -341,8 +352,8 @@
                               
                                   <!-- Copyright -->
                                   <div
-                                       class="text-center p-3"
-                                       style="background-color: rgba(0, 0, 0, 0.2)"
+                                       class="text-center p-3 bg-dark"
+                                       
                                        >
                                     © 2020 Copyright:
                                     <a class="text-white" href="https://mdbootstrap.com/"

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% if feedback_table|length == 0 %}
+    <h1>No Feedback Available</h1>
+    {% else %}
+    {% for feedback in feedback_table %}
+    <div class="row" style = 'margin-top:30px;'>
+    <div class="card border-primary text-center">
+        <div class="card-header">
+          Feedback
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{feedback._id}}</h5>
+          <p class="card-text">
+          <strong>Name: </strong>{{feedback._name}} <br>
+          <strong>Email: </strong>{{feedback._email}} <br>
+         
+          <a href="{{url_for('deleteFeedback' , id = feedback._id)}}"><button type="button" class="btn btn-outline-danger">Delete</button></a>
+        </div>
+        <div class="card-footer text-muted">
+            <strong>Customer Feedback : </strong>{{feedback._feedback}}
+        </div>
+      </div>  
+    </div>
+    {% endfor %}
+    <div class="row">
+    <a href="{{url_for('deleteAllFeedback')}}"><button type="button" class="btn btn-outline-danger ">Delete all</button></a>
+    </div>
+    {% endif %}
+
+  
+</body>
+</html>
+{% endblock %}

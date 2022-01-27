@@ -2,6 +2,18 @@
 {% block content %}
 <div class="container">
     <div class="row">
+      <figure class = 'text-center' style = 'margin-top:30px;'>
+        <blockquote class="blockquote">
+          <p>Our Available Items</p>
+        </blockquote>
+        <figcaption class="blockquote-footer">
+          <cite title="Source Title">Syngery Soccer</cite>
+        </figcaption>
+      </figure>
+    </div>
+ 
+
+    <div class="row">
         {% if brand %}
          {% for b in brand.items %}
         <div class="col-md-3 mt-4">
