@@ -833,20 +833,31 @@ if __name__ == '__main__':
     displayAllRows()
 __all__ = ['Feedback', 'insertRow', 'displayAllRows', 'deleteRow', 'getRow', 'getAll']
 
-@app.route('/from.html', methods=["POST"])
+@app.route('/indexs', methods=["POST"])
 def form():
     firstname = request.form.get("firstname")
     email = request.form.get("lastname")
     subject = request.form.get("subject")
     insertRow(firstname,email,subject)
-    title = " Thank You!"
-    return render_template("from.html", title=title, firstname =firstname, lastname=email, subject=subject)
+    flash('Thank you for your feedback' , 'success')
+    return render_template("indexs.html")
 
 @app.route('/displayFeedback')
 def displayFeedback():
     feedback_table = getAll()
     return render_template('/displayFeedback.html' , feedback_table = feedback_table)
 
+@app.route('/deleteFeedback/<int:id>')
+def deleteFeedback(id):
+    deleteRow(id)
+    flash("Feedback has been deleted" , 'success')
+    return redirect(url_for('displayFeedback'))
+
+@app.route('/deleteAllFeedback')
+def deleteAllFeedback():
+    deleteAll()
+    flash('All Feedback has been deleted' , 'success')
+    return redirect(url_for('dash'))
 
 
 
