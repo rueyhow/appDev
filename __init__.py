@@ -1,7 +1,9 @@
+from concurrent.futures import process
 from re import S
 from unicodedata import name
 from flask import Flask, render_template, request , redirect , url_for , session , flash
 import os
+import json
 from flask.helpers import url_for
 import pandas as pd
 from sqlalchemy.sql.sqltypes import NullType
@@ -28,6 +30,7 @@ from flask import render_template,session, request,redirect,url_for,flash,curren
 from forms import Addproducts
 import secrets
 import os
+import stripe
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from flask_msearch import Search
 from dataclasses import dataclass, field
@@ -197,19 +200,19 @@ class ShippingInfo(db.Model):
 #Customer Order
 
 class JsonEcodedDict(db.TypeDecorator):
-    impl = db.Text
+     impl = db.Text
 
-    def set_value(self, value, dialect):
+     def process_bind_param(self, value, dialect):
         if value is None:
             return '{}'
         else:
             return json.dumps(value)
 
-    def get_value(self, value, dialect):
+     def process_result_value(self, value, dialect):
         if value is None:
             return {}
         else:
-            return json
+            return json.loads(value)
 
 
 
@@ -253,7 +256,7 @@ def contactUs():
 def loaded(id_user):
     return User.query.get(int(id_user))
 
-@app.route('/index.html', methods = ['GET' , 'POST'])
+@app.route('/', methods = ['GET' , 'POST'])
 def Home_Page():
     form2 = CreateUserForm()
     if form2.validate_on_submit():
@@ -368,11 +371,7 @@ def shopping():
     return render_template('/sp/shopping/dist/index2.html')
 
 
-@app.route('/')
-def home1():
-    forms = ExistingMember()
-    form2 = CreateUserForm()
-    return render_template('index.html' , form1 = form2 , form = forms)
+
 
 
 @app.route('/updateuser/<int:id>' , methods = ['POST' , 'GET'])
@@ -912,12 +911,12 @@ def deleteAllFeedback():
 
 
 #Transaction
-@app.route("/shipping")
+@app.route('/shipping', methods=['GET','POST'])
 def shipping():
-    form = ShippingForm(request.form)
-    render_template("shipping.html",form=form)
+    form = ShippingForm()
+    return render_template("shipping.html" , form = form)
 
-@app.route('/checkout',methods=['POST'])
+@app.route('/checkout',methods=['GET' ,'POST'])
 def checkout():
     form = ShippingForm(request.form)
     if request.method == 'POST':
@@ -943,17 +942,31 @@ def checkout():
 def check_out(invoice):
     grandTotal = 0
     subTotal = 0
-    customer = ShippingInfo.query.filter_by(name=current_user.__name).first()
-    orders = CustomerOrder.query.filter_by(id=current_user.id).first()
-    for key,product in session['Shoppingcart'].items():
-        discount = (product['discount']/100) * float(product['price'])
-        subTotal += float(product['price']) * int(product['quantity'])
-        subTotal -= discount
-        tax =("%.2f" %(.06 * float(subTotal)))
-        grandtotal = "%.2f" % (1.06 * float(subTotal))
+    customer = ShippingInfo.query.filter_by(id=current_user.id).first()
+    orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
+    for key, product in orders.orders.items():
+         discount = (product['discount']/100) * float(product['price'])
+         subTotal += float(product['price']) * int(product['quantity'])
+         subTotal -= discount
+         tax =("%.2f" %(.06 * float(subTotal)))
+         grandTotal = "%.2f" % (1.06 * float(subTotal))
 
     return render_template('checkout.html',customer=customer,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
 
+@app.route('/payment',methods=['POST'])
+def payment():
+    invoice = request.form.get('invoice')
+    customer = stripe.Customer.create(
+      email=request.form['stripeEmail'],
+      source=request.form['stripeToken'],
+    )
+    charge = stripe.Charge.create(
+      customer=customer.id,
+      description='Myshop',
+      amount='50000',
+      currency='usd',
+    )
+    return redirect(url_for('check_out',invoice=invoice))
 
 
 
