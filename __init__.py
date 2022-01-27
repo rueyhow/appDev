@@ -207,7 +207,7 @@ def categories():
 def loaded(id_user):
     return User.query.get(int(id_user))
 
-@app.route('/', methods = ['GET' , 'POST'])
+@app.route('/index.html', methods = ['GET' , 'POST'])
 def Home_Page():
     form2 = CreateUserForm()
     if form2.validate_on_submit():
@@ -322,7 +322,11 @@ def shopping():
     return render_template('/sp/shopping/dist/index2.html')
 
 
-
+@app.route('/')
+def home1():
+    forms = ExistingMember()
+    form2 = CreateUserForm()
+    return render_template('index.html' , form1 = form2 , form = forms)
 
 
 @app.route('/updateuser/<int:id>' , methods = ['POST' , 'GET'])
@@ -342,6 +346,9 @@ def updateuser(id):
 
 
 
+@app.route('/feedback.html')
+def feedback():
+    return render_template('feedback.html')
 
 
 # end user login/register part
@@ -858,8 +865,6 @@ def deleteAllFeedback():
     deleteAll()
     flash('All Feedback has been deleted' , 'success')
     return redirect(url_for('dash'))
-
-
 
 
 

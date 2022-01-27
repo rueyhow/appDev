@@ -37,6 +37,4 @@ class FeedbackForm(FlaskForm):
     name = StringField('Name', [validators.DataRequired()])
     email = StringField('Email' , [validators.Length(min = 5 , max = 100) , validators.DataRequired()])
     feedback = StringField('Feedback' , [validators.Length(min = 1 , max = 300) , validators.DataRequired])
-    
-
 
