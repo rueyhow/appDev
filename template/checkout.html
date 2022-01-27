@@ -3,25 +3,25 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
+            Invoice : {{orders.invoice}}
+            <br>
+            Status : {{orders.status}}
+            <br>
         <table class="table table-sm">
             <thead>
                 <th>Sr</th>
-                <th>Image</th>
                 <th>Name</th>
                 <th>Color</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Discount</th>
                 <th>Subtotal</th>
-                <th>Update</th>
-                <th>Delete</th>
             </thead>
             <tbody>
-                {% for key, product in session['Shoppingcart'].items() %}
+                {% for key, product in orders.orders.items() %}
                 {% set discount =(product.discount/100) * product.price|float %}
                 <tr>
                     <td>{{loop.index}}</td>
-                    <td><img src="{{url_for('static',filename='images/'+ product.image)}}" alt="{{product.name}}" width="50" height="45"></td>
                     <td>{{product.name}}</td>
                     <form action="{{url_for('updatecart', code=key)}}" method="post">
                     <td>
@@ -37,7 +37,6 @@
                     
                     </td>
                     <td>${{"%.2f"|format(product.price)}}</td>
-                    <td> <input type="number" name="quantity" min="1" max="10" value="{{product.quantity}}"> </td>
                     {% if product.discount  %}
                     <td>{{product.discount}} % &nbsp; &nbsp; is {{"%.2f"|format(discount)}}</td>
                     {% else %}
@@ -52,26 +51,24 @@
         </table>
         <table class="table table-sm">
            <tr>
-               <td>
+            <td>
                 <form action="/payment" method="POST">
-                    {% set amount = grandTotal.replace('.','') %}
+                    {% set amount = grandTotal*100 %}
                     <input type="hidden" name="amount" value="{{amount}}">
                     <input type="hidden" name="invoice" value="{{invoice}}">
-                    <script
-                        src="https://checkout.stripe.com/checkout.js"
-                        class="stripe-button"
-                        data-key="pk_test_51KKN0tAEaRDjqb9soECAov6Nvp1AWg9aqDXcZ5hik5OYrJwPlOmu1Lnl1LoUmBSTp0nlCCGXyqjDeOLfv4aicseV00WQHYM3xK"
-                        data-name="Synergy"
-                        data-amount="{{grandTotal}}"
-                        data-currency="sgd">
-                    </script>
-                </form>
-                </td>
+                   <script
+                     src="https://checkout.stripe.com/checkout.js"
+                     class="stripe-button"
+                     data-key="pk_test_51KKN0tAEaRDjqb9soECAov6Nvp1AWg9aqDXcZ5hik5OYrJwPlOmu1Lnl1LoUmBSTp0nlCCGXyqjDeOLfv4aicseV00WQHYM3xK"
+                     data-name="Synergy"
+                     data-amount="{{grandTotal}}"
+                     data-currency="sgd">
+                   </script>
+             </form>
+            </td>
                <td width="35%"></td>
                <td> <h5>Tax: ${{tax}}</h5></td>
-               <td> <h5>Grand total: ${{grandtotal}}</h3> </td>
-                <td> <a href="{{url_for('clearcart')}}" class="btn btn-danger btn-sm float-right mr-4"> Clear cart</a> </td>
-                <td> <a href="" class="btn btn-primary btn-sm float-right mr-4">Order Now</a> </td>
+               <td> <h5>Grand total: ${{grandTotal}}</h3> </td>
            </tr>
         </table>
     </div>

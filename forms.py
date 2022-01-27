@@ -41,7 +41,6 @@ class FeedbackForm(FlaskForm):
 
 class ShippingForm(FlaskForm):
     name = StringField("Full Name: ",validators=[DataRequired(), Length(min=1,max=255)])
-    #email = EmailField("Email: ",validators=[DataRequired(), Email()])
     address = StringField("Address: ",validators=[DataRequired()])
     country = StringField("Country: ",validators=[DataRequired()])
     city = StringField("City: ",validators=[DataRequired()])
