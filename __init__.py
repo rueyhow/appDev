@@ -950,7 +950,7 @@ def check_out(invoice):
         subTotal += float(product['price']) * int(product['quantity'])
         subTotal -= discount
         tax =("%.2f" %(.06 * float(subTotal)))
-        grandtotal = float("%.2f" % (1.06 * subTotal))
+        grandtotal = "%.2f" % (1.06 * float(subTotal))
 
     return render_template('checkout.html',customer=customer,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
 
