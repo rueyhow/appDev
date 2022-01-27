@@ -1,11 +1,12 @@
 from re import S
+from unicodedata import name
 from flask import Flask, render_template, request , redirect , url_for , session , flash
 import os
 from flask.helpers import url_for
 import pandas as pd
 from sqlalchemy.sql.sqltypes import NullType
 from wtforms import validators, Form
-from forms import CreateUserForm , ExistingMember
+from forms import CreateUserForm , ExistingMember, ShippingForm
 from flask_wtf import FlaskForm
 from wtforms import StringField , PasswordField, BooleanField , validators
 from wtforms.validators import InputRequired , Email , Length 
@@ -29,7 +30,6 @@ import secrets
 import os
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from flask_msearch import Search
-from flask_bcrypt import Bcrypt
 from dataclasses import dataclass, field
 from typing import Tuple
 import pickle as pickle
@@ -76,7 +76,7 @@ configure_uploads(app, photos)
 patch_request_class(app)
 
 
-bcrypt = Bcrypt(app)
+
 search = Search()
 search.init_app(app)
 
@@ -181,6 +181,48 @@ class Category(db.Model):
     def __repr__(self):
         return '<Catgory %r>' % self.name
 
+#shipping model
+class ShippingInfo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), unique=False, nullable=False)
+    address = db.Column(db.String(255), unique=False, nullable=False)
+    country = db.Column(db.String(50), unique=False, nullable=False)
+    city = db.Column(db.String(50), unique=False, nullable=False)
+    state = db.Column(db.String(50), unique=False, nullable=False)
+    postalcode = db.Column(db.Integer, unique=False, nullable=False)
+
+    def __repr__(self):
+        return '<ShippingInfo %r>' % self.name
+
+#Customer Order
+
+# class JsonEcodedDict(db.TypeDecorator):
+#     impl = db.Text
+
+#     def set_value(self, value, dialect):
+#         if value is None:
+#             return '{}'
+#         else:
+#             return json.dumps(value)
+
+#     def get_value(self, value, dialect):
+#         if value is None:
+#             return {}
+#         else:
+#             return json
+
+
+
+# class CustomerOrder(db.Model):
+#     id = db.Column(db.Integer,primary_key=True)
+#     invoice = db.Column(db.String(20),unique=True,nullable=False)
+#     status = db.Column(db.String,default='Pending',nullable=False)
+#     customer_id = db.Column(db.String,unique=False,nullable=False)
+#     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+#     orders = db.Column(JsonEcodedDict)
+
+#     def __repr__(self):
+#         return '<CustomerOrder %r>' % self.invoice
 
 
 
@@ -200,6 +242,10 @@ def categories():
     categories = Category.query.order_by(Category.id.desc()).all()
     return render_template('admin/brand.html', title='categories',categories=categories)
 
+@app.route('/contactus')
+def contactUs():
+    return render_template('/contactus.html')
+
 
 
 
@@ -207,7 +253,7 @@ def categories():
 def loaded(id_user):
     return User.query.get(int(id_user))
 
-@app.route('/index.html', methods = ['GET' , 'POST'])
+@app.route('/', methods = ['GET' , 'POST'])
 def Home_Page():
     form2 = CreateUserForm()
     if form2.validate_on_submit():
@@ -322,11 +368,7 @@ def shopping():
     return render_template('/sp/shopping/dist/index2.html')
 
 
-@app.route('/')
-def home1():
-    forms = ExistingMember()
-    form2 = CreateUserForm()
-    return render_template('index.html' , form1 = form2 , form = forms)
+
 
 
 @app.route('/updateuser/<int:id>' , methods = ['POST' , 'GET'])
@@ -863,6 +905,51 @@ def deleteAllFeedback():
     deleteAll()
     flash('All Feedback has been deleted' , 'success')
     return redirect(url_for('dash'))
+
+
+#Transaction
+# @app.route("/shipping")
+# def shipping():
+#     form = ShippingForm(request.form)
+#     render_template("shipping.html",form=form)
+
+# @app.route('/checkout',methods=['POST'])
+# def checkout():
+#     form = ShippingForm(request.form)
+#     if request.method == 'POST':
+#         name = form.name.data
+#         address = form.address.data
+#         country = form.country.data
+#         city = form.city.data
+#         state = form.state.data
+#         zipcode = form.zipcode.data
+#         biling = ShippingInfo(name=name,address=address,country=country,city=city,state=state,postalcode=zipcode)
+#         db.session.add(biling)
+#         invoice = secrets.token_hex(5)
+#         try:
+#             order = CustomerOrder(invoice=invoice,customer_id=current_user.id,orders=session['Shoppingcart'])
+#             db.session.add(order)
+#             db.session.commit()
+#             return redirect(url_for('check_out',invoice=invoice))
+#         except Exception as e:
+#             print(e)
+#             return redirect(url_for('home'))
+
+# @app.route('/checkout/<invoice>')
+# def check_out(invoice):
+#     grandTotal = 0
+#     subTotal = 0
+#     customer = ShippingInfo.query.filter_by(name=current_user.__name).first()
+#     orders = CustomerOrder.query.filter_by(id=current_user.id).first()
+#     for key,product in session['Shoppingcart'].items():
+#         discount = (product['discount']/100) * float(product['price'])
+#         subTotal += float(product['price']) * int(product['quantity'])
+#         subTotal -= discount
+#         tax =("%.2f" %(.06 * float(subTotal)))
+#         grandtotal = float("%.2f" % (1.06 * subTotal))
+
+#     return render_template('checkout.html',customer=customer,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
+
 
 
 
