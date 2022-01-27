@@ -199,6 +199,7 @@ class ShippingInfo(db.Model):
     state = db.Column(db.String(50), unique=False, nullable=False)
     postalcode = db.Column(db.Integer, unique=False, nullable=False)
 
+
     
 
 #Customer Order
@@ -930,10 +931,10 @@ def checkout():
         city = form.city.data
         state = form.state.data
         zipcode = form.zipcode.data
+        biling = ShippingInfo(name=name,address=address,country=country,city=city,state=state,postalcode=zipcode)
+        db.session.add(biling)
         invoice = secrets.token_hex(5)
-        try:
-            biling = ShippingInfo(name=name,address=address,country=country,city=city,state=state,postalcode=zipcode)
-            db.session.add(biling)
+        try:     
             order = CustomerOrder(invoice=invoice,customer_id=current_user.id,orders=session['Shoppingcart'])
             db.session.add(order)
             db.session.commit()
@@ -946,7 +947,7 @@ def checkout():
 def check_out(invoice):
     grandTotal = 0
     subTotal = 0
-    customer = ShippingInfo.query.filter_by(id=current_user.id).first()
+    biling = ShippingInfo.query.filter_by(id=current_user.id).first()
     orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
     for key, product in orders.orders.items():
          discount = (product['discount']/100) * float(product['price'])
@@ -955,7 +956,7 @@ def check_out(invoice):
          tax =("%.2f" %(.06 * float(subTotal)))
          grandTotal = "%.2f" % (1.06 * float(subTotal))
 
-    return render_template('checkout.html',customer=customer,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
+    return render_template('checkout.html',biling=biling,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
 
 # @app.route('/get_pdf/<invoice>', methods=['POST'])
 # def get_pdf(invoice):
