@@ -38,8 +38,6 @@ from typing import Tuple
 import pickle as pickle
 
 
-<<<<<<< HEAD
-=======
 
 
 
@@ -63,7 +61,6 @@ pip install flask_login
 """
 
 
->>>>>>> 17570ae25a4d6de7d62c3ebb29de8f00e72f7879
 app = Flask(__name__, template_folder = 'template')
 
 # creation of all database information
