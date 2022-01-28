@@ -199,6 +199,9 @@ class ShippingInfo(db.Model):
     state = db.Column(db.String(50), unique=False, nullable=False)
     postalcode = db.Column(db.Integer, unique=False, nullable=False)
 
+    def __repr__(self):
+        return '<ShippingInfo %r>' % self.name
+
 
     
 
@@ -917,12 +920,8 @@ def deleteAllFeedback():
 
 #Transaction
 @app.route('/shipping', methods=['GET','POST'])
+@login_required
 def shipping():
-    form = ShippingForm()
-    return render_template("shipping.html" , form = form)
-
-@app.route('/checkout',methods=['GET' ,'POST'])
-def checkout():
     form = ShippingForm(request.form)
     if request.method == 'POST':
         name = form.name.data
@@ -933,6 +932,13 @@ def checkout():
         zipcode = form.zipcode.data
         biling = ShippingInfo(name=name,address=address,country=country,city=city,state=state,postalcode=zipcode)
         db.session.add(biling)
+        db.session.commit()
+        return redirect(url_for('checkout'))
+    return render_template("shipping.html" , form = form)
+
+@app.route('/checkout')
+@login_required
+def checkout():
         invoice = secrets.token_hex(5)
         try:     
             order = CustomerOrder(invoice=invoice,customer_id=current_user.id,orders=session['Shoppingcart'])
@@ -944,10 +950,11 @@ def checkout():
             return redirect(url_for('home'))
 
 @app.route('/checkout/<invoice>')
+@login_required
 def check_out(invoice):
     grandTotal = 0
     subTotal = 0
-    biling = ShippingInfo.query.filter_by(id=current_user.id).first()
+    info = ShippingInfo.query.filter_by(id=current_user.id).first()
     orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
     for key, product in orders.orders.items():
          discount = (product['discount']/100) * float(product['price'])
@@ -956,7 +963,7 @@ def check_out(invoice):
          tax =("%.2f" %(.06 * float(subTotal)))
          grandTotal = "%.2f" % (1.06 * float(subTotal))
 
-    return render_template('checkout.html',biling=biling,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
+    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
 
 # @app.route('/get_pdf/<invoice>', methods=['POST'])
 # def get_pdf(invoice):
