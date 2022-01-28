@@ -10,3 +10,4 @@ flask_uploads
 flask_msearch
 flask_bcrypt 
 flask_migrate
+stripe

@@ -38,28 +38,6 @@ from typing import Tuple
 import pickle as pickle
 
 
-
-
-
-
-
-
-
-
-
-#id generator
-
-"""Pip installs:
-pip install email_validator
-pip install flask
-pip install flask-bootstrap
-pip install pandas
-pip install pillow
-pip install flask-wtf
-pip install flask_login
-"""
-
-
 app = Flask(__name__, template_folder = 'template')
 
 # creation of all database information
@@ -413,69 +391,7 @@ class Feedback(db.Model):
 
 
 # feedback part stuff
-@dataclass(order= True)
-class Feedback:
-    '''Object to store products'''
-    _id : int
-    _name : str
-    _email : str 
-    _feedback : str = field(compare= True, default= None) #sets default to null
 
-    _sortID : int = field(init= False, repr= False)
-    def __post_init__(self):
-        object.__setattr__(self, '_sortID',  self._id)
-
-    @property
-    def id(self) -> int:
-        return self._id
-    @property
-    def name(self) -> str:
-        return self._name
-    @property
-    def email(self) -> str:
-        return self._email
-    @property
-    def description(self) -> str:
-        return self._feedback
-
-
-def insertRow(name: str, email :str, feedback: str) -> None:
-    with shelve.open('feedbackform') as db:
-        if db: #if db is not empty
-            id = int(list(db)[-1])+1
-            db[str(id)] = Feedback(id, name, email, feedback)
-        else: 
-            db[str(1)] = Feedback(1, name, email, feedback)
-
-def displayAllRows() -> None:
-    with shelve.open('feedbackform') as db:
-        for id, obj in db.items():
-            print(f'{id=}, {obj}')
-
-def getRow(id) -> Feedback:
-    with shelve.open('feedbackform') as db:
-        return db[str(id)]
-
-def getAll() ->Tuple[Feedback]:
-    with shelve.open('feedbackform') as db:
-        return tuple(db.values())
-
-def deleteRow(id : int) -> bool:
-    try:
-        with shelve.open('feedbackform') as db:
-            del db[str(id)]
-            return True
-    except KeyError: 
-        print(f'id of {id} is not inside database')
-        return False
-
-def deleteAll() -> bool: #is not imported with *
-     with shelve.open('feedbackform') as db:
-        try:
-            for id in db.keys():
-                del db[id]
-            return True
-        except KeyError: return False
 
 
 
