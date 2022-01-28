@@ -1,7 +1,7 @@
 from concurrent.futures import process
 from re import S
 from unicodedata import name
-from flask import Flask, render_template, request , redirect , url_for , session , flash
+from flask import Flask, make_response, render_template, request , redirect , url_for , session , flash
 import os
 import json
 from flask.helpers import url_for
@@ -38,14 +38,44 @@ from typing import Tuple
 import pickle as pickle
 
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+
+
+
+#id generator
+
+"""Pip installs:
+pip install email_validator
+pip install flask
+pip install flask-bootstrap
+pip install pandas
+pip install pillow
+pip install flask-wtf
+pip install flask_login
+"""
+
+
+>>>>>>> 17570ae25a4d6de7d62c3ebb29de8f00e72f7879
 app = Flask(__name__, template_folder = 'template')
 
 # creation of all database information
 app.config["SECRET_KEY"] = "Rahow3216"
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///login.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51KKN0tAEaRDjqb9soECAov6Nvp1AWg9aqDXcZ5hik5OYrJwPlOmu1Lnl1LoUmBSTp0nlCCGXyqjDeOLfv4aicseV00WQHYM3xK'
+app.config['STRIPE_SECRET_KEY'] = 'sk_test_51KKN0tAEaRDjqb9sGlW71m7cxGJQ4Lq5RttskxVQDCE3Fx480wgIkTSDgDbECOf2sdilJ2dZcqwVokF51fm1zeQe00RLozxaNp'
 b(app)
 db = SQLAlchemy(app)
+
+stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
 from flask_migrate import Migrate
 
@@ -174,6 +204,9 @@ class ShippingInfo(db.Model):
 
     def __repr__(self):
         return '<ShippingInfo %r>' % self.name
+
+
+    
 
 #Customer Order
 
@@ -828,12 +861,8 @@ def deleteAllFeedback():
 
 #Transaction
 @app.route('/shipping', methods=['GET','POST'])
+@login_required
 def shipping():
-    form = ShippingForm()
-    return render_template("shipping.html" , form = form)
-
-@app.route('/checkout',methods=['GET' ,'POST'])
-def checkout():
     form = ShippingForm(request.form)
     if request.method == 'POST':
         name = form.name.data
@@ -844,8 +873,15 @@ def checkout():
         zipcode = form.zipcode.data
         biling = ShippingInfo(name=name,address=address,country=country,city=city,state=state,postalcode=zipcode)
         db.session.add(biling)
+        db.session.commit()
+        return redirect(url_for('checkout'))
+    return render_template("shipping.html" , form = form)
+
+@app.route('/checkout')
+@login_required
+def checkout():
         invoice = secrets.token_hex(5)
-        try:
+        try:     
             order = CustomerOrder(invoice=invoice,customer_id=current_user.id,orders=session['Shoppingcart'])
             db.session.add(order)
             db.session.commit()
@@ -855,10 +891,11 @@ def checkout():
             return redirect(url_for('home'))
 
 @app.route('/checkout/<invoice>')
+@login_required
 def check_out(invoice):
     grandTotal = 0
     subTotal = 0
-    customer = ShippingInfo.query.filter_by(id=current_user.id).first()
+    info = ShippingInfo.query.filter_by(id=current_user.id).first()
     orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
     for key, product in orders.orders.items():
          discount = (product['discount']/100) * float(product['price'])
@@ -867,11 +904,35 @@ def check_out(invoice):
          tax =("%.2f" %(.06 * float(subTotal)))
          grandTotal = "%.2f" % (1.06 * float(subTotal))
 
-    return render_template('checkout.html',customer=customer,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
+    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
+
+# @app.route('/get_pdf/<invoice>', methods=['POST'])
+# def get_pdf(invoice):
+#     grandTotal = 0
+#     subTotal = 0
+#     if request.method == 'POST':
+#         customer = ShippingInfo.query.filter_by(id=current_user.id).first()
+#         orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
+#         for key, product in orders.orders.items():
+#             discount = (product['discount']/100) * float(product['price'])
+#             subTotal += float(product['price']) * int(product['quantity'])
+#             subTotal -= discount
+#             tax =("%.2f" %(.06 * float(subTotal)))
+#             grandTotal = "%.2f" % (1.06 * float(subTotal))
+
+#         rendered = render_template('pdf.html',customer=customer,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
+#         pdf = pdfkit.from_string(rendered, False)
+#         response = make_response(pdf)
+#         response.headers['Content-Type'] = 'application/pdf'
+#         response.headers['Content-Disposition'] = 'inline;filename=output.pdf'
+#         return response
+#     return request(url_for('check_out'))
+
 
 @app.route('/payment',methods=['POST'])
 def payment():
     invoice = request.form.get('invoice')
+    amount = request.form.get('amount')
     customer = stripe.Customer.create(
       email=request.form['stripeEmail'],
       source=request.form['stripeToken'],
@@ -879,9 +940,11 @@ def payment():
     charge = stripe.Charge.create(
       customer=customer.id,
       description='Myshop',
-      amount='50000',
+      amount= amount,
       currency='usd',
     )
+    # orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
+    # db.session.commit()
     return redirect(url_for('check_out',invoice=invoice))
 
 

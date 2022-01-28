@@ -7,11 +7,11 @@
             <br>
             Status : {{orders.status}}
             <br>
-            {{info.name}}
+            {{customer.name}}
             <br>
-            {{info.address}}
+            {{customer.address}}
             <br>
-            {{info.city}},{{info.state}} {{info.postalcode}}
+            {{customer.city}},{{customer.state}} {{customer.postalcode}}
         <table class="table table-sm">
             <thead>
                 <th>Sr</th>
@@ -19,7 +19,6 @@
                 <th>Color</th>
                 <th>Price</th>
                 <th>Quantity</th>
-                <th>Discount</th>
                 <th>Subtotal</th>
             </thead>
             <tbody>
@@ -49,26 +48,12 @@
         <table class="table table-sm">
            <tr>
             <td>
-                <form action="/payment" method="POST">
-                    {% set amount =  grandTotal.replace('.','') %}
-                    <input type="hidden" name="amount" value="{{amount}}">
-                    <input type="hidden" name="invoice" value="{{invoice}}">
-                   <script
-                     src="https://checkout.stripe.com/checkout.js"
-                     class="stripe-button"
-                     data-key="pk_test_51KKN0tAEaRDjqb9soECAov6Nvp1AWg9aqDXcZ5hik5OYrJwPlOmu1Lnl1LoUmBSTp0nlCCGXyqjDeOLfv4aicseV00WQHYM3xK"
-                     data-name="Synergy"
-                     data-amount="{{amount}}"
-                     data-currency="sgd">
-                   </script>
-             </form>
             </td>
                <td width="35%"></td>
                <td> <h5>Tax: ${{tax}}</h5></td>
                <td> <h5>Grand total: ${{grandTotal}}</h5> </td>
-               <td>
-                   
-                </td>
+               <td>   
+               </td>
            </tr>
         </table>
     </div>
