@@ -127,10 +127,9 @@ ICON = (b'\x00\x00\x01\x00\x01\x00\x10\x10\x00\x00\x01\x00\x08\x00h\x05\x00\x00'
 b'\x16\x00\x00\x00(\x00\x00\x00\x10\x00\x00\x00 \x00\x00\x00\x01\x00'
 b'\x08\x00\x00\x00\x00\x00@\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 b'\x00\x01\x00\x00\x00\x01') + b'\x00'*1282 + b'\xff'*64
-# base = ('R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
 
 
-
+# DB CLASSES
 # user model
 class User(UserMixin,db.Model):
     __table_args__ = (
@@ -203,14 +202,21 @@ class ShippingInfo(db.Model):
         return '<ShippingInfo %r>' % self.name
 
 
-    
+# Transaction History 
+class Transaction(db.Model):
+    cust_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer , unique=True , nullable = False)
+    date = db.Column(db.String(30), unique = False , nullable = False)
+    order = db.Column(db.String(100) , unique = False , nullable = False)
+    amount = db.Column(db.Integer , unique = False, nullable = False)
+
 
 #Customer Order
 
 class JsonEcodedDict(db.TypeDecorator):
      impl = db.Text
 
-     def process_bind_param(self, value, dialect):
+     def process_bind_param(self, value , dialect):
         if value is None:
             return '{}'
         else:
@@ -418,9 +424,6 @@ class Feedback(db.Model):
         return f"Feedback('{self.name}','{self.email})"
 
 
-
-
-# feedback part stuff
 
 
 
@@ -672,6 +675,7 @@ def AddCart():
                         if int(key) == int(product_id):
                             session.modified = True
                             item['quantity'] += 1
+                            flash(product.name + ' has been added to cart' , category= 'success')
                 else:
                     session['Shoppingcart'] = MagerDicts(session['Shoppingcart'], DictItems)
                     return redirect(request.referrer)
@@ -689,9 +693,8 @@ def AddCart():
 @app.route('/products/carts.html')
 def getCart():
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
-        return redirect(url_for('home'))
-    if len(session['Shoppingcart']) == 0:
         flash('Your shopping cart is empty' , category = 'danger')
+        return redirect(url_for('home'))
     subtotal = 0
     grandtotal = 0
     for key,product in session['Shoppingcart'].items():
@@ -874,7 +877,7 @@ def shipping():
         return redirect(url_for('checkout'))
     return render_template("shipping.html" , form = form)
 
-@app.route('/checkout')
+@app.route('/checkout' , methods = ['GET' , 'POST'])
 @login_required
 def checkout():
         invoice = secrets.token_hex(5)
@@ -900,7 +903,6 @@ def check_out(invoice):
          subTotal -= discount
          tax =("%.2f" %(.06 * float(subTotal)))
          grandTotal = "%.2f" % (1.06 * float(subTotal))
-
     return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
 
 # @app.route('/get_pdf/<invoice>', methods=['POST'])
@@ -926,26 +928,37 @@ def check_out(invoice):
 #     return request(url_for('check_out'))
 
 
-@app.route('/payment',methods=['POST'])
+@app.route('/payment',methods=['GET','POST'])
 def payment():
     invoice = request.form.get('invoice')
     amount = request.form.get('amount')
     customer = stripe.Customer.create(
-      email=request.form['stripeEmail'],
-      source=request.form['stripeToken'],
+    email=request.form['stripeEmail'],
+    source=request.form['stripeToken'],
     )
     charge = stripe.Charge.create(
-      customer=customer.id,
-      description='Myshop',
-      amount= amount,
-      currency='usd',
+    customer=customer.id,
+    description='Myshop',
+    amount= amount,
+    currency='usd',
     )
-    # orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
-    # db.session.commit()
-    return redirect(url_for('check_out',invoice=invoice))
 
+    today = date.today()
+    if request.method == 'POST':
+        print(session['Shoppingcart'])
+        # storing information into transaction database
+        new_transaction = Transaction(cust_id = current_user.id, id = invoice , amount = amount , order = str(session['Shoppingcart'])  , date = today.strftime("%d/%m/%Y"))
+        db.session.add(new_transaction)
+        db.session.commit()
+        clearcart()
+    return redirect(url_for('thankyou'))
 
+@app.route('/thankyou')
+def thankyou():
+    return render_template('sales/thankyou.html')
 
-
-
-
+# sales page
+@app.route('/sales')
+def sales():
+    transaction_table = Transaction.query.all()
+    return render_template('sales/sales.html' , transaction_table = transaction_table)
