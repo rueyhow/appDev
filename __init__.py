@@ -16,7 +16,7 @@ from flask_bootstrap import Bootstrap as b
 import shelve
 from forms import CreateUserForm , ExistingMember
 from flask_sqlalchemy import SQLAlchemy , inspect
-from sqlalchemy import Column , String , Integer
+from sqlalchemy import Column , String , Integer, create_engine
 from datetime import date
 import uuid as uuid
 import sys
@@ -73,6 +73,8 @@ b(app)
 db = SQLAlchemy(app)
 
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
+#create engine
+engine = create_engine('sqlite:///login.db')
 
 from flask_migrate import Migrate
 
@@ -204,11 +206,12 @@ class ShippingInfo(db.Model):
 
 # Transaction History 
 class Transaction(db.Model):
-    cust_id = db.Column(db.Integer, primary_key=True)
-    id = db.Column(db.Integer , unique=True , nullable = False)
+    id = db.Column(db.String(10) , unique=True , nullable = False , primary_key=True )
+    username = db.Column(db.String(100), unique = False)
     date = db.Column(db.String(30), unique = False , nullable = False)
-    order = db.Column(db.String(100) , unique = False , nullable = False)
+    order = db.Column(db.String(190) , unique = False , nullable = False)
     amount = db.Column(db.Integer , unique = False, nullable = False)
+    refunded = db.Column(db.String(5) , unique = False , default = 'NO')
 
 
 #Customer Order
@@ -880,15 +883,16 @@ def shipping():
 @app.route('/checkout' , methods = ['GET' , 'POST'])
 @login_required
 def checkout():
-        invoice = secrets.token_hex(5)
-        try:     
-            order = CustomerOrder(invoice=invoice,customer_id=current_user.id,orders=session['Shoppingcart'])
-            db.session.add(order)
-            db.session.commit()
-            return redirect(url_for('check_out',invoice=invoice))
-        except Exception as e:
-            print(e)
-            return redirect(url_for('home'))
+    invoice = secrets.token_hex(5)
+    try:     
+        order = CustomerOrder(invoice=invoice,customer_id=current_user.id,orders=session['Shoppingcart'])
+        db.session.add(order)
+        db.session.commit()
+        return redirect(url_for('check_out',invoice=invoice))
+    except Exception as e:
+        print(e)
+        return redirect(url_for('home'))
+        
 
 @app.route('/checkout/<invoice>')
 @login_required
@@ -930,7 +934,7 @@ def check_out(invoice):
 
 @app.route('/payment',methods=['GET','POST'])
 def payment():
-    invoice = request.form.get('invoice')
+    invoice1 = request.form.get('invoice')
     amount = request.form.get('amount')
     customer = stripe.Customer.create(
     email=request.form['stripeEmail'],
@@ -942,12 +946,12 @@ def payment():
     amount= amount,
     currency='usd',
     )
-
+    orders = CustomerOrder.query.filter_by(customer_id = current_user.id).first()
     today = date.today()
     if request.method == 'POST':
         print(session['Shoppingcart'])
         # storing information into transaction database
-        new_transaction = Transaction(cust_id = current_user.id, id = invoice , amount = amount , order = str(session['Shoppingcart'])  , date = today.strftime("%d/%m/%Y"))
+        new_transaction = Transaction(username = str(current_user.username), id = str(orders.invoice) , amount = int(int(amount) / 100), order = str(session['Shoppingcart'])  , date = str(today.strftime("%d/%m/%Y")) , refunded = 'NO')
         db.session.add(new_transaction)
         db.session.commit()
         clearcart()
@@ -962,3 +966,26 @@ def thankyou():
 def sales():
     transaction_table = Transaction.query.all()
     return render_template('sales/sales.html' , transaction_table = transaction_table)
+@app.route('/deleteTransaction/<int:id>')
+def deleteTransaction(id):
+    customer = Transaction.query.filter_by(id=id)
+    try:
+        db.session.delete(customer)
+        db.session.commit()
+    except:
+        print('fail')
+        return redirect(url_for('dash'))
+    return redirect(url_for('dash'))
+
+
+
+@app.route('/drop')
+def Table():
+    return render_template('backend.html')
+
+
+
+@app.route('/dropTables')
+def dropTables():
+    Transaction.__table__.drop(engine)
+    return redirect(url_for('Home_Page'))

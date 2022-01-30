@@ -19,22 +19,23 @@
                 <thead>
                     <tr>
                         <th>Customer username</th>
-                        <th>Customer ID</th>
                         <th>Transaction ID</th>
                         <th>Transaction Date</th>
                         <th>Order</th>
                         <th>Total</th>
+                        <th>Refund status</th>
                     </tr>
                 </thead>
             
                 <tbody>
                     {% for transaction in transaction_table %}
                     <tr>
-                        <td>{{transaction.cust_id}}</td>
+                        <td>{{transaction.username}}</td>
                         <td>{{transaction.id}}</td>
                         <td>{{transaction.date}}</td>
                         <td>{{transaction.order}}</td>
                         <td>{{transaction.amount}}</td>
+                        <td>{{transaction.refunded}}</td>
                     </tr>  
                     {% endfor %}
                 </tbody>
