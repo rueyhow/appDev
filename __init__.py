@@ -38,20 +38,6 @@ from dataclasses import dataclass, field
 from typing import Tuple
 import pickle as pickle
 
-
-
-
-
-
-
-
-
-
-
-
-#id generator
-
-
 app = Flask(__name__, template_folder = 'template')
 
 # creation of all database information
