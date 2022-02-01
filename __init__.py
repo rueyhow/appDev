@@ -5,6 +5,7 @@ from flask import Flask, make_response, render_template, request , redirect , ur
 import os
 import json
 from flask.helpers import url_for
+from numpy import product
 import pandas as pd
 from sqlalchemy.sql.sqltypes import NullType
 from wtforms import validators, Form
@@ -49,16 +50,6 @@ import pickle as pickle
 
 
 #id generator
-
-"""Pip installs:
-pip install email_validator
-pip install flask
-pip install flask-bootstrap
-pip install pandas
-pip install pillow
-pip install flask-wtf
-pip install flask_login
-"""
 
 
 app = Flask(__name__, template_folder = 'template')
@@ -118,10 +109,9 @@ def Voucher(ID):
 IS_DEV = app.env == 'development'
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'index'
+login_manager.login_view = '/'
 upload_folder = 'static/images/profilepics'
 app.config['upload_folder'] = upload_folder
-login_manager.login_message = u"Please login first"
 
 
 
@@ -203,17 +193,6 @@ class ShippingInfo(db.Model):
     def __repr__(self):
         return '<ShippingInfo %r>' % self.name
 
-
-# Transaction History 
-class Transaction(db.Model):
-    id = db.Column(db.String(10) , unique=True , nullable = False , primary_key=True )
-    username = db.Column(db.String(100), unique = False)
-    date = db.Column(db.String(30), unique = False , nullable = False)
-    order = db.Column(db.String(190) , unique = False , nullable = False)
-    amount = db.Column(db.Integer , unique = False, nullable = False)
-    refunded = db.Column(db.String(5) , unique = False , default = 'NO')
-
-
 #Customer Order
 
 class JsonEcodedDict(db.TypeDecorator):
@@ -244,7 +223,15 @@ class CustomerOrder(db.Model):
     def __repr__(self):
         return '<CustomerOrder %r>' % self.invoice
 
-
+# Transaction History 
+class Transaction(db.Model):
+    id = db.Column(db.String(10) , unique= True , nullable = False , primary_key=True)
+    user_id = db.Column(db.Integer, unique = False , nullable = False)
+    user = db.Column(db.String(100), unique = False , nullable = False)
+    date = db.Column(db.String(30), unique = False , nullable = False)
+    order = db.Column(JsonEcodedDict)
+    amount = db.Column(db.Integer , unique = False, nullable = False)
+    refunded = db.Column(db.String(5) , unique = False , default = 'NO')
 
 @app.route('/admin')
 def admin():
@@ -325,30 +312,46 @@ def dash():
     form = CreateUserForm()
     name_to_update = User.query.get(current_user.id)
     users_table = User.query.all()
-    
+    user_transaction = Transaction.query.filter_by(user_id = current_user.id).all()
     if request.method == 'POST':
         # UPDATING USER INFORMATION
         name_to_update.username = request.form['username']
         name_to_update.email = request.form['email']
+        try:
+            db.session.commit()
+            flash('User updated successfully')
+            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table , user_transaction = user_transaction)
+        except:
+            flash('error')
+            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table , user_transaction = user_transaction )
 
-        #convert to bytes
-        
+    return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table , user_transaction = user_transaction )
+
+
+#update profile picture
+@app.route('/admin/updateProfilePic.html' , methods = ['POST' , 'GET'])
+def updateProfilePic():
+    form = CreateUserForm()
+    name_to_update = User.query.get(current_user.id)
+    if request.method == 'POST':
+        # convert to bytes
         name_to_update.profile_pic = request.files['profile_pic'].read()
-        
 
+        # converting to base64
         base64_encoded_data = base64.b64encode(name_to_update.profile_pic)
         base64_message = base64_encoded_data.decode('utf-8')
 
         name_to_update.base64 = base64_message
         try:
             db.session.commit()
-            flash('User updated successfully')
-            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table)
+            flash('user profile picture updated successfully' , category= 'success')
+            return render_template('admin/updateProfilePic.html' , form = form , name_to_update= name_to_update)
         except:
-            flash('error')
-            return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table)
-    return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table)
-    
+            flash('error in uploading profile picture')
+            return render_template('admin/updateProfilePic.html' , form = form , name_to_update= name_to_update)
+    return render_template('admin/updateProfilePic.html' , form = form , name_to_update= name_to_update)
+
+
 @app.route('/dashboard/dist/dash/enable/<int:id>' , methods = ['POST'])
 @login_required
 def user_enable(id):
@@ -382,10 +385,6 @@ def user_enable_admin(id):
     ID.admin = 'yes'
     db.session.commit()
     return redirect(url_for('dash'))
-
-@app.route('/sp/shopping/dist/index2.html')
-def shopping():
-    return render_template('/sp/shopping/dist/index2.html')
 
 
 
@@ -445,6 +444,7 @@ def categories():
 
 
 @app.route('/products/index.html')
+@login_required
 def home():
     page = request.args.get('page',1, type=int)
     products = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()).paginate(page=page, per_page=8)
@@ -668,11 +668,9 @@ def AddCart():
         quantity = int(request.form.get('quantity'))
         color = request.form.get('colors')
         product = Addproduct.query.filter_by(id=product_id).first()
-
         if request.method =="POST":
             DictItems = {product_id:{'name':product.name,'price':float(product.price),'discount':product.discount,'color':color,'quantity':quantity,'image':product.image_1, 'colors':product.colors}}
             if 'Shoppingcart' in session:
-                print(session['Shoppingcart'])
                 if product_id in session['Shoppingcart']:
                     for key, item in session['Shoppingcart'].items():
                         if int(key) == int(product_id):
@@ -946,12 +944,11 @@ def payment():
     amount= amount,
     currency='usd',
     )
-    orders = CustomerOrder.query.filter_by(customer_id = current_user.id).first()
+    orders = CustomerOrder.query.filter_by(customer_id=current_user.id).order_by(CustomerOrder.id.desc()).first()
     today = date.today()
     if request.method == 'POST':
-        print(session['Shoppingcart'])
         # storing information into transaction database
-        new_transaction = Transaction(username = str(current_user.username), id = str(orders.invoice) , amount = int(int(amount) / 100), order = str(session['Shoppingcart'])  , date = str(today.strftime("%d/%m/%Y")) , refunded = 'NO')
+        new_transaction = Transaction(user = str(current_user.username), id = str(orders.invoice) , amount = int(int(amount) / 100), order = session['Shoppingcart']  , date = str(today.strftime("%d/%m/%Y")) , refunded = 'NO' , user_id = current_user.id)
         db.session.add(new_transaction)
         db.session.commit()
         clearcart()
@@ -989,3 +986,7 @@ def Table():
 def dropTables():
     Transaction.__table__.drop(engine)
     return redirect(url_for('Home_Page'))
+
+@app.route('/refund')
+def refund():
+    return redirect(url_for('dash'))

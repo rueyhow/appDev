@@ -49,8 +49,10 @@ Login
                                         <div class="col-4">
                                             {% if current_user.base64 == 'None' %}
                                             <img src="../../../static/images/profilepics/default.png" alt="" align = 'right' class = 'rounded-circle'>
+                                            <a href="{{url_for('updateProfilePic')}}" class = 'btn btn-success align-center'>Upload Profile Picture</a>
                                             {% elif current_user.base64 != 'None' %}
                                             <img src="data:image/png;base64, {{current_user.base64}}" align = 'right' class ='rounded-circle'>
+                                            <a href="{{url_for('updateProfilePic')}}" class = 'btn btn-success'>Update Profile Picture</a>
                                             {% endif %}
                                         
                                         
@@ -77,28 +79,13 @@ Login
                                     <br>
                         
                                     <br>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">upload picture</button>
-                                    <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                          <div class="modal-content">
-                                            <div class="modal-header">
-                                              <h5 class="modal-title" id="staticBackdropLabel">Synergy Soccer</h5>
-                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                    {{ form.profile_pic.label(class = 'form-label')}}
-                                                    {{ form.profile_pic(class = 'form-control' , value = name_to_update.profile_pic)}}
-                                                    {{ form.submit(class='btn btn-secondary') }}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      {{ form.submit(class='btn btn-secondary') }}
+                                    {{ form.submit(class='btn btn-secondary') }}
                                 </div>
-                                
+                             
                             </form>
                             <br>
                         </div>
+                        <!-- users created table(admin only) -->
                         {% if current_user.admin == 'yes' %}
                         <div class="card mb-4">
                             <div class="card-header">
@@ -117,8 +104,7 @@ Login
                                             <th>Admin Status</th>
                                             <th>Ban/Unban User</th>
                                             <th>Update User</th>
-                                            
-                                            <th>On Admin</th>
+                                            <th>Enable Admin</th>
                                             
                                         </tr>
                                     </thead>
@@ -174,6 +160,103 @@ Login
                             </div>
                         </div>
                         {% endif %}
+
+
+                        <!-- user transaction history -->
+                
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table me-1"></i>
+                                User {{current_user.username}} transaction history
+                            </div>
+                            <div class="card-body">
+                                <table id="datatablesSimple1">
+                                {% if user_transaction|length != 0 %}
+                                    <thead>
+                                        <tr>
+                                            <th>Customer ID</th>
+                                            <th>Invoice ID</th>
+                                            <th>Transaction date</th>
+                                            <th>Total Amount</th>
+                                            <th>Refund status</th>
+                                            <th>Refund</th>
+                                            <th>Order Details</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        {% for transaction in user_transaction %}
+                                        
+                                        <tr> 
+                                            <td>{{transaction.user_id}}</td>
+                                            <td>{{transaction.id}}</td>
+                                            <td>{{transaction.date}}</td>
+                                            <td>${{transaction.amount}}</td>
+                                            <td>{{transaction.refunded}}</td>
+                                            <td>
+                                                <form action="{{url_for('refund')}}" method = 'POST'>
+                                                    <input type="submit" value = 'refund' class = 'btn btn-outline btn-success'>
+                                                </form>
+                                            </td>
+                                            
+                                            <td>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{user_transaction.index(transaction)}}">
+                                                   order info
+                                                </button>
+                                            <!-- modals -->
+                                          <div class="modal fade modal-centered" id="staticBackdrop-{{user_transaction.index(transaction)}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                              <div class="modal-content">
+                                                <div class="modal-header">
+                                                  <h5 class="modal-title" id="staticBackdropLabel">Order Information</h5>
+                                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {% for key in transaction.order %}
+                                                  <div class="row">
+                                                        <div class="card">
+                                                            <div class="row">
+                                                              <div class="col-md-4">
+                                                                
+                                                                <img src="{{url_for('static', filename='images/' + transaction.order[key].image)}}" alt="" width = '145px;' height = '145px;' class = 'img-fluid rounded-start'>
+                                                              </div>
+                                                              <div class="col-md-5">
+                                                                <div class="card-body">
+                                                                    <strong>Product ID: </strong>{{key}}<br>
+                                                                    <strong>Color: </strong>{{transaction.order[key].color}} <br>
+                                                                    <strong>Item Name: </strong>{{transaction.order[key].name}} <br>
+                                                                    <strong>Price: </strong>${{transaction.order[key].price}} <br>
+                                                                    <strong>Quantity: </strong>{{transaction.order[key].quantity}} <br>
+                                                                
+                                                                </div>
+                                                            </div>
+                                                            </div>
+                                                          </div>
+                                                    
+                                                
+                                                </div>
+                                                {% endfor %}
+                                                
+                                                <div class="modal-footer">
+                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div> 
+                                          
+                                            </td>
+                                           
+                                        </tr>
+
+                                        
+                                        {% endfor %}
+                                {% else %}
+                                            <h1>No previous transactions has been made</h1>
+                                {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     
                 </main>
@@ -182,6 +265,7 @@ Login
         
         
         <script src="{{url_for('static' , filename = 'js/datatables-simple-demo.js')}}"></script>
+        <script src="{{url_for('static' , filename = 'js/datatable2.js')}}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
   

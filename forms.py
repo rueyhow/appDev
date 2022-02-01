@@ -1,3 +1,4 @@
+from flask import Flask
 from wtforms import StringField, RadioField, SelectField, TextAreaField, validators , PasswordField , BooleanField , Form , SubmitField
 from wtforms import Form, SubmitField,IntegerField,FloatField,StringField,TextAreaField,validators
 from flask_wtf import FlaskForm
@@ -13,7 +14,7 @@ class CreateUserForm(FlaskForm):
     profile_pic = FileField('PROFILE PIC' , validators = [FileAllowed(['jpg' , 'png'])])
     phone_number = StringField('Phone Number' , [validators.Length(min=1 , max = 8) , validators.DataRequired()])
     submit = SubmitField('Submit')
-
+    
 
 class ExistingMember(FlaskForm):
     username = StringField('username' , [validators.Length(min=1 , max=15) , validators.DataRequired()])
