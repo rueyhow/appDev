@@ -1,4 +1,5 @@
 from concurrent.futures import process
+from enum import unique
 from re import S
 from unicodedata import name
 from flask import Flask, make_response, render_template, request , redirect , url_for , session , flash
@@ -167,9 +168,10 @@ class Category(db.Model):
         return '<Catgory %r>' % self.name
 
 #shipping model
-class ShippingInfo(db.Model):
+class BilingInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=False, nullable=False)
+    email = db.Column(db.String(255), unique=False, nullable=False)
     address = db.Column(db.String(255), unique=False, nullable=False)
     country = db.Column(db.String(50), unique=False, nullable=False)
     city = db.Column(db.String(50), unique=False, nullable=False)
@@ -852,13 +854,14 @@ def deleteAllFeedback():
 def shipping():
     form = ShippingForm(request.form)
     if request.method == 'POST':
+        customer = User.query.filter_by(email=current_user.email).first()
         name = form.name.data
         address = form.address.data
         country = form.country.data
         city = form.city.data
         state = form.state.data
         zipcode = form.zipcode.data
-        biling = ShippingInfo(name=name,address=address,country=country,city=city,state=state,postalcode=zipcode)
+        biling = BilingInfo(name=name,email=customer.email,address=address,country=country,city=city,state=state,postalcode=zipcode)
         db.session.add(biling)
         db.session.commit()
         return redirect(url_for('checkout'))
@@ -883,7 +886,7 @@ def checkout():
 def check_out(invoice):
     grandTotal = 0
     subTotal = 0
-    info = ShippingInfo.query.filter_by(id=current_user.id).first()
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
     orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
     for key, product in orders.orders.items():
          discount = (product['discount']/100) * float(product['price'])
