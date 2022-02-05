@@ -38,8 +38,7 @@ from flask_msearch import Search
 from dataclasses import dataclass, field
 from typing import Tuple
 import pickle as pickle
-import pdfkit
-
+from flask_mail import Mail,Message,MIMEMultipart,MIMEText
 
 app = Flask(__name__, template_folder = 'template')
 
@@ -47,12 +46,14 @@ app = Flask(__name__, template_folder = 'template')
 app.config["SECRET_KEY"] = "Rahow3216"
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///login.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51KKN0tAEaRDjqb9soECAov6Nvp1AWg9aqDXcZ5hik5OYrJwPlOmu1Lnl1LoUmBSTp0nlCCGXyqjDeOLfv4aicseV00WQHYM3xK'
-app.config['STRIPE_SECRET_KEY'] = 'sk_test_51KKN0tAEaRDjqb9sGlW71m7cxGJQ4Lq5RttskxVQDCE3Fx480wgIkTSDgDbECOf2sdilJ2dZcqwVokF51fm1zeQe00RLozxaNp'
 b(app)
 db = SQLAlchemy(app)
 
+# stripe key
+app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51KKN0tAEaRDjqb9soECAov6Nvp1AWg9aqDXcZ5hik5OYrJwPlOmu1Lnl1LoUmBSTp0nlCCGXyqjDeOLfv4aicseV00WQHYM3xK'
+app.config['STRIPE_SECRET_KEY'] = 'sk_test_51KKN0tAEaRDjqb9sGlW71m7cxGJQ4Lq5RttskxVQDCE3Fx480wgIkTSDgDbECOf2sdilJ2dZcqwVokF51fm1zeQe00RLozxaNp'
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
+
 #create engine
 engine = create_engine('sqlite:///login.db')
 
