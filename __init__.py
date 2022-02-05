@@ -38,6 +38,8 @@ from flask_msearch import Search
 from dataclasses import dataclass, field
 from typing import Tuple
 import pickle as pickle
+import pdfkit
+
 
 app = Flask(__name__, template_folder = 'template')
 
@@ -850,7 +852,6 @@ def deleteAllFeedback():
 
 #Transaction
 @app.route('/shipping', methods=['GET','POST'])
-@login_required
 def shipping():
     form = ShippingForm(request.form)
     if request.method == 'POST':
@@ -867,8 +868,7 @@ def shipping():
         return redirect(url_for('checkout'))
     return render_template("shipping.html" , form = form)
 
-@app.route('/checkout' , methods = ['GET' , 'POST'])
-@login_required
+@app.route('/checkout')
 def checkout():
     invoice = secrets.token_hex(5)
     try:     
@@ -882,7 +882,6 @@ def checkout():
         
 
 @app.route('/checkout/<invoice>')
-@login_required
 def check_out(invoice):
     grandTotal = 0
     subTotal = 0
@@ -898,25 +897,24 @@ def check_out(invoice):
 
 # @app.route('/get_pdf/<invoice>', methods=['POST'])
 # def get_pdf(invoice):
-#     grandTotal = 0
-#     subTotal = 0
-#     if request.method == 'POST':
-#         customer = ShippingInfo.query.filter_by(id=current_user.id).first()
-#         orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
-#         for key, product in orders.orders.items():
-#             discount = (product['discount']/100) * float(product['price'])
-#             subTotal += float(product['price']) * int(product['quantity'])
-#             subTotal -= discount
-#             tax =("%.2f" %(.06 * float(subTotal)))
-#             grandTotal = "%.2f" % (1.06 * float(subTotal))
+#         grandTotal = 0
+#         subTotal = 0
+#         if request.method =="POST":
+#             customer = BilingInfo.query.filter_by(email=current_user.email).first()
+#             orders = CustomerOrder.query.filter_by(customer_id=current_user.id, invoice=invoice).order_by(CustomerOrder.id.desc()).first()
+#             for _key, product in orders.orders.items():
+#                 discount = (product['discount']/100) * float(product['price'])
+#                 subTotal += float(product['price']) * int(product['quantity'])
+#                 subTotal -= discount
+#                 tax = ("%.2f" % (.06 * float(subTotal)))
+#                 grandTotal = float("%.2f" % (1.06 * subTotal))
 
-#         rendered = render_template('pdf.html',customer=customer,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
-#         pdf = pdfkit.from_string(rendered, False)
-#         response = make_response(pdf)
-#         response.headers['Content-Type'] = 'application/pdf'
-#         response.headers['Content-Disposition'] = 'inline;filename=output.pdf'
-#         return response
-#     return request(url_for('check_out'))
+#             rendered =  render_template('pdf.html', invoice=invoice, tax=tax,grandTotal=grandTotal,customer=customer,orders=orders)
+#             pdf = pdfkit.from_string(rendered, False)
+#             response = make_response(pdf)
+#             response.headers['content-Type'] ='application/pdf'
+#             response.headers['content-Disposition'] ='inline; filename='+invoice+'.pdf'
+#             return response
 
 
 @app.route('/payment',methods=['GET','POST'])
