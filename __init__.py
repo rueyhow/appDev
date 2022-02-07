@@ -1,4 +1,7 @@
 from concurrent.futures import process
+from crypt import methods
+from distutils.log import info
+import email
 from enum import unique
 from re import S
 from unicodedata import name
@@ -38,7 +41,7 @@ from flask_msearch import Search
 from dataclasses import dataclass, field
 from typing import Tuple
 import pickle as pickle
-from flask_mail import Mail,Message,MIMEMultipart,MIMEText
+
 
 app = Flask(__name__, template_folder = 'template')
 
@@ -852,7 +855,22 @@ def deleteAllFeedback():
 
 
 #Transaction
-@app.route('/shipping', methods=['GET','POST'])
+@app.route('/getshipping')
+def get_shipping():
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    if info.email == current_user.email:
+        return redirect(url_for('checkout'))
+    else:
+        return redirect(url_for('shipping'))
+    
+@app.route('/changeinfo')
+def change_info():
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    db.session.delete(info)
+    db.session.commit()
+    return redirect(url_for('shipping'))
+
+@app.route('/shipping', methods=['POST'])
 def shipping():
     form = ShippingForm(request.form)
     if request.method == 'POST':
@@ -895,27 +913,6 @@ def check_out(invoice):
          tax =("%.2f" %(.06 * float(subTotal)))
          grandTotal = "%.2f" % (1.06 * float(subTotal))
     return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
-
-# @app.route('/get_pdf/<invoice>', methods=['POST'])
-# def get_pdf(invoice):
-#         grandTotal = 0
-#         subTotal = 0
-#         if request.method =="POST":
-#             customer = BilingInfo.query.filter_by(email=current_user.email).first()
-#             orders = CustomerOrder.query.filter_by(customer_id=current_user.id, invoice=invoice).order_by(CustomerOrder.id.desc()).first()
-#             for _key, product in orders.orders.items():
-#                 discount = (product['discount']/100) * float(product['price'])
-#                 subTotal += float(product['price']) * int(product['quantity'])
-#                 subTotal -= discount
-#                 tax = ("%.2f" % (.06 * float(subTotal)))
-#                 grandTotal = float("%.2f" % (1.06 * subTotal))
-
-#             rendered =  render_template('pdf.html', invoice=invoice, tax=tax,grandTotal=grandTotal,customer=customer,orders=orders)
-#             pdf = pdfkit.from_string(rendered, False)
-#             response = make_response(pdf)
-#             response.headers['content-Type'] ='application/pdf'
-#             response.headers['content-Disposition'] ='inline; filename='+invoice+'.pdf'
-#             return response
 
 
 @app.route('/payment',methods=['GET','POST'])
