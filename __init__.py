@@ -1,5 +1,5 @@
 from concurrent.futures import process
-from crypt import methods
+# from crypt import methods
 from distutils.log import info
 import email
 from enum import unique
@@ -870,7 +870,7 @@ def change_info():
     db.session.commit()
     return redirect(url_for('shipping'))
 
-@app.route('/shipping', methods=['POST'])
+@app.route('/shipping', methods=['GET','POST'])
 def shipping():
     form = ShippingForm(request.form)
     if request.method == 'POST':
