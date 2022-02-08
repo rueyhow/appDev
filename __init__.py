@@ -41,6 +41,7 @@ from flask_msearch import Search
 from dataclasses import dataclass, field
 from typing import Tuple
 import pickle as pickle
+from flask_mail import Mail,Message,MIMEText,MIMEMultipart,MIMEBase
 
 
 app = Flask(__name__, template_folder = 'template')
@@ -177,7 +178,7 @@ class Category(db.Model):
 class BilingInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=False, nullable=False)
-    email = db.Column(db.String(255), unique=False, nullable=False)
+    email = db.Column(db.String(255), unique=False, nullable=False, default='None')
     address = db.Column(db.String(255), unique=False, nullable=False)
     country = db.Column(db.String(50), unique=False, nullable=False)
     city = db.Column(db.String(50), unique=False, nullable=False)
@@ -692,13 +693,14 @@ def getCart():
         return redirect(url_for('home'))
     subtotal = 0
     grandtotal = 0
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
     for key,product in session['Shoppingcart'].items():
         discount = (product['discount']/100) * float(product['price'])
         subtotal += float(product['price']) * int(product['quantity'])
         subtotal -= discount
         tax =("%.2f" %(.06 * float(subtotal)))
         grandtotal = float("%.2f" % (1.06 * subtotal))
-    return render_template('products/carts.html',tax=tax, grandtotal=grandtotal,brands=brands(),categories=categories())
+    return render_template('products/carts.html',tax=tax, grandtotal=grandtotal,brands=brands(),categories=categories(),info=info)
 
 
 
@@ -855,14 +857,8 @@ def deleteAllFeedback():
 
 
 #Transaction
-@app.route('/getshipping')
-def get_shipping():
-    info = BilingInfo.query.filter_by(email=current_user.email).first()
-    if info.email == current_user.email:
-        return redirect(url_for('checkout'))
-    else:
-        return redirect(url_for('shipping'))
-    
+
+
 @app.route('/changeinfo')
 def change_info():
     info = BilingInfo.query.filter_by(email=current_user.email).first()
