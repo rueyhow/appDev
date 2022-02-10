@@ -41,6 +41,7 @@ from flask_msearch import Search
 from dataclasses import dataclass, field
 from typing import Tuple
 import pickle as pickle
+from flask_mail import Mail, Message, MIMEBase, MIMEMultipart, MIMEText
 
 
 app = Flask(__name__, template_folder = 'template')
@@ -56,6 +57,16 @@ db = SQLAlchemy(app)
 app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51KKN0tAEaRDjqb9soECAov6Nvp1AWg9aqDXcZ5hik5OYrJwPlOmu1Lnl1LoUmBSTp0nlCCGXyqjDeOLfv4aicseV00WQHYM3xK'
 app.config['STRIPE_SECRET_KEY'] = 'sk_test_51KKN0tAEaRDjqb9sGlW71m7cxGJQ4Lq5RttskxVQDCE3Fx480wgIkTSDgDbECOf2sdilJ2dZcqwVokF51fm1zeQe00RLozxaNp'
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
+
+# email
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'synergysoccer7@gmail.com'
+app.config['MAIL_PASSWORD'] = 'Trustknow1!'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
 
 
 #create engine
@@ -858,7 +869,6 @@ def deleteAllFeedback():
 
 #Transaction
 
-
 @app.route('/changeinfo')
 def change_info():
     info = BilingInfo.query.filter_by(email=current_user.email).first()
@@ -933,7 +943,16 @@ def payment():
         db.session.add(new_transaction)
         db.session.commit()
         clearcart()
+    return redirect(url_for('send_mail'))
+
+@app.route('/sendmail')
+def send_mail():
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
+    msg.body = 'Hello Flask message sent from Flask-Mail'
+    mail.send(msg)
     return redirect(url_for('thankyou'))
+
 
 
 @app.route('/thankyou')
