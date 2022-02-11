@@ -1,0 +1,271 @@
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div style="display:none;margin:0;padding:0;width:0px;max-height:0px;overflow:hidden;font-size:0;line-height:0">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tbody><tr>
+      <td align="left" valign="top" style="font-family:Arial,Helvetica,sans-serif;color:#5a5a5a;font-size:1px;line-height:1px">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;<wbr>&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;<wbr>&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;<wbr>&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;<wbr>&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;<wbr>&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj; </td>
+    </tr>
+  </tbody></table>
+</div>
+
+
+<table border="0" role="presentation" cellpadding="0" cellspacing="0" width="100%">
+  <tbody><tr>
+    <td align="center" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="620" style="width:620px">
+        <tbody>
+		<tr>
+          <td align="center" valign="top" height="1">
+			  <table border="0" role="presentation" cellpadding="0" cellspacing="0" width="200" style="width:200px;border-top:1px solid #000000">
+              <tbody><tr>
+                <td align="center" valign="top" height="1">&nbsp;
+				</td>
+		      </tr>
+			  </tbody></table>
+			</td>
+		</tr>
+        <tr>
+          <td align="center" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="100%">
+              <tbody><tr>
+                <td align="center" valign="top" style="padding-top:40px"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="80%">
+                    <tbody><tr>
+                      <td align="center" valign="top" style="font-size:40px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:42px;color:#000000"> Dear
+                        {{info.name}},</td>
+                    </tr>
+                    <tr>
+                      <td align="center" valign="top" style="font-size:18px;font-family:Arial,Helvetica,sans-serif;line-height:26px;color:#000000;padding-top:30px">Thank you for your order! We hope you enjoyed shopping with us.</td>
+                    </tr>
+                    <tr>
+                      <td align="center" valign="top" style="padding:30px 0px"><table border="0" role="presentation" cellpadding="0" cellspacing="0" bgcolor="#f4957f">
+                          <tbody><tr>
+                            <td align="center" valign="top" style="font-size:26px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:26px;color:#ffffff;padding:10px 25px">Order information</td>
+                          </tr>
+                        </tbody></table></td>
+                    </tr>
+                  </tbody></table></td>
+              </tr>
+            </tbody></table></td>
+        </tr>
+        <tr>
+          <td align="left" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="100%">
+              <tbody><tr>
+                <td align="center" valign="top"><table align="left" border="0" role="presentation" cellpadding="0" cellspacing="0" width="50%">
+                    <tbody><tr>
+                      <td align="left" valign="top" style="padding:40px 20px 0px 40px;font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:600;line-height:36px;color:#000000">Order number:<br>
+                        <span style="font-size:16px;font-family:Arial,Helvetica,sans-serif;font-weight:500;line-height:24px;color:#000000;text-transform:uppercase">{{orders.invoice}}</span></td>
+                    </tr>
+                  </tbody></table>
+                  <table align="left" border="0" role="presentation" cellpadding="0" cellspacing="0" width="49%">
+                    <tbody><tr>
+                      <td align="left" valign="top" style="padding:40px 20px 0px 40px;font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:600;line-height:36px;color:#000000"> Payment Method:<br>
+                        <span style="font-size:16px;font-family:Arial,Helvetica,sans-serif;font-weight:500;line-height:24px;color:#000000">Credit/Debit Card</span></td>
+                    </tr>
+                  </tbody></table></td>
+              </tr>
+              <tr>
+                <td align="center" valign="top"><table align="left" border="0" role="presentation" cellpadding="0" cellspacing="0" width="50%">
+                    <tbody><tr>
+                      <td align="left" valign="top" style="padding:40px 20px 0px 40px;font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:600;line-height:36px;color:#000000"> Shipping Method: <br><span style="font-size:16px;font-family:Arial,Helvetica,sans-serif;font-weight:500;line-height:24px;color:#000000">STANDARD SHIPPING</span></td>
+                    </tr>
+                  </tbody></table>
+                  <table align="left" border="0" role="presentation" cellpadding="0" cellspacing="0" width="49%">
+                    <tbody><tr>
+                      <td align="left" valign="top" style="padding:40px 20px 0px 40px;font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:600;line-height:36px;color:#000000">Payment Date:<br>
+                        <span style="font-size:16px;font-family:Arial,Helvetica,sans-serif;font-weight:500;line-height:24px;color:#000000">{{orders.date}}</span></td>
+                    </tr>
+                  </tbody></table></td>
+              </tr>
+
+              <tr>
+                <td align="center" valign="top"><table align="left" border="0" role="presentation" cellpadding="0" cellspacing="0" width="50%">
+                    <tbody><tr>
+                      <td align="left" valign="top" style="padding:40px 20px 0px 40px;font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:600;line-height:36px;color:#000000">Shipping address:<br>
+                        <span style="font-size:16px;font-family:Arial,Helvetica,sans-serif;font-weight:500;line-height:24px;color:#000000">  {{info.address}}<br>
+
+                    {{info.country}}<br>
+                    {{info.postalcode}}<br>
+                       </span></td>
+                    </tr>
+                  </tbody></table>
+				    <table align="left" border="0" role="presentation" cellpadding="0" cellspacing="0" width="49%">
+                    <tbody><tr>
+                      <td align="left" valign="top" style="padding:40px 20px 0px 40px;font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:600;line-height:36px;color:#000000">
+						Processing time:
+						  <br>
+                        <span style="font-size:16px;font-family:Arial,Helvetica,sans-serif;font-weight:500;line-height:24px;color:#000000">
+							1-3 Day(s)
+
+
+
+						  </span></td>
+                    </tr>
+                  </tbody></table>
+
+				  </td>
+              </tr>
+
+
+
+
+            </tbody></table></td>
+        </tr>
+
+
+
+        <tr>
+          <td align="center" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="95%">
+              <tbody><tr>
+                <td align="left" valign="top" style="padding-top:40px"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border:1px solid #b1b1b1">
+                    <tbody><tr>
+                      <td align="left" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="100%" bgcolor="#000000">
+                          <tbody><tr>
+                            <td align="left" valign="top" style="padding:15px 10px;font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:20px;color:#ffffff"> Order Summary: </td>
+                          </tr>
+                        </tbody></table></td>
+                    </tr>
+
+                    {% for key, product in orders.orders.items() %}
+                    <tr>
+                      <td align="center" valign="top" style="padding:40px 20px"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="100%">
+
+                          <tbody><tr>
+                            <td align="center" valign="middle">
+						  <table border="0" role="presentation" cellpadding="0" cellspacing="0" width="30%" align="left">
+                          <tbody><tr>
+                            <td align="center" valign="middle" style="padding:10px"><img src="{{url_for('static', filename='images/' + product.image)}}" alt="" width = '145px;' height = '145px;' class = 'img-fluid rounded-start'>
+							</td>
+							</tr>
+						</tbody></table>
+						<table border="0" role="presentation" cellpadding="0" cellspacing="0" width="69%" align="left">
+							<tbody><tr>
+                            <td align="left" valign="middle" style="font-size:14px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:26px;color:#000000;padding:5px 10px">
+                              ITEM NAME: {{product.name}} <br>
+                              COLOR: {{product.color}} <br>
+                              QUANTITY: {{product.quantity}}<br>
+                              PRICE: S${{product.price}} </td>
+                          </tr>
+						  </tbody></table>
+						 </td>
+                      </tr>
+
+                        </tbody></table></td>
+                    </tr>
+                    {% endfor %}
+
+					<tr>
+						<td align="center" valign="top">
+						<table border="0" role="presentation" cellpadding="0" cellspacing="0">
+							<tbody><tr>
+								<td align="center" valign="top" style="font-size:30px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:40px;color:#000000;border-bottom:3px solid #000000"><a href="https://mandrillapp.com/track/click/31006125/sg.shein.com?p=eyJzIjoiY0hQYXpEdVF4dGhPVnlFVktadDFIRUs0UkJrIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwOlxcXC9cXFwvc2cuc2hlaW4uY29tXFxcL3VzZXJcXFwvb3JkZXJzXFxcL2RldGFpbFxcXC9HU0hNSjcwMDcwMDA2N1VcIixcImlkXCI6XCJlOGM3NTc4MzEzZjQ0OGU3OWY5ZGU3OWE1NTBmM2U3YVwiLFwidXJsX2lkc1wiOltcIjIxZThhZWQwNDIwZDBmZDMwMGZlYmQxNTYzZTFhNDYxMWQzYjg5YThcIl19In0" title="Track Order Details" style="text-decoration:none;color:#000000" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://mandrillapp.com/track/click/31006125/sg.shein.com?p%3DeyJzIjoiY0hQYXpEdVF4dGhPVnlFVktadDFIRUs0UkJrIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwOlxcXC9cXFwvc2cuc2hlaW4uY29tXFxcL3VzZXJcXFwvb3JkZXJzXFxcL2RldGFpbFxcXC9HU0hNSjcwMDcwMDA2N1VcIixcImlkXCI6XCJlOGM3NTc4MzEzZjQ0OGU3OWY5ZGU3OWE1NTBmM2U3YVwiLFwidXJsX2lkc1wiOltcIjIxZThhZWQwNDIwZDBmZDMwMGZlYmQxNTYzZTFhNDYxMWQzYjg5YThcIl19In0&amp;source=gmail&amp;ust=1644666316248000&amp;usg=AOvVaw3-3w95P32UXNFVwpFDc9DM">Track Order Details</a>
+						</td>
+							</tr>
+						</tbody></table>
+						</td>
+
+					</tr>
+
+
+                    <tr>
+                      <td align="left" valign="top" style="padding:18px 20px 30px">
+
+                      </td>
+                    </tr>
+
+
+
+
+                    <tr>
+                      <td align="left" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="100%" bgcolor="#efefef">
+                          <tbody><tr>
+                            <td align="right" valign="top" style="padding:18px 28px;font-size:16px;font-family:Arial,Helvetica,sans-serif;line-height:26px;color:#000000">
+								 Sub Total: S$79.00<br>
+				Shipping: S$0.00<br>
+				Shipping Insurance: S$1.35<br>
+				Discount: S$7.90<br>
+				SHEIN Points: S$1.36<br>
+				Total: S$71.09<br>
+							  </td>
+                          </tr>
+                        </tbody></table></td>
+                    </tr>
+
+                  </tbody></table></td>
+              </tr>
+            </tbody></table></td>
+        </tr>
+        <tr>
+          <td align="center" valign="top" style="padding-top:65px"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="95%">
+              <tbody><tr>
+                <td align="center" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="100%" bgcolor="#000000">
+                    <tbody><tr>
+                      <td align="left" valign="top" style="padding:10px;font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:20px;color:#ffffff;background:#000"> We are here to help </td>
+                    </tr>
+                  </tbody></table></td>
+              </tr>
+              <tr>
+                <td align="left" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                    <tbody><tr>
+                      <td align="center" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="90%" style="border-bottom:1px solid #e7e7e7">
+                          <tbody><tr>
+                            <td align="left" valign="middle" width="85%" style="font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:28px;color:#5c5c5c;padding:25px 0;width:85%"><a href="https://mandrillapp.com/track/click/31006125/sg.shein.com?p=eyJzIjoiaTRwcFNQckQ3ajZ4MUF2NkMxV1JmTnZhR01FIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9mYXFcXFwvZGV0YWlsP2lkPTVmNjk1NTdkY2ViZDM0NDAyOTAzYTM0NlwiLFwiaWRcIjpcImU4Yzc1NzgzMTNmNDQ4ZTc5ZjlkZTc5YTU1MGYzZTdhXCIsXCJ1cmxfaWRzXCI6W1wiZDY0NjdkNmRjNzRiMGVhZmIxY2NhZDdhMTRkNzJiYWNiMmMyMGIxN1wiXX0ifQ" title="" style="text-decoration:none;color:#5c5c5c" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://mandrillapp.com/track/click/31006125/sg.shein.com?p%3DeyJzIjoiaTRwcFNQckQ3ajZ4MUF2NkMxV1JmTnZhR01FIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9mYXFcXFwvZGV0YWlsP2lkPTVmNjk1NTdkY2ViZDM0NDAyOTAzYTM0NlwiLFwiaWRcIjpcImU4Yzc1NzgzMTNmNDQ4ZTc5ZjlkZTc5YTU1MGYzZTdhXCIsXCJ1cmxfaWRzXCI6W1wiZDY0NjdkNmRjNzRiMGVhZmIxY2NhZDdhMTRkNzJiYWNiMmMyMGIxN1wiXX0ifQ&amp;source=gmail&amp;ust=1644666316248000&amp;usg=AOvVaw1P9HQ4XWOgtlquFtmQBwim">
+                              Where is my order?</a></td>
+                            <td align="right" valign="middle" width="15%" style="font-size:30px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:30px;color:#5c5c5c;padding:10px 0;width:15%">&gt;</td>
+                          </tr>
+                        </tbody></table></td>
+                    </tr>
+                    <tr>
+                      <td align="center" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="90%" style="border-bottom:1px solid #e7e7e7">
+                          <tbody><tr>
+                            <td align="left" valign="middle" width="85%" style="font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:28px;color:#5c5c5c;padding:25px 0;width:85%"><a href="https://mandrillapp.com/track/click/31006125/sg.shein.com?p=eyJzIjoielptN09YRzZ4c3Nodi1JMVFleFA5emRkUkdVIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9mYXFcXFwvZGV0YWlsP2lkPTVmNjk1NTdkY2ViZDM0NDAyOTAzYTM1YlwiLFwiaWRcIjpcImU4Yzc1NzgzMTNmNDQ4ZTc5ZjlkZTc5YTU1MGYzZTdhXCIsXCJ1cmxfaWRzXCI6W1wiZDY0NjdkNmRjNzRiMGVhZmIxY2NhZDdhMTRkNzJiYWNiMmMyMGIxN1wiXX0ifQ" title="" style="text-decoration:none;color:#5c5c5c" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://mandrillapp.com/track/click/31006125/sg.shein.com?p%3DeyJzIjoielptN09YRzZ4c3Nodi1JMVFleFA5emRkUkdVIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9mYXFcXFwvZGV0YWlsP2lkPTVmNjk1NTdkY2ViZDM0NDAyOTAzYTM1YlwiLFwiaWRcIjpcImU4Yzc1NzgzMTNmNDQ4ZTc5ZjlkZTc5YTU1MGYzZTdhXCIsXCJ1cmxfaWRzXCI6W1wiZDY0NjdkNmRjNzRiMGVhZmIxY2NhZDdhMTRkNzJiYWNiMmMyMGIxN1wiXX0ifQ&amp;source=gmail&amp;ust=1644666316248000&amp;usg=AOvVaw3UKy7_Y6SwCjgjLLmjtPBI"> Can I change or modify my order?</a></td>
+                            <td align="right" valign="middle" width="15%" style="font-size:30px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:30px;color:#5c5c5c;padding:10px 0;width:15%">&gt;</td>
+                          </tr>
+                        </tbody></table></td>
+                    </tr>
+                    <tr>
+                      <td align="center" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="90%" style="border-bottom:1px solid #e7e7e7">
+                          <tbody><tr>
+                            <td align="left" valign="middle" width="85%" style="font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:28px;color:#5c5c5c;padding:25px 0;width:85%"><a href="https://mandrillapp.com/track/click/31006125/sg.shein.com?p=eyJzIjoiMkpNeDBsdE5MNGoyLWp1Z1NSTERwMWJyM25nIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9mYXFcXFwvZGV0YWlsP2lkPTVkZWYyYWM2Y2ViZDM0MTFjNDNjOTA4Y1wiLFwiaWRcIjpcImU4Yzc1NzgzMTNmNDQ4ZTc5ZjlkZTc5YTU1MGYzZTdhXCIsXCJ1cmxfaWRzXCI6W1wiZDY0NjdkNmRjNzRiMGVhZmIxY2NhZDdhMTRkNzJiYWNiMmMyMGIxN1wiXX0ifQ" title="" style="text-decoration:none;color:#5c5c5c" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://mandrillapp.com/track/click/31006125/sg.shein.com?p%3DeyJzIjoiMkpNeDBsdE5MNGoyLWp1Z1NSTERwMWJyM25nIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9mYXFcXFwvZGV0YWlsP2lkPTVkZWYyYWM2Y2ViZDM0MTFjNDNjOTA4Y1wiLFwiaWRcIjpcImU4Yzc1NzgzMTNmNDQ4ZTc5ZjlkZTc5YTU1MGYzZTdhXCIsXCJ1cmxfaWRzXCI6W1wiZDY0NjdkNmRjNzRiMGVhZmIxY2NhZDdhMTRkNzJiYWNiMmMyMGIxN1wiXX0ifQ&amp;source=gmail&amp;ust=1644666316248000&amp;usg=AOvVaw32BeuSBVwr7gM-YcBcpWK_">Can I cancel my order?</a></td>
+                            <td align="right" valign="middle" width="15%" style="font-size:30px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:30px;color:#5c5c5c;padding:10px 0;width:15%">&gt;</td>
+                          </tr>
+                        </tbody></table></td>
+                    </tr>
+                    <tr>
+                      <td align="center" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="90%" style="border-bottom:1px solid #e7e7e7">
+                          <tbody><tr>
+                            <td align="left" valign="middle" width="85%" style="font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:28px;color:#5c5c5c;padding:25px 0;width:85%"><a href="https://mandrillapp.com/track/click/31006125/sg.shein.com?p=eyJzIjoiWTRSLTJ3MXlBZnBsY3prVG5XMWp2X3M1NWp3IiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9mYXFcXFwvZGV0YWlsP2lkPTVmNjk1NTdkY2ViZDM0NDAyOTAzYTM1Y1wiLFwiaWRcIjpcImU4Yzc1NzgzMTNmNDQ4ZTc5ZjlkZTc5YTU1MGYzZTdhXCIsXCJ1cmxfaWRzXCI6W1wiZDY0NjdkNmRjNzRiMGVhZmIxY2NhZDdhMTRkNzJiYWNiMmMyMGIxN1wiXX0ifQ" title="" style="text-decoration:none;color:#5c5c5c" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://mandrillapp.com/track/click/31006125/sg.shein.com?p%3DeyJzIjoiWTRSLTJ3MXlBZnBsY3prVG5XMWp2X3M1NWp3IiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9mYXFcXFwvZGV0YWlsP2lkPTVmNjk1NTdkY2ViZDM0NDAyOTAzYTM1Y1wiLFwiaWRcIjpcImU4Yzc1NzgzMTNmNDQ4ZTc5ZjlkZTc5YTU1MGYzZTdhXCIsXCJ1cmxfaWRzXCI6W1wiZDY0NjdkNmRjNzRiMGVhZmIxY2NhZDdhMTRkNzJiYWNiMmMyMGIxN1wiXX0ifQ&amp;source=gmail&amp;ust=1644666316248000&amp;usg=AOvVaw2CFeBiumbc9kv6yhf7K3iH">Why I didn't get an email about my order being&nbsp;shipped?</a></td>
+                            <td align="right" valign="middle" width="15%" style="font-size:30px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:30px;color:#5c5c5c;padding:10px 0;width:15%">&gt;</td>
+                          </tr>
+                        </tbody></table></td>
+                    </tr>
+                    <tr>
+                      <td align="center" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="90%" style="border-bottom:1px solid #e7e7e7">
+                          <tbody><tr>
+                            <td align="left" valign="middle" width="85%" style="font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:28px;color:#5c5c5c;padding:25px 0;width:85%"><a href="https://mandrillapp.com/track/click/31006125/sg.shein.com?p=eyJzIjoiaVdoRkZxQ2hHeU5JdFZOVzVwM1FwTEdWanlrIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9mYXFcXFwvZGV0YWlsP2lkPTVkZWYyYWM2Y2ViZDM0MTFjNDNjOTA3OVwiLFwiaWRcIjpcImU4Yzc1NzgzMTNmNDQ4ZTc5ZjlkZTc5YTU1MGYzZTdhXCIsXCJ1cmxfaWRzXCI6W1wiZDY0NjdkNmRjNzRiMGVhZmIxY2NhZDdhMTRkNzJiYWNiMmMyMGIxN1wiXX0ifQ" title="" style="text-decoration:none;color:#5c5c5c" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://mandrillapp.com/track/click/31006125/sg.shein.com?p%3DeyJzIjoiaVdoRkZxQ2hHeU5JdFZOVzVwM1FwTEdWanlrIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9mYXFcXFwvZGV0YWlsP2lkPTVkZWYyYWM2Y2ViZDM0MTFjNDNjOTA3OVwiLFwiaWRcIjpcImU4Yzc1NzgzMTNmNDQ4ZTc5ZjlkZTc5YTU1MGYzZTdhXCIsXCJ1cmxfaWRzXCI6W1wiZDY0NjdkNmRjNzRiMGVhZmIxY2NhZDdhMTRkNzJiYWNiMmMyMGIxN1wiXX0ifQ&amp;source=gmail&amp;ust=1644666316248000&amp;usg=AOvVaw08HPTqyRtfhgSXqPpYzSb7"> How to change or modify billing address?</a></td>
+                            <td align="right" valign="middle" width="15%" style="font-size:30px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:30px;color:#5c5c5c;padding:10px 0;width:15%">&gt;</td>
+                          </tr>
+                        </tbody></table></td>
+                    </tr>
+                    <tr>
+                      <td align="center" valign="top"><table border="0" role="presentation" cellpadding="0" cellspacing="0" width="90%" style="border-bottom:1px solid #e7e7e7">
+                          <tbody><tr>
+                            <td align="left" valign="middle" width="85%" style="font-size:20px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:28px;color:#5c5c5c;padding:25px 0;width:85%"><a href="https://mandrillapp.com/track/click/31006125/sg.shein.com?p=eyJzIjoibldFaWNQY0UtWGlRME5YVDZqT01UejRRYlFVIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9yb2JvdFxcXC9mYXE_aWQ9NjQ4XCIsXCJpZFwiOlwiZThjNzU3ODMxM2Y0NDhlNzlmOWRlNzlhNTUwZjNlN2FcIixcInVybF9pZHNcIjpbXCI3ZTFlMmIyZjAyMjdjYTgyNDAyZWYxZGZlY2YyNzIzN2I3MzdmMzdmXCJdfSJ9" title="" style="text-decoration:none;color:#5c5c5c" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://mandrillapp.com/track/click/31006125/sg.shein.com?p%3DeyJzIjoibldFaWNQY0UtWGlRME5YVDZqT01UejRRYlFVIiwidiI6MSwicCI6IntcInVcIjozMTAwNjEyNSxcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL3NnLnNoZWluLmNvbVxcXC9yb2JvdFxcXC9mYXE_aWQ9NjQ4XCIsXCJpZFwiOlwiZThjNzU3ODMxM2Y0NDhlNzlmOWRlNzlhNTUwZjNlN2FcIixcInVybF9pZHNcIjpbXCI3ZTFlMmIyZjAyMjdjYTgyNDAyZWYxZGZlY2YyNzIzN2I3MzdmMzdmXCJdfSJ9&amp;source=gmail&amp;ust=1644666316248000&amp;usg=AOvVaw0MnI1tefAPM-IQHaB6P7aY"> OTHERS</a></td>
+                            <td align="right" valign="middle" width="15%" style="font-size:30px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:30px;color:#5c5c5c;padding:10px 0;width:15%">&gt;</td>
+                          </tr>
+                        </tbody></table></td>
+                    </tr>
+                  </tbody></table></td>
+              </tr>
+            </tbody></table></td>
+        </tr>
+
+
+
+</body>
+</html>
+{% endblock %}

@@ -223,7 +223,7 @@ class CustomerOrder(db.Model):
     invoice = db.Column(db.String(20),unique=True,nullable=False)
     status = db.Column(db.String,default='Pending',nullable=False)
     customer_id = db.Column(db.String,unique=False,nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date = db.Column(db.String, nullable=False)
     orders = db.Column(JsonEcodedDict)
 
     def __repr__(self):
@@ -900,8 +900,9 @@ def shipping():
 @app.route('/checkout')
 def checkout():
     invoice = secrets.token_hex(5)
+    today = date.today()
     try:     
-        order = CustomerOrder(invoice=invoice,customer_id=current_user.id,orders=session['Shoppingcart'])
+        order = CustomerOrder(invoice=invoice,customer_id=current_user.id,orders=session['Shoppingcart'],date=str(today.strftime("%d/%m/%Y")))
         db.session.add(order)
         db.session.commit()
         return redirect(url_for('check_out',invoice=invoice))
@@ -951,10 +952,22 @@ def payment():
 
 @app.route('/sendmail')
 def send_mail():
+    grandTotal = 0
+    subTotal = 0
     info = BilingInfo.query.filter_by(email=current_user.email).first()
-    transaction = Transaction.query.filter_by(user=current_user.username).first()
+    transaction = Transaction.query.filter_by(user_id=current_user.id).all()
+    orders = CustomerOrder.query.filter_by(customer_id=current_user.id).order_by(CustomerOrder.id.desc()).first()
+    for key, product in orders.orders.items():
+         discount = (product['discount']/100) * float(product['price'])
+         subTotal += float(product['price']) * int(product['quantity'])
+         subTotal -= discount
+         tax =("%.2f" %(.06 * float(subTotal)))
+         grandTotal = "%.2f" % (1.06 * float(subTotal))
+
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
     msg.body = 'Hello Flask message sent from Flask-Mail'
+    html = render_template('email.html',info=info,transaction=transaction,orders=orders)
+    msg.html = html
     mail.send(msg)
     return redirect(url_for('thankyou'))
 
