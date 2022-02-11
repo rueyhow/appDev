@@ -1,5 +1,12 @@
 from concurrent.futures import process
+
 import email
+
+# from crypt import methods
+from distutils.log import info
+import email
+from enum import unique
+
 from re import S
 from unicodedata import name
 from flask import Flask, make_response, render_template, request , redirect , url_for , session , flash
@@ -34,18 +41,36 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_cl
 from flask_msearch import Search
 from dataclasses import dataclass, field
 from typing import Tuple
+import pickle as pickle
+from flask_mail import Mail, Message, MIMEBase, MIMEMultipart, MIMEText
+
+
+
 app = Flask(__name__, template_folder = 'template')
 
 # creation of all database information
 app.config["SECRET_KEY"] = "Rahow3216"
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///login.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51KKN0tAEaRDjqb9soECAov6Nvp1AWg9aqDXcZ5hik5OYrJwPlOmu1Lnl1LoUmBSTp0nlCCGXyqjDeOLfv4aicseV00WQHYM3xK'
-app.config['STRIPE_SECRET_KEY'] = 'sk_test_51KKN0tAEaRDjqb9sGlW71m7cxGJQ4Lq5RttskxVQDCE3Fx480wgIkTSDgDbECOf2sdilJ2dZcqwVokF51fm1zeQe00RLozxaNp'
 b(app)
 db = SQLAlchemy(app)
 
+# stripe key
+app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51KKN0tAEaRDjqb9soECAov6Nvp1AWg9aqDXcZ5hik5OYrJwPlOmu1Lnl1LoUmBSTp0nlCCGXyqjDeOLfv4aicseV00WQHYM3xK'
+app.config['STRIPE_SECRET_KEY'] = 'sk_test_51KKN0tAEaRDjqb9sGlW71m7cxGJQ4Lq5RttskxVQDCE3Fx480wgIkTSDgDbECOf2sdilJ2dZcqwVokF51fm1zeQe00RLozxaNp'
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
+
+# email
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'synergysoccer7@gmail.com'
+app.config['MAIL_PASSWORD'] = 'Trustknow1!'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
+
+
 #create engine
 engine = create_engine('sqlite:///login.db')
 
@@ -147,9 +172,10 @@ class Category(db.Model):
         return '<Catgory %r>' % self.name
 
 #shipping model
-class ShippingInfo(db.Model):
+class BilingInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=False, nullable=False)
+    email = db.Column(db.String(255), unique=False, nullable=False, default='None')
     address = db.Column(db.String(255), unique=False, nullable=False)
     country = db.Column(db.String(50), unique=False, nullable=False)
     city = db.Column(db.String(50), unique=False, nullable=False)
@@ -178,16 +204,16 @@ class JsonEcodedDict(db.TypeDecorator):
 
 
 
-class CustomerOrder(db.Model):
+class CustomerOrders(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     invoice = db.Column(db.String(20),unique=True,nullable=False)
     status = db.Column(db.String,default='Pending',nullable=False)
     customer_id = db.Column(db.String,unique=False,nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date = db.Column(db.String, nullable=False)
     orders = db.Column(JsonEcodedDict)
 
     def __repr__(self):
-        return '<CustomerOrder %r>' % self.invoice
+        return '<CustomerOrders %r>' % self.invoice
 
 # Transaction History 
 class Transaction(db.Model):
@@ -299,8 +325,9 @@ def default_login():
 @app.route('/delete')
 def delete():
     user_to_delete = User.query.filter_by(id = current_user.id).first()
+    info_to_delete = BilingInfo.query.filter_by(email=current_user.email).first() # When User deletes the account, all information regarding the user gets deleted.
     try:
-        db.session.delete(user_to_delete)
+        db.session.delete(user_to_delete, info_to_delete)
         db.session.commit()
     except:
         return redirect('/')
@@ -312,10 +339,12 @@ def dash():
     name_to_update = User.query.get(current_user.id)
     users_table = User.query.all()
     user_transaction = Transaction.query.filter_by(user_id = current_user.id).all()
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
     if request.method == 'POST':
         # UPDATING USER INFORMATION
         name_to_update.username = request.form['username']
         name_to_update.email = request.form['email']
+        info.email = name_to_update.email
         try:
             db.session.commit()
             flash('User updated successfully')
@@ -679,13 +708,14 @@ def getCart():
         return redirect(url_for('home'))
     subtotal = 0
     grandtotal = 0
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
     for key,product in session['Shoppingcart'].items():
         discount = (product['discount']/100) * float(product['price'])
         subtotal += float(product['price']) * int(product['quantity'])
         subtotal -= discount
         tax =("%.2f" %(.06 * float(subtotal)))
         grandtotal = float("%.2f" % (1.06 * subtotal))
-    return render_template('products/carts.html',tax=tax, grandtotal=grandtotal,brands=brands(),categories=categories())
+    return render_template('products/carts.html',tax=tax, grandtotal=grandtotal,brands=brands(),categories=categories(),info=info)
 
 
 
@@ -842,29 +872,38 @@ def deleteAllFeedback():
 
 
 #Transaction
+
+
+@app.route('/changeinfo')
+def change_info():
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    db.session.delete(info)
+    db.session.commit()
+    return redirect(url_for('shipping'))
+
 @app.route('/shipping', methods=['GET','POST'])
-@login_required
 def shipping():
     form = ShippingForm(request.form)
     if request.method == 'POST':
+        customer = User.query.filter_by(email=current_user.email).first()
         name = form.name.data
         address = form.address.data
         country = form.country.data
         city = form.city.data
         state = form.state.data
         zipcode = form.zipcode.data
-        biling = ShippingInfo(name=name,address=address,country=country,city=city,state=state,postalcode=zipcode)
+        biling = BilingInfo(name=name,email=customer.email,address=address,country=country,city=city,state=state,postalcode=zipcode)
         db.session.add(biling)
         db.session.commit()
         return redirect(url_for('checkout'))
     return render_template("shipping.html" , form = form)
 
-@app.route('/checkout' , methods = ['GET' , 'POST'])
-@login_required
+@app.route('/checkout')
 def checkout():
     invoice = secrets.token_hex(5)
+    today = date.today()
     try:     
-        order = CustomerOrder(invoice=invoice,customer_id=current_user.id,orders=session['Shoppingcart'])
+        order = CustomerOrders(invoice=invoice,customer_id=current_user.id,orders=session['Shoppingcart'],date=str(today.strftime("%d/%m/%Y")))
         db.session.add(order)
         db.session.commit()
         return redirect(url_for('check_out',invoice=invoice))
@@ -874,12 +913,11 @@ def checkout():
         
 
 @app.route('/checkout/<invoice>')
-@login_required
 def check_out(invoice):
     grandTotal = 0
     subTotal = 0
-    info = ShippingInfo.query.filter_by(id=current_user.id).first()
-    orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    orders = CustomerOrders.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrders.id.desc()).first()
     for key, product in orders.orders.items():
          discount = (product['discount']/100) * float(product['price'])
          subTotal += float(product['price']) * int(product['quantity'])
@@ -887,28 +925,6 @@ def check_out(invoice):
          tax =("%.2f" %(.06 * float(subTotal)))
          grandTotal = "%.2f" % (1.06 * float(subTotal))
     return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
-
-# @app.route('/get_pdf/<invoice>', methods=['POST'])
-# def get_pdf(invoice):
-#     grandTotal = 0
-#     subTotal = 0
-#     if request.method == 'POST':
-#         customer = ShippingInfo.query.filter_by(id=current_user.id).first()
-#         orders = CustomerOrder.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
-#         for key, product in orders.orders.items():
-#             discount = (product['discount']/100) * float(product['price'])
-#             subTotal += float(product['price']) * int(product['quantity'])
-#             subTotal -= discount
-#             tax =("%.2f" %(.06 * float(subTotal)))
-#             grandTotal = "%.2f" % (1.06 * float(subTotal))
-
-#         rendered = render_template('pdf.html',customer=customer,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
-#         pdf = pdfkit.from_string(rendered, False)
-#         response = make_response(pdf)
-#         response.headers['Content-Type'] = 'application/pdf'
-#         response.headers['Content-Disposition'] = 'inline;filename=output.pdf'
-#         return response
-#     return request(url_for('check_out'))
 
 
 @app.route('/payment',methods=['GET','POST'])
@@ -925,7 +941,7 @@ def payment():
     amount= amount,
     currency='usd',
     )
-    orders = CustomerOrder.query.filter_by(customer_id=current_user.id).order_by(CustomerOrder.id.desc()).first()
+    orders = CustomerOrders.query.filter_by(customer_id=current_user.id).order_by(CustomerOrders.id.desc()).first()
     today = date.today()
     if request.method == 'POST':
         # storing information into transaction database
@@ -933,7 +949,30 @@ def payment():
         db.session.add(new_transaction)
         db.session.commit()
         clearcart()
+    return redirect(url_for('send_mail'))
+
+@app.route('/sendmail')
+def send_mail():
+    grandTotal = 0
+    subTotal = 0
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    transaction = Transaction.query.filter_by(user_id=current_user.id).all()
+    orders = CustomerOrders.query.filter_by(customer_id=current_user.id).order_by(CustomerOrders.id.desc()).first()
+    for key, product in orders.orders.items():
+         discount = (product['discount']/100) * float(product['price'])
+         subTotal += float(product['price']) * int(product['quantity'])
+         subTotal -= discount
+         tax =("%.2f" %(.06 * float(subTotal)))
+         grandTotal = "%.2f" % (1.06 * float(subTotal))
+
+    msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
+    msg.body = 'Hello Flask message sent from Flask-Mail'
+    html = render_template('email.html',info=info,transaction=transaction,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal)
+    msg.html = html
+    mail.send(msg)
     return redirect(url_for('thankyou'))
+
+
 
 @app.route('/thankyou')
 def thankyou():
