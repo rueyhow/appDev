@@ -1,4 +1,5 @@
 from concurrent.futures import process
+import email
 from re import S
 from unicodedata import name
 from flask import Flask, make_response, render_template, request , redirect , url_for , session , flash
@@ -23,21 +24,16 @@ import uuid as uuid
 import sys
 from werkzeug.security import generate_password_hash , check_password_hash
 from flask_login import LoginManager , UserMixin, login_user , login_required , logout_user , current_user
-import os
-import base64
+import os, base64
 from wtforms.validators import ValidationError
 from datetime import datetime
 from flask import render_template,session, request,redirect,url_for,flash,current_app
 from forms import Addproducts
-import secrets
-import os
-import stripe
+import secrets, os, stripe
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from flask_msearch import Search
 from dataclasses import dataclass, field
 from typing import Tuple
-import pickle as pickle
-
 app = Flask(__name__, template_folder = 'template')
 
 # creation of all database information
@@ -74,28 +70,13 @@ with app.app_context():
     else:
         migrate.init_app(app, db)
 
-def Voucher(ID):
-    voucher_dict = {}
-    db = shelve.open('databases/voucher/voucher.db', 'c')
-    try:
-        voucher_dict = db['Voucher']
-    except:
-        print("Error in retrieving Users from user.db.")
-    if ID in voucher_dict:
-        print("voucher already generated")
-    else:
-        voucher_dict[ID] = {'value' : 10}
-        db['voucher'] = voucher_dict
-        db.close()
-
-
 
 
 
 IS_DEV = app.env == 'development'
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = '/'
+login_manager.login_view = '/login'
 upload_folder = 'static/images/profilepics'
 app.config['upload_folder'] = upload_folder
 
@@ -117,7 +98,6 @@ class User(UserMixin,db.Model):
     username = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(50))
     password = db.Column(db.String(80))
-    gender = db.Column(db.String(6))
     phone_number = db.Column(db.Integer() , unique = False)
     profile_pic = db.Column(db.LargeBinary, nullable= True , default = ICON)
     base64 = db.Column(db.String(64) , nullable = True , default = 'None' )
@@ -219,6 +199,7 @@ class Transaction(db.Model):
     amount = db.Column(db.Integer , unique = False, nullable = False)
     refunded = db.Column(db.String(5) , unique = False , default = 'NO')
 
+
 @app.route('/admin')
 def admin():
     products = Addproduct.query.all()
@@ -246,6 +227,7 @@ def contactUs():
 def loaded(id_user):
     return User.query.get(int(id_user))
 
+
 @app.route('/', methods = ['GET' , 'POST'])
 def Home_Page():
     form2 = CreateUserForm()
@@ -257,7 +239,7 @@ def Home_Page():
             flash('username already taken')
         else:
             today = date.today()
-            new_user = User(username = form2.username.data , email = form2.email.data , password = hash , gender = form2.gender.data , id = user_ID , phone_number = form2.phone_number.data , date = today.strftime("%d/%m/%Y"))
+            new_user = User(username = form2.username.data , email = form2.email.data , password = hash, id = user_ID , phone_number = form2.phone_number.data , date = today.strftime("%d/%m/%Y"))
             db.session.add(new_user)
             db.session.commit()
             return '<h1> New user has been added! </h1>'
@@ -282,6 +264,37 @@ def logout():
     logout_user()
     flash('You have been logged out')
     return redirect('/')
+
+@app.route('/login' , methods = ['GET' , 'POST'])
+def default_login():
+    form2 = CreateUserForm()
+    if request.method == 'POST' and form2.validate_on_submit():
+        hash = generate_password_hash(request.form['password'] , method = 'sha256')
+        user_ID = int(id(request.form['username']))
+        user_by_name = User.query.filter_by(username=request.form['username']).first()
+        if user_by_name:
+            flash('username already taken')
+        else:
+            today = date.today()
+            new_user = User(username = request.form['username'] , email = form2.email.data , password = hash  , id = user_ID , phone_number = request.form['phone_number'] , date = today.strftime("%d/%m/%Y"))
+            db.session.add(new_user)
+            db.session.commit()
+            flash('new user has been added! Please log in' , category= 'success')
+            return redirect(url_for('default_login'))
+    forms = ExistingMember()
+    if request.method == 'POST' and forms.validate_on_submit():
+        user = User.query.filter_by(username = request.form['username']).first()
+        if user:
+            if check_password_hash(user.password , request.form['password']):
+                login_user(user , remember = forms.remember.data)
+                if user.status == 'Enabled':
+                    return redirect(url_for('Home_Page'))
+                else:
+                    flash('your account has been banned', category= 'danger')
+            flash('wrong password entered' , category= 'danger')
+        flash('invalid username', category= 'danger')
+        # return '<h1>' + form1.username.data + " " + form1.password.data + "</h1>"
+    return render_template('admin/login.html' , form1 = form2 , form = forms)
 
 @app.route('/delete')
 def delete():
@@ -372,49 +385,32 @@ def user_enable_admin(id):
     db.session.commit()
     return redirect(url_for('dash'))
 
-
-
-
-
 @app.route('/updateuser/<int:id>' , methods = ['POST' , 'GET'])
 @login_required
 def updateuser(id):
     ID = User.query.filter_by(id=id).first()
     updateForm = CreateUserForm()
-
     if request.method == 'POST':
-        ID.username = updateForm.username.data
-        ID.email = updateForm.email.data
-        db.session.commit()
+        username_verification = User.query.filter_by(username=updateForm.username.data).first()
+        email_verification = User.query.filter_by(email=updateForm.email.data).first()
+        if username_verification:
+            return '<h4> username is taken <h4>'
+        if email_verification:
+            return '<h4> email is taken <h4>'
+        else:
+            ID.username = updateForm.username.data
+            ID.email = updateForm.email.data
+            db.session.commit()
         return redirect(url_for('dash'))
     if request.method == 'POST':
         return render_template('updateuser.html' , form = updateForm , user = ID)
     return render_template('updateuser.html' , form = updateForm , user = ID)
 
-
-
 @app.route('/feedback.html')
 def feedback():
     return render_template('feedback.html')
 
-
 # end user login/register part
-
-
-class Feedback(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable = False)
-    email = db.Column(db.String(200), nullable = False)
-    
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def __repr__(self):
-        return f"Feedback('{self.name}','{self.email})"
-
-
-
-
-
 
 
 # product page routes 
@@ -426,7 +422,6 @@ def brands():
 def categories():
     categories = Category.query.join(Addproduct,(Category.id == Addproduct.category_id)).all()
     return categories
-
 
 
 @app.route('/products/index.html')
@@ -970,7 +965,7 @@ def Table():
 
 @app.route('/dropTables')
 def dropTables():
-    Transaction.__table__.drop(engine)
+    User.__table__.drop(engine)
     return redirect(url_for('Home_Page'))
 
 @app.route('/refund')

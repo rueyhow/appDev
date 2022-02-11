@@ -9,39 +9,95 @@
     <title>Document</title>
 </head>
 <body>
+  <div class="row">
     <div class="card mb-4">
         <div class="card-header">
             <i class="fas fa-table me-1"></i>
-            Transaction history of ALL Users
+            Transaction history of all users
         </div>
         <div class="card-body">
             <table id="datatablesSimple">
+            {% if transaction_table != 0 %}
                 <thead>
                     <tr>
-                        <th>Customer user id</th>
-                        <th>Transaction ID</th>
-                        <th>Transaction Date</th>
-                        <th>Order</th>
-                        <th>Total</th>
+                        <th>Customer ID</th>
+                        <th>Invoice ID</th>
+                        <th>Transaction date</th>
+                        <th>Total Amount</th>
                         <th>Refund status</th>
+                        <th>Order Details</th>
                     </tr>
                 </thead>
-            
+                
                 <tbody>
                     {% for transaction in transaction_table %}
-                    <tr>
+                   
+                    
+                    <tr> 
                         <td>{{transaction.user_id}}</td>
                         <td>{{transaction.id}}</td>
                         <td>{{transaction.date}}</td>
-                        <td>{{transaction.order}}</td>
                         <td>${{transaction.amount}}</td>
                         <td>{{transaction.refunded}}</td>
-                    </tr>  
+                        
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{transaction_table.index(transaction)}}">
+                               order info
+                            </button>
+                        <!-- modals -->
+                      <div class="modal fade modal-centered" id="staticBackdrop-{{transaction_table.index(transaction)}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="staticBackdropLabel">Order Information</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {% for key in transaction.order %}
+                              <div class="row">
+                                    <div class="card">
+                                        <div class="row">
+                                          <div class="col-md-4">
+                                            
+                                            <img src="{{url_for('static', filename='images/' + transaction.order[key].image)}}" alt="" width = '145px;' height = '145px;' class = 'img-fluid rounded-start'>
+                                          </div>
+                                          <div class="col-md-5">
+                                            <div class="card-body">
+                                                <strong>Product ID: </strong>{{key}}<br>
+                                                <strong>Color: </strong>{{transaction.order[key].color}} <br>
+                                                <strong>Item Name: </strong>{{transaction.order[key].name}} <br>
+                                                <strong>Price: </strong>${{transaction.order[key].price}} <br>
+                                                <strong>Quantity: </strong>{{transaction.order[key].quantity}} <br>
+                                            
+                                            </div>
+                                        </div>
+                                        </div>
+                                      </div>
+                                
+                            
+                            </div>
+                            {% endfor %}
+                            
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div> 
+                      
+                        </td>
+                       
+                    </tr>
                     {% endfor %}
+            {% else %}
+                        <h1>No previous transactions has been made</h1>
+            {% endif %}
+
                 </tbody>
             </table>
         </div>
     </div>
+  </div>
     <!-- scripts -->
     <script src="{{url_for('static' , filename = 'js/datatables-simple-demo.js')}}"></script>
 </body>
