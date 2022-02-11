@@ -306,8 +306,9 @@ def logout():
 @app.route('/delete')
 def delete():
     user_to_delete = User.query.filter_by(id = current_user.id).first()
+    info_to_delete = BilingInfo.query.filter_by(email=current_user.email).first() # When User deletes the account, all information regarding the user gets deleted.
     try:
-        db.session.delete(user_to_delete)
+        db.session.delete(user_to_delete, info_to_delete)
         db.session.commit()
     except:
         return redirect('/')
@@ -319,10 +320,12 @@ def dash():
     name_to_update = User.query.get(current_user.id)
     users_table = User.query.all()
     user_transaction = Transaction.query.filter_by(user_id = current_user.id).all()
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
     if request.method == 'POST':
         # UPDATING USER INFORMATION
         name_to_update.username = request.form['username']
         name_to_update.email = request.form['email']
+        info.email = name_to_update.email
         try:
             db.session.commit()
             flash('User updated successfully')
@@ -869,6 +872,7 @@ def deleteAllFeedback():
 
 #Transaction
 
+
 @app.route('/changeinfo')
 def change_info():
     info = BilingInfo.query.filter_by(email=current_user.email).first()
@@ -948,6 +952,7 @@ def payment():
 @app.route('/sendmail')
 def send_mail():
     info = BilingInfo.query.filter_by(email=current_user.email).first()
+    transaction = Transaction.query.filter_by(user=current_user.username).first()
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
     msg.body = 'Hello Flask message sent from Flask-Mail'
     mail.send(msg)
