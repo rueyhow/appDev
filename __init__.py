@@ -955,7 +955,6 @@ def send_mail():
     grandTotal = 0
     subTotal = 0
     info = BilingInfo.query.filter_by(email=current_user.email).first()
-    transaction = Transaction.query.filter_by(user_id=current_user.id).all()
     orders = CustomerOrders.query.filter_by(customer_id=current_user.id).order_by(CustomerOrders.id.desc()).first()
     for key, product in orders.orders.items():
          discount = (product['discount']/100) * float(product['price'])
@@ -966,7 +965,7 @@ def send_mail():
 
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
     msg.body = 'Hello Flask message sent from Flask-Mail'
-    html = render_template('email.html',info=info,transaction=transaction,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal)
+    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal)
     msg.html = html
     mail.send(msg)
     return redirect(url_for('thankyou'))
