@@ -9,41 +9,41 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="card border-info" style="max-width: 540px;">
-        <div class="row g-0">
-          <div class="col-md-4">
-            {% if current_user.base64 == 'None' %}
-            <img src="../../../static/images/profilepics/default.png" class = 'img-fluid rounded-start'>
-            {% elif current_user.base64 != 'None' %}
-            <img src="data:image/png;base64, {{current_user.base64}}" class ='img-fluid rounded-start'>
-            {% endif %}
-          </div>
-          <div class="col-md-8">
-            <div class="card-body">
-              <h5 class="card-title">Profile Picture</h5>
-              <form action="updateProfilePic.html" method = 'POST' , enctype="multipart/form-data">
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">upload picture</button>
-                                    <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                          <div class="modal-content">
-                                            <div class="modal-header">
-                                              <h5 class="modal-title" id="staticBackdropLabel">Synergy Soccer</h5>
-                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                    {{ form.profile_pic.label(class = 'form-label')}}
-                                                    {{ form.profile_pic(class = 'form-control' , value = name_to_update.profile_pic)}}
-                                                    {{ form.submit(class='btn btn-secondary') }}
-                                            </div>
-                                          </div>
+  <div class="card border-info" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+        {% if current_user.base64 == 'None' %}
+        <img src="../../../static/images/profilepics/default.png" class = 'img-fluid rounded-start'>
+        {% elif current_user.base64 != 'None' %}
+        <img src="data:image/png;base64, {{current_user.base64}}" class ='img-fluid rounded-start'>
+        {% endif %}
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">Profile Picture</h5>
+          <form action="updateProfilePic.html" method = 'POST' , enctype="multipart/form-data">
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">upload picture</button>
+                                <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title" id="staticBackdropLabel">Synergy Soccer</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
+                                        <div class="modal-body">
+                                                {{ form.profile_pic.label(class = 'form-label')}}
+                                                {{ form.profile_pic(class = 'form-control' , value = name_to_update.profile_pic)}}
+                                                {{ form.submit(class='btn btn-secondary') }}
+                                        </div>
+                                      </div>
                                     </div>
-                    </form>
-              <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-            </div>
-          </div>
+                                </div>
+                </form>
+          <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
         </div>
       </div>
+    </div>
+  </div>
 </body>
 </html>
 {% endblock %}
