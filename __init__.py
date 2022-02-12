@@ -949,10 +949,10 @@ def payment():
         db.session.add(new_transaction)
         db.session.commit()
         clearcart()
-    return redirect(url_for('send_mail'))
+    return redirect(url_for('order_confirmation'))
 
-@app.route('/sendmail')
-def send_mail():
+@app.route('/orderconfirmation')
+def order_confirmation():
     grandTotal = 0
     subTotal = 0
     info = BilingInfo.query.filter_by(email=current_user.email).first()
@@ -965,7 +965,7 @@ def send_mail():
          grandTotal = "%.2f" % (1.06 * float(subTotal))
 
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
-    msg.body = 'Hello Flask message sent from Flask-Mail'
+    msg.body = 'Order Confirmation'
     html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal)
     msg.html = html
     mail.send(msg)
