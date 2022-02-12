@@ -923,7 +923,7 @@ def couponApplied(invoice):
                 percentage = db[form1.code.data]
                 print(percentage)
                 coupon_discount = float(percentage/100)
-            flash('coupon applied successfully')
+            flash('coupon applied successfully' , 'success')
             redeem(form1.code.data)
             grandTotal = "%.2f" % (1.06 * float(subTotal) * (1-coupon_discount))
         else:
