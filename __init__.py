@@ -68,6 +68,7 @@ app.config['MAIL_PASSWORD'] = 'Trustknow1!'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
+#send email
 mail = Mail(app)
 
 
