@@ -6,7 +6,8 @@ DBNAME = f'{__path__}/CouponDB'
 def generateAmount() -> int:
     '''Generates a random int from 2-20'''
     return random.choice([2,3,4,5,6,7,8,9,10]*8 + [11,12,13,14,15,16,17,18,19,20])
-    
+
+
 def generateCoupon() -> None:
     '''Inserts feedback object into the database'''
     with shelve.open(DBNAME) as db:
@@ -36,7 +37,7 @@ def redeem(coupon : str) -> int:
         except KeyError: 
             return 0
 
-def deleteAll() -> bool: #is not imported with *
+def deleteall() -> bool: #is not imported with *
     '''deletes all coupon code in shelve'''
     with shelve.open(DBNAME) as db:
         try:
@@ -52,11 +53,23 @@ def traversePage(page: int, increment_level : int) -> List[tuple]:
         if 0 < page <=maxpages :
             return list(itertools.islice(db.items(), page*increment_level, page*increment_level+increment_level))
         else: return list()
+def printTable():
+    table = rich.table.Table(title="coupon")
+    table.add_column("coupon", style= "green")
+    table.add_column("%", style="blue")
+    traversePage(1,1)
+    with shelve.open(DBNAME) as db:
+        for key, value in db.items():
+            table.add_row(key, str(value))
+        console = rich.console.Console()
+        console.print(table)
+
+
 if __name__ == '__main__':
-    # deleteAll()
-    # for i in range(20):
-    #     generateCoupon()
-    # print(customCoupon('huathuat88', 90))
+    deleteall()
+    for i in range(20):
+        generateCoupon()
+    print(customCoupon('huathuat88', 90))
     '''Uses rich library'''
     import rich.table
     import rich.console

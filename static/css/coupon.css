@@ -1,0 +1,72 @@
+input.btn2 {
+    background: #008169;
+    padding: 15px 30px;
+    border-radius: 3px;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 14px;
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-family: sans-serif;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+  input.btn2::after {
+    content: '';
+    position: absolute;
+    background: #005848;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    transform: translateX(100%);
+    transition: all 0.5s ease;
+    border-radius: 3px;
+  }
+  input.btn2:hover:after{
+    transform: translateX(0);
+  }
+
+  a.btn1 {
+    background: #008169;
+    padding: 15px 30px;
+    border-radius: 3px;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 14px;
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-family: sans-serif;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+  a.btn1::after {
+    content: '';
+    position: absolute;
+    background: #005848;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    transform: translateX(100%);
+    transition: all 0.5s ease;
+    border-radius: 3px;
+  }
+  a.btn1:hover:after{
+    transform: translateX(0);
+  }
+#generateButton{
+    margin-top:20px;
+    margin-bottom:20px;
+}
+#card1{
+    margin-top:40px;
+}

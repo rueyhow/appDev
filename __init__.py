@@ -3,36 +3,28 @@ from concurrent.futures import process
 import email
 
 # from crypt import methods
-from distutils.log import info
-import email
-from enum import unique
 
-from re import S
-from unicodedata import name
-from flask import Flask, make_response, render_template, request , redirect , url_for , session , flash
+import email
+from flask import Flask, render_template, request , redirect , url_for , session , flash
 import os
 import json
 from flask.helpers import url_for
-from numpy import product
 import pandas as pd
 from sqlalchemy.sql.sqltypes import NullType
 from wtforms import validators, Form
-from forms import CreateUserForm , ExistingMember, ShippingForm
+from forms import CreateUserForm , ExistingMember, ShippingForm , Redeem
 from flask_wtf import FlaskForm
-from wtforms import StringField , PasswordField, BooleanField , validators
-from wtforms.validators import InputRequired , Email , Length 
+from wtforms import validators
+
 from flask_bootstrap import Bootstrap as b
 import shelve
 from forms import CreateUserForm , ExistingMember
-from flask_sqlalchemy import SQLAlchemy , inspect
-from sqlalchemy import Column , String , Integer, create_engine
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
 from datetime import date
-import uuid as uuid
-import sys
 from werkzeug.security import generate_password_hash , check_password_hash
 from flask_login import LoginManager , UserMixin, login_user , login_required , logout_user , current_user
 import os, base64
-from wtforms.validators import ValidationError
 from datetime import datetime
 from flask import render_template,session, request,redirect,url_for,flash,current_app
 from forms import Addproducts
@@ -43,6 +35,10 @@ from dataclasses import dataclass, field
 from typing import Tuple
 import pickle as pickle
 from flask_mail import Mail, Message, MIMEBase, MIMEMultipart, MIMEText
+from coupon import generateCoupon , DBNAME , traversePage , deleteall , printTable , redeem
+import rich.table
+import rich.console
+import pyperclip
 
 
 
@@ -422,11 +418,8 @@ def updateuser(id):
     updateForm = CreateUserForm()
     if request.method == 'POST':
         username_verification = User.query.filter_by(username=updateForm.username.data).first()
-        email_verification = User.query.filter_by(email=updateForm.email.data).first()
         if username_verification:
             return '<h4> username is taken <h4>'
-        if email_verification:
-            return '<h4> email is taken <h4>'
         else:
             ID.username = updateForm.username.data
             ID.email = updateForm.email.data
@@ -913,19 +906,46 @@ def checkout():
         return redirect(url_for('home'))
         
 
-@app.route('/checkout/<invoice>')
-def check_out(invoice):
+@app.route('/checkout/<invoice>/couponApplied' , methods = ['POST' , 'GET'])
+def couponApplied(invoice):
+    form1 = Redeem()
     grandTotal = 0
     subTotal = 0
     info = BilingInfo.query.filter_by(email=current_user.email).first()
     orders = CustomerOrders.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrders.id.desc()).first()
     for key, product in orders.orders.items():
-         discount = (product['discount']/100) * float(product['price'])
-         subTotal += float(product['price']) * int(product['quantity'])
-         subTotal -= discount
-         tax =("%.2f" %(.06 * float(subTotal)))
-         grandTotal = "%.2f" % (1.06 * float(subTotal))
-    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax)
+        discount = (product['discount']/100) * float(product['price'])
+        subTotal += float(product['price']) * int(product['quantity'])
+        subTotal -= discount
+        tax =("%.2f" %(.06 * float(subTotal)))
+        if form1.validate_on_submit():
+            with shelve.open(DBNAME) as db:
+                percentage = db[form1.code.data]
+                print(percentage)
+                coupon_discount = float(percentage/100)
+            flash('coupon applied successfully')
+            redeem(form1.code.data)
+            grandTotal = "%.2f" % (1.06 * float(subTotal) * (1-coupon_discount))
+        else:
+            grandTotal = "%.2f" % (1.06 * float(subTotal))
+    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1)
+
+@app.route('/checkout/<invoice>' , methods = ['POST' , 'GET'])
+def check_out(invoice):
+    form1 = Redeem()
+    grandTotal = 0
+    subTotal = 0
+    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    orders = CustomerOrders.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrders.id.desc()).first()
+    for key, product in orders.orders.items():
+        discount = (product['discount']/100) * float(product['price'])
+        subTotal += float(product['price']) * int(product['quantity'])
+        subTotal -= discount
+        tax =("%.2f" %(.06 * float(subTotal)))
+        grandTotal = "%.2f" % (1.06 * float(subTotal))
+    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1)
+
+
 
 
 @app.route('/payment',methods=['GET','POST'])
@@ -996,6 +1016,31 @@ def deleteTransaction(id):
 
 
 
+# coupon page
+@app.route('/coupon')
+def coupon():
+    with shelve.open(DBNAME) as db:
+        coupon_list = dict(db)
+    return render_template('/coupon.html' , coupon_list = coupon_list)
+# generate coupon
+@app.route('/generateCoupon')
+def generate():
+    with shelve.open(DBNAME) as db:
+        coupon_list = list(db)
+        if len(coupon_list) == 0:
+            for i in range(5):
+                generateCoupon()
+        else:
+            flash('maximum amount of coupons generated' , 'danger')
+    # deleteall()
+    return redirect(url_for('coupon'))
+
+@app.route('/<coupon>' , methods = ['POST' , 'GET'])
+def copy(coupon):
+    pyperclip.copy(str(coupon))
+    pyperclip.paste()
+    flash('coupon code copied!' , 'success')
+    return redirect(url_for('coupon'))
 @app.route('/drop')
 def Table():
     return render_template('backend.html')

@@ -48,3 +48,6 @@ class ShippingForm(FlaskForm):
     state = StringField("State: ",validators=[DataRequired()])
     zipcode = StringField("ZipCode: ",validators=[DataRequired()])
     submit = SubmitField("Next")
+
+class Redeem(FlaskForm):
+    code = StringField('coupon_code', [validators.DataRequired()])

@@ -69,7 +69,11 @@
                <td> <h5>Tax: ${{tax}}</h5></td>
                <td> <h5>Grand total: ${{grandTotal}}</h5> </td>
                <td>
-                   
+                <form action="{{url_for('couponApplied' , invoice = orders.invoice)}}" method = 'POST'>
+                    {{ form1.csrf_token }}
+                    {{ form1.code() }}
+                    <input type="submit" value = 'input coupon code'>
+                </form>
                 </td>
            </tr>
         </table>

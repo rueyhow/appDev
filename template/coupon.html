@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static' , filename = 'css/coupon.css')}}">
+</head>
+<body>
+  {% if coupon_list|length == 5 %}
+  <div class="container-fluid">
+    <h1>Coupons Available</h1>
+  </div>
+  {% else %}
+  <div class="container-fluid" id = 'generateButton'>
+    <a href="{{url_for('generate')}}" class = 'btn1'>Generate Coupon</a>
+  </div>
+  {% endif %}
+</body>
+{% for coupon in coupon_list %}
+<div class="card" style="width: 18rem;" id = 'card1'>
+    <img class="card-img-top" src="{{url_for('static' , filename = 'images/profilepics/Synergylogo.png')}}" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">{{coupon_list[coupon]}}% off</h5>
+      <h3>Coupon Code : {{coupon}}</h3>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+      <form action="{{url_for('copy', coupon = coupon)}}" method = 'GET'>
+        <input type="submit" value = 'copy to clipboard' class = 'btn2'>
+    </form>
+    </div>
+  </div>
+{% endfor %}
+</html>
+{% endblock %}
