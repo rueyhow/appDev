@@ -85,7 +85,17 @@
                             <div class="sb-sidenav-menu-heading">Core</div>
                             <a class="nav-link" href="{{url_for('dash')}}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Dashboard
+                                User Profile
+                            </a>
+                            <div class="sb-sidenav-menu-heading">Coupon</div>
+                            <a class="nav-link" href="{{url_for('coupon')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Coupon
+                            </a>
+                            <div class="sb-sidenav-menu-heading">Dashboard</div>
+                            <a class="nav-link" href="{{url_for('sales')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard/Sales Page
                             </a>
                             <div class="sb-sidenav-menu-heading">Interface</div>
                             {% if current_user.admin == 'yes' %}
@@ -102,7 +112,6 @@
                                     <a class="nav-link" href="{{url_for('brands')}}">update brand</a>
                                     <a class="nav-link" href="{{url_for('admin')}}">update product</a>
                                     <a class="nav-link" href="{{url_for('displayFeedback')}}">view feedback</a>
-                                    <a class="nav-link" href="{{url_for('sales')}}">sales page</a>
                                 </nav>
                             </div>
                             {% endif %}
@@ -146,11 +155,8 @@
                                 
                             </a>
                         </div>
+                        <div class="small">Logged in as: {{current_user.username}}</div>
                     </div>
-                    <!-- <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
-                        Syngery Soccer
-                    </div> -->
                 </nav>
             </div>
         <!-- endnavbar -->
