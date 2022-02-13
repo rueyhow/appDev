@@ -51,7 +51,7 @@
         <table class="table table-sm">
            <tr>
             <td>
-                <form action="/payment" method="POST">
+                <form action="{{url_for('payment' , percentage = percentage)}}" method="POST">
                     {% set amount =  grandTotal.replace('.','') %}
                     <input type="hidden" name="amount" value="{{amount}}">
                     <input type="hidden" name="invoice" value="{{invoice}}">

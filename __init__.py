@@ -101,6 +101,7 @@ login_manager.init_app(app)
 login_manager.login_view = '/login'
 upload_folder = 'static/images/profilepics'
 app.config['upload_folder'] = upload_folder
+percentage = 0
 
 
 
@@ -909,6 +910,7 @@ def checkout():
 
 @app.route('/checkout/<invoice>/couponApplied' , methods = ['POST' , 'GET'])
 def couponApplied(invoice):
+    percentage = 0
     form1 = Redeem()
     grandTotal = 0
     subTotal = 0
@@ -937,7 +939,7 @@ def couponApplied(invoice):
             grandTotal = "%.2f" % (1.06 * float(subTotal) * (1-coupon_discount))
         else:
             grandTotal = "%.2f" % (1.06 * float(subTotal))
-    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1)
+    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1 , percentage = percentage)
 
 @app.route('/checkout/<invoice>' , methods = ['POST' , 'GET'])
 def check_out(invoice):
@@ -957,8 +959,9 @@ def check_out(invoice):
 
 
 
-@app.route('/payment',methods=['GET','POST'])
-def payment():
+@app.route('/payment/<percentage>',methods=['GET','POST'])
+def payment(percentage):
+    percentage = percentage
     invoice1 = request.form.get('invoice')
     amount = request.form.get('amount')
     customer = stripe.Customer.create(
@@ -979,10 +982,10 @@ def payment():
         db.session.add(new_transaction)
         db.session.commit()
         clearcart()
-    return redirect(url_for('order_confirmation'))
+    return redirect(url_for('order_confirmation' , percentage = percentage))
 
-@app.route('/orderconfirmation')
-def order_confirmation():
+@app.route('/orderconfirmation/<percentage>')
+def order_confirmation(percentage):
     grandTotal = 0
     subTotal = 0
     info = BilingInfo.query.filter_by(email=current_user.email).first()
@@ -992,7 +995,7 @@ def order_confirmation():
          subTotal += float(product['price']) * int(product['quantity'])
          subTotal -= discount
          tax = ("%.2f" %(.06 * float(subTotal)))
-         grandTotal = "%.2f" % (1.06 * float(subTotal))
+         grandTotal = "%.2f" % (1.06 * float(subTotal) * (1- float(int(percentage)/100)))
 
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
     msg.body = 'Order Confirmation'
@@ -1049,8 +1052,8 @@ def generate():
     return redirect(url_for('coupon'))
 
 @app.route('/coupon/<code>' , methods = ['POST' , 'GET'])
-def copy(coupon):
-    pyperclip.copy(str(coupon))
+def copy(code):
+    pyperclip.copy(str(code))
     pyperclip.paste()
     flash('coupon code copied!' , 'success')
     return redirect(url_for('coupon'))
