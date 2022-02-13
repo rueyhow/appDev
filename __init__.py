@@ -219,7 +219,6 @@ class Transaction(db.Model):
     amount = db.Column(db.Integer , unique = False, nullable = False)
     refunded = db.Column(db.String(5) , unique = False , default = 'NO')
 
-
 @app.route('/admin')
 def admin():
     products = Addproduct.query.all()
