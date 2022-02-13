@@ -1027,8 +1027,7 @@ def deleteTransaction(id):
 # coupon page
 @app.route('/coupon')
 def coupon():
-    with shelve.open(DBNAME) as db:
-        coupon_list = dict(db)
+    coupon_list = User.query.filter_by(id = current_user.id).all()
     return render_template('/coupon.html' , coupon_list = coupon_list)
 # generate coupon
 @app.route('/generateCoupon')
