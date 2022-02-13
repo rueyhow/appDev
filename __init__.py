@@ -1104,7 +1104,7 @@ def Table():
 
 @app.route('/dropTables')
 def dropTables():
-    User.__table__.drop(engine)
+    Transaction.__table__.drop(engine)
     return redirect(url_for('Home_Page'))
 
 @app.route('/refund')
