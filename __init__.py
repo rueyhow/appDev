@@ -994,7 +994,7 @@ def order_confirmation(percentage):
 
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
     msg.body = 'Order Confirmation'
-    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal,discount=discount)
+    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal)
     msg.html = html
     mail.send(msg)
     return redirect(url_for('thankyou'))
