@@ -996,7 +996,8 @@ def order_confirmation():
 
 @app.route('/thankyou')
 def thankyou():
-    return render_template('sales/thankyou.html')
+    orders = CustomerOrders.query.filter_by(customer_id=current_user.id).order_by(CustomerOrders.id.desc()).first()
+    return render_template('sales/thankyou.html',orders=orders)
 
 # sales page
 @app.route('/sales')
