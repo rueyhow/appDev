@@ -982,12 +982,12 @@ def order_confirmation():
          discount = (product['discount']/100) * float(product['price'])
          subTotal += float(product['price']) * int(product['quantity'])
          subTotal -= discount
-         tax =("%.2f" %(.06 * float(subTotal)))
+         tax = ("%.2f" %(.06 * float(subTotal)))
          grandTotal = "%.2f" % (1.06 * float(subTotal))
 
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
     msg.body = 'Order Confirmation'
-    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal)
+    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal,discount=discount)
     msg.html = html
     mail.send(msg)
     return redirect(url_for('thankyou'))
