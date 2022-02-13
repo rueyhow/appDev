@@ -259,7 +259,7 @@ def Home_Page():
         user_ID = int(id(form2.username.data))
         user_by_name = User.query.filter_by(username=form2.username.data).first()
         if user_by_name:
-            flash('username already taken')
+            return '<h2> username already taken </h2>'
         else:
             today = date.today()
             new_user = User(username = form2.username.data , email = form2.email.data , password = hash, id = user_ID , phone_number = form2.phone_number.data , date = today.strftime("%d/%m/%Y"))
@@ -918,12 +918,20 @@ def couponApplied(invoice):
         subTotal -= discount
         tax =("%.2f" %(.06 * float(subTotal)))
         if form1.validate_on_submit():
-            with shelve.open(DBNAME) as db:
-                percentage = db[form1.code.data]
-                print(percentage)
-                coupon_discount = float(percentage/100)
+            user = User.query.get(current_user.id)
+            # creating a temp dict
+            to_update = dict(user.coupon_dict)
+            # getting discount percentage
+            percentage = to_update[form1.code.data]
+            # changing to float
+            coupon_discount = float(percentage/100)
             flash('coupon applied successfully' , 'success')
-            redeem(form1.code.data)
+            # delete from temp dict
+            del to_update[form1.code.data]
+            try:
+                user.coupon_dict = dict(to_update)
+                db.session.commit()
+            except : print('fail')
             grandTotal = "%.2f" % (1.06 * float(subTotal) * (1-coupon_discount))
         else:
             grandTotal = "%.2f" % (1.06 * float(subTotal))
@@ -1025,14 +1033,18 @@ def coupon():
 # generate coupon
 @app.route('/generateCoupon')
 def generate():
-    with shelve.open(DBNAME) as db:
-        coupon_list = list(db)
-        if len(coupon_list) == 0:
+    if current_user.counter == 'available':
+        with shelve.open(DBNAME) as db1:
+            deleteall()
             for i in range(5):
                 generateCoupon()
-        else:
-            flash('maximum amount of coupons generated' , 'danger')
-    # deleteall()
+            try:
+                update = User.query.get(current_user.id)
+                update.coupon_dict = dict(db1)
+                update.counter = 'unavailable'
+                db.session.commit()
+            except: print('fail')
+    else: flash('coupons already generated' , 'danger')
     return redirect(url_for('coupon'))
 
 @app.route('/<coupon>' , methods = ['POST' , 'GET'])
