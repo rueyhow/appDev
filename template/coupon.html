@@ -30,24 +30,22 @@ Login
   {% endif %}
 </body>
 {% for coupon in coupon_list %}
-{% for code in coupon.coupon_dict %}
 <div class="card" style="width: 18rem;" id = 'card1'>
     <img class="card-img-top" src="{{url_for('static' , filename = 'images/profilepics/Synergylogo.png')}}" alt="Card image cap">
     <div class="card-body">
-      <h5 class="card-title">{{coupon.coupon_dict[code]}}%</h5>
-      <h3>{{code}}</h3>
+      <h5 class="card-title">{{coupon_list[coupon]}}% off</h5>
+      <h3>Coupon Code : {{coupon}}</h3>
       <p class="card-text"><Strong> <h1>Terms and conditions :</h1></Strong>
         When applying the coupon code <br>
         please confirm order before applying <br>
         Coupon Code will be used upon <strong>APPLYING</strong> <br>
         Not at payment.
       </p>
-      <form action="{{url_for('copy', code = code)}}" method = 'GET'>
+      <form action="{{url_for('copy', coupon = coupon)}}" method = 'GET'>
         <input type="submit" value = 'copy to clipboard' class = 'btn2'>
     </form>
     </div>
   </div>
-  {% endfor %}
 {% endfor %}
 </html>
 {% endblock %}
