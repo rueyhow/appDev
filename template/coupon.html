@@ -30,6 +30,9 @@ Login
   {% endif %}
 </body>
 {% for coupon in coupon_list %}
+{% if coupon.coupon_dict|length == 0 %}
+  <h1>No Coupons Available</h1>
+{% else %}
 {% for code in coupon.coupon_dict %}
 <div class="card" style="width: 18rem;" id = 'card1'>
     <img class="card-img-top" src="{{url_for('static' , filename = 'images/profilepics/Synergylogo.png')}}" alt="Card image cap">
@@ -48,6 +51,7 @@ Login
     </div>
   </div>
   {% endfor %}
+  {% endif %}
 {% endfor %}
 </html>
 {% endblock %}

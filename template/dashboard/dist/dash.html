@@ -33,26 +33,23 @@ Login
                               <p class="card-text">
                                 
                                     <div class="row">
-                                        <div class="col-8">
+                                        <div class="col-sm-6">
+                                            
                                         <strong>Username: </strong>{{current_user.username}} <br>
                                         <strong>Email : </strong>{{current_user.email}} <br>
                                         <strong>Phone Number : </strong> {{current_user.phone_number}} <br>
                                         <strong>Date Joined : </strong>{{current_user.date}} <br>
                                         <a href="{{url_for('updateProfilePic')}}" class = 'btn btn-success'>Update Profile Picture</a>
                                         </div>
-
-                                        <div class="col-4">
+                                 
+                                        <div class="col-sm-6">
                                             {% if current_user.base64 == 'None' %}
                                             <img src="../../../static/images/profilepics/default.png" alt="" align = 'right' class = 'rounded-circle'>
                                             {% elif current_user.base64 != 'None' %}
                                             <img src="data:image/png;base64, {{current_user.base64}}" align = 'right' class ='rounded-circle'>
                                             {% endif %}
-                                        
-                                        
                                         </div>
                                     </div>
-                               
-                            </p>
                             </div>
                           </div>
                         </div>
@@ -249,6 +246,7 @@ Login
                         </div>
                     </div>
                 </main>
+                
         </div>
         
         
