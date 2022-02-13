@@ -41,12 +41,13 @@ class FeedbackForm(FlaskForm):
     feedback = StringField('Feedback' , [validators.Length(min = 1 , max = 300) , validators.DataRequired])
 
 class ShippingForm(FlaskForm):
-    name = StringField("Full Name: ",validators=[DataRequired(), Length(min=1,max=255)])
-    address = StringField("Address: ",validators=[DataRequired()])
-    country = StringField("Country: ",validators=[DataRequired()])
-    city = StringField("City: ",validators=[DataRequired()])
-    state = StringField("State: ",validators=[DataRequired()])
-    zipcode = StringField("ZipCode: ",validators=[DataRequired()])
+    fname = StringField("First Name",validators=[DataRequired(), Length(min=1,max=255)])
+    lname = StringField("Last Name",validators=[DataRequired(), Length(min=1,max=255)])
+    address = StringField("Street Address",validators=[DataRequired()])
+    addressl = StringField("Address Line 2",validators=[DataRequired()])
+    city = StringField("City",validators=[DataRequired()])
+    state = StringField("State",validators=[DataRequired()])
+    zipcode = StringField("ZipCode",validators=[DataRequired()])
     submit = SubmitField("Next")
 
 class Redeem(FlaskForm):

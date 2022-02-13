@@ -2,20 +2,25 @@
 {% block title %}Shipping{% endblock %}
 
 {% block content %}
-<div class="text-center h1">Shipping Address</div>
+{% from "_formHelper.html" import render_field %}
+<div class="text-center h1">Shipping Details</div>
 <div class="container">
-    {% from "_formHelper.html" import render_field %}
     <div class="row">
-        <div class="col-md-4"></div>
-        <div class="col-md-4">
+        <div class="col-md-2"></div>
+        <div class="col-md-7">
             <form action="{{url_for('shipping')}}" method="POST" enctype="multipart/form-data">
             <div>
-                {{ render_field(form.name, class="form-control") }}
-                {{ render_field(form.address, class="form-control") }}
-                {{ render_field(form.country, class="form-control") }}
-                {{ render_field(form.city, class="form-control") }}
-                {{ render_field(form.state, class="form-control") }}
-                {{ render_field(form.zipcode, class="form-control") }}
+                <div class="row">
+                    <div class="form-group col-md-6">{{ render_field(form.fname, class="form-control") }}</div>
+                    <div class="form-group col-md-6">{{ render_field(form.lname, class="form-control") }}</div>
+                </div>
+                <div class="row">{{ render_field(form.address, class="form-control") }}</div>
+                <div class="row">{{ render_field(form.addressl, class="form-control") }}</div>
+                <div class="row">
+                    <div class="form-group col-md-4">{{ render_field(form.city, class="form-control") }}</div>
+                    <div class="form-group col-md-4">{{ render_field(form.state, class="form-control") }}</div>
+                    <div class="form-group col-md-4">{{ render_field(form.zipcode, class="form-control") }}</div>
+                </div>
             </div>
             <p><input type=submit value="Next" class="btn btn-info mt-2"></p>
         </form>
