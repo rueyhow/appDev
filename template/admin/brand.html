@@ -4,10 +4,11 @@
 
 
 <div class="container">
-  
-    <table class="table tbale-sm">
+    <h3 class="text-center  p-2 h4">Brands</h3>
+    <br>
+    <table class="table table-striped table-hover">
         <thead>
-            <th>Sr</th>
+            <th>#</th>
             <th>Name</th>
             <th>Edit</th>
             <th>Delete</th>
@@ -17,15 +18,12 @@
           {% for brand in brands %}
           <tr>
             <td>{{loop.index}}</td>
-            <td>{{ brand.name }}</td>
-            <td><a href="{{url_for('updatebrand', id=brand.id)}}" class="btn btn-sm btn-info">Edit</a></td>
-            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-{{brand.id}}">
-              delete
+            <td style="text-transform: capitalize;">{{ brand.name }}</td>
+            <td><a href="{{url_for('updatebrand', id=brand.id)}}" class="btn btn-sm btn-primary">Edit</a></td>
+            <td><button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal-{{brand.id}}">
+              Delete
             </button></td>
           </tr>
-
-
-
 
 
 
