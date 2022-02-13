@@ -955,7 +955,7 @@ def check_out(invoice):
 
 
 @app.route('/payment/<percentage>',methods=['GET','POST'])
-def payment(percentage):
+def payment_discount(percentage):
     percentage = percentage
     invoice1 = request.form.get('invoice')
     amount = request.form.get('amount')
@@ -977,10 +977,10 @@ def payment(percentage):
         db.session.add(new_transaction)
         db.session.commit()
         clearcart()
-    return redirect(url_for('order_confirmation' , percentage = percentage))
+    return redirect(url_for('order_confirmation_discount' , percentage = percentage))
 
 @app.route('/orderconfirmation/<percentage>')
-def order_confirmation(percentage):
+def order_confirmation_discount(percentage):
     grandTotal = 0
     subTotal = 0
     info = Shipping.query.filter_by(email=current_user.email).first()
@@ -991,6 +991,50 @@ def order_confirmation(percentage):
          subTotal -= discount
          tax = ("%.2f" %(.06 * float(subTotal)))
          grandTotal = "%.2f" % (1.06 * float(subTotal) * (1- float(int(percentage)/100)))
+
+    msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
+    msg.body = 'Order Confirmation'
+    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal,percentage=percentage)
+    msg.html = html
+    mail.send(msg)
+    return redirect(url_for('thankyou'))
+
+@app.route('/payment',methods=['GET','POST'])
+def payment():
+    invoice1 = request.form.get('invoice')
+    amount = request.form.get('amount')
+    customer = stripe.Customer.create(
+    email=request.form['stripeEmail'],
+    source=request.form['stripeToken'],
+    )
+    charge = stripe.Charge.create(
+    customer=customer.id,
+    description='Myshop',
+    amount= amount,
+    currency='usd',
+    )
+    orders = CustomerOrders.query.filter_by(customer_id=current_user.id).order_by(CustomerOrders.id.desc()).first()
+    today = date.today()
+    if request.method == 'POST':
+        # storing information into transaction database
+        new_transaction = Transaction(user = str(current_user.username), id = str(orders.invoice) , amount = int(int(amount) / 100), order = session['Shoppingcart']  , date = str(today.strftime("%d/%m/%Y")) , refunded = 'NO' , user_id = current_user.id)
+        db.session.add(new_transaction)
+        db.session.commit()
+        clearcart()
+    return redirect(url_for('order_confirmation'))
+
+@app.route('/orderconfirmation')
+def order_confirmation():
+    grandTotal = 0
+    subTotal = 0
+    info = Shipping.query.filter_by(email=current_user.email).first()
+    orders = CustomerOrders.query.filter_by(customer_id=current_user.id).order_by(CustomerOrders.id.desc()).first()
+    for key, product in orders.orders.items():
+         discount = (product['discount']/100) * float(product['price'])
+         subTotal += float(product['price']) * int(product['quantity'])
+         subTotal -= discount
+         tax = ("%.2f" %(.06 * float(subTotal)))
+         grandTotal = "%.2f" % (1.06 * float(subTotal))
 
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
     msg.body = 'Order Confirmation'

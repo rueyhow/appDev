@@ -7,13 +7,13 @@
             <br>
             Status : {{orders.status}}
             <br>
-            {{info.name}}
+            {{info.fname}} {{info.lname}}
             <br>
-            {{info.address}}
+            {{info.address}} {{info.addressl}}
             <br>
             {{info.city}},{{info.state}} {{info.postalcode}}
             <br>
-            <td><a href="{{url_for('change_info')}}" class="btn btn-info">EDIT</a></td>
+            <td><a href="{{url_for('change_info')}}" class="btn btn-info btn-sm">EDIT</a></td>
         <table class="table table-sm">
             <thead>
                 <th>Sr</th>
@@ -51,6 +51,7 @@
         <table class="table table-sm">
            <tr>
             <td>
+                {% if percentage %}
                 <form action="{{url_for('payment' , percentage = percentage)}}" method="POST">
                     {% set amount =  grandTotal.replace('.','') %}
                     <input type="hidden" name="amount" value="{{amount}}">
@@ -64,6 +65,21 @@
                      data-currency="sgd">
                    </script>
              </form>
+                {% else %}
+                <form action="{{url_for('payment' , percentage = percentage)}}" method="POST">
+                    {% set amount =  grandTotal.replace('.','') %}
+                    <input type="hidden" name="amount" value="{{amount}}">
+                    <input type="hidden" name="invoice" value="{{invoice}}">
+                   <script
+                     src="https://checkout.stripe.com/checkout.js"
+                     class="stripe-button"
+                     data-key="pk_test_51KKN0tAEaRDjqb9soECAov6Nvp1AWg9aqDXcZ5hik5OYrJwPlOmu1Lnl1LoUmBSTp0nlCCGXyqjDeOLfv4aicseV00WQHYM3xK"
+                     data-name="Synergy"
+                     data-amount="{{amount}}"
+                     data-currency="sgd">
+                   </script>
+             </form>
+                {% endif %}
             </td>
                <td width="15%"></td>
                <td> <h5>Tax: ${{tax}}</h5></td>
