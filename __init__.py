@@ -876,13 +876,14 @@ def shipping():
     form = ShippingForm(request.form)
     if request.method == 'POST':
         customer = User.query.filter_by(email=current_user.email).first()
-        name = form.name.data
+        fname = form.fname.data
+        lname = form.lname.data
         address = form.address.data
-        country = form.country.data
+        addressl = form.addressl.data
         city = form.city.data
         state = form.state.data
         zipcode = form.zipcode.data
-        biling = Shipping(name=name,email=customer.email,address=address,country=country,city=city,state=state,postalcode=zipcode)
+        biling = Shipping(fname=fname,lname=lname,email=customer.email,address=address,addressl=addressl,city=city,state=state,postalcode=zipcode)
         db.session.add(biling)
         db.session.commit()
         return redirect(url_for('checkout'))
