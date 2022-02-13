@@ -441,7 +441,6 @@ def feedback():
 
 
 # product page routes 
-
 def brands():
     brands = Brand.query.join(Addproduct, (Brand.id == Addproduct.brand_id)).all()
     return brands
