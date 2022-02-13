@@ -185,24 +185,19 @@ class Category(db.Model):
         return '<Catgory %r>' % self.name
 
 #shipping model
-class BilingInfo(db.Model):
+class Shipping(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), unique=False, nullable=False)
-    email = db.Column(db.String(255), unique=False, nullable=False, default='None')
+    fname = db.Column(db.String(255), unique=False, nullable=False)
+    lname = db.Column(db.String(255), unique=False, nullable=False)
+    email = db.Column(db.String(255), unique=False, nullable=False)
     address = db.Column(db.String(255), unique=False, nullable=False)
-    country = db.Column(db.String(50), unique=False, nullable=False)
+    addressl = db.Column(db.String(255), unique=False, nullable=False)
     city = db.Column(db.String(50), unique=False, nullable=False)
     state = db.Column(db.String(50), unique=False, nullable=False)
     postalcode = db.Column(db.Integer, unique=False, nullable=False)
 
-    def __repr__(self):
-        return '<ShippingInfo %r>' % self.name
 
 #Customer Order
-
-
-
-
 class CustomerOrders(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     invoice = db.Column(db.String(20),unique=True,nullable=False)
@@ -324,7 +319,7 @@ def default_login():
 @app.route('/delete')
 def delete():
     user_to_delete = User.query.filter_by(id = current_user.id).first()
-    info_to_delete = BilingInfo.query.filter_by(email=current_user.email).first() # When User deletes the account, all information regarding the user gets deleted.
+    info_to_delete = Shipping.query.filter_by(email=current_user.email).first() # When User deletes the account, all information regarding the user gets deleted.
     try:
         db.session.delete(user_to_delete, info_to_delete)
         db.session.commit()
@@ -338,7 +333,7 @@ def dash():
     name_to_update = User.query.get(current_user.id)
     users_table = User.query.all()
     user_transaction = Transaction.query.filter_by(user_id = current_user.id).all()
-    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    info = Shipping.query.filter_by(email=current_user.email).first()
     if request.method == 'POST':
         # UPDATING USER INFORMATION
         name_to_update.username = request.form['username']
@@ -569,7 +564,7 @@ def addproduct():
         discount = form.discount.data
         stock = form.stock.data
         colors = form.colors.data
-        desc = form.discription.data
+        desc = form.description.data
         brand = request.form.get('brand')
         category = request.form.get('category')
         image_1 = photos.save(request.files.get('image_1'), name=secrets.token_hex(10) + ".")
@@ -631,7 +626,7 @@ def updateproduct(id):
     form.discount.data = product.discount
     form.stock.data = product.stock
     form.colors.data = product.colors
-    form.discription.data = product.desc
+    form.description.data = product.desc
     brand = product.brand.name
     category = product.category.name
     return render_template('products/addproduct.html', form=form, title='Update Product',getproduct=product, brands=brands,categories=categories)
@@ -703,7 +698,7 @@ def getCart():
         return redirect(url_for('home'))
     subtotal = 0
     grandtotal = 0
-    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    info = Shipping.query.filter_by(email=current_user.email).first()
     for key,product in session['Shoppingcart'].items():
         discount = (product['discount']/100) * float(product['price'])
         subtotal += float(product['price']) * int(product['quantity'])
@@ -871,7 +866,7 @@ def deleteAllFeedback():
 
 @app.route('/changeinfo')
 def change_info():
-    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    info = Shipping.query.filter_by(email=current_user.email).first()
     db.session.delete(info)
     db.session.commit()
     return redirect(url_for('shipping'))
@@ -887,7 +882,7 @@ def shipping():
         city = form.city.data
         state = form.state.data
         zipcode = form.zipcode.data
-        biling = BilingInfo(name=name,email=customer.email,address=address,country=country,city=city,state=state,postalcode=zipcode)
+        biling = Shipping(name=name,email=customer.email,address=address,country=country,city=city,state=state,postalcode=zipcode)
         db.session.add(biling)
         db.session.commit()
         return redirect(url_for('checkout'))
@@ -912,7 +907,7 @@ def couponApplied(invoice):
     form1 = Redeem()
     grandTotal = 0
     subTotal = 0
-    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    info = Shipping.query.filter_by(email=current_user.email).first()
     orders = CustomerOrders.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrders.id.desc()).first()
     for key, product in orders.orders.items():
         discount = (product['discount']/100) * float(product['price'])
@@ -944,7 +939,7 @@ def check_out(invoice):
     form1 = Redeem()
     grandTotal = 0
     subTotal = 0
-    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    info = Shipping.query.filter_by(email=current_user.email).first()
     orders = CustomerOrders.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrders.id.desc()).first()
     for key, product in orders.orders.items():
         discount = (product['discount']/100) * float(product['price'])
@@ -985,7 +980,7 @@ def payment():
 def order_confirmation():
     grandTotal = 0
     subTotal = 0
-    info = BilingInfo.query.filter_by(email=current_user.email).first()
+    info = Shipping.query.filter_by(email=current_user.email).first()
     orders = CustomerOrders.query.filter_by(customer_id=current_user.id).order_by(CustomerOrders.id.desc()).first()
     for key, product in orders.orders.items():
          discount = (product['discount']/100) * float(product['price'])
