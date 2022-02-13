@@ -110,6 +110,20 @@ b'\x08\x00\x00\x00\x00\x00@\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 b'\x00\x01\x00\x00\x00\x01') + b'\x00'*1282 + b'\xff'*64
 
 
+class JsonEcodedDict(db.TypeDecorator):
+     impl = db.Text
+
+     def process_bind_param(self, value , dialect):
+        if value is None:
+            return '{}'
+        else:
+            return json.dumps(value)
+
+     def process_result_value(self, value, dialect):
+        if value is None:
+            return {}
+        else:
+            return json.loads(value)
 # DB CLASSES
 # user model
 class User(UserMixin,db.Model):
@@ -126,6 +140,8 @@ class User(UserMixin,db.Model):
     date = db.Column(db.String(10) , unique = False , nullable = False)
     status = db.Column(db.Integer() , nullable = False , default = 'Enabled')
     admin = db.Column(db.Integer() , nullable = False , default = 'no')
+    coupon_dict = db.Column(JsonEcodedDict)
+    counter = db.Column(db.String(10) , nullable = False , default = 'available')
 
 #product model
 class Addproduct(db.Model):
@@ -184,20 +200,6 @@ class BilingInfo(db.Model):
 
 #Customer Order
 
-class JsonEcodedDict(db.TypeDecorator):
-     impl = db.Text
-
-     def process_bind_param(self, value , dialect):
-        if value is None:
-            return '{}'
-        else:
-            return json.dumps(value)
-
-     def process_result_value(self, value, dialect):
-        if value is None:
-            return {}
-        else:
-            return json.loads(value)
 
 
 
@@ -1046,7 +1048,7 @@ def generate():
     else: flash('coupons already generated' , 'danger')
     return redirect(url_for('coupon'))
 
-@app.route('/<coupon>' , methods = ['POST' , 'GET'])
+@app.route('/coupon/<code>' , methods = ['POST' , 'GET'])
 def copy(coupon):
     pyperclip.copy(str(coupon))
     pyperclip.paste()
@@ -1060,7 +1062,7 @@ def Table():
 
 @app.route('/dropTables')
 def dropTables():
-    Transaction.__table__.drop(engine)
+    User.__table__.drop(engine)
     return redirect(url_for('Home_Page'))
 
 @app.route('/refund')
