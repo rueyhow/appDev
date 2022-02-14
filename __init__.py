@@ -12,7 +12,7 @@ from flask.helpers import url_for
 import pandas as pd
 from sqlalchemy.sql.sqltypes import NullType
 from wtforms import validators, Form
-from forms import CreateUserForm , ExistingMember, ShippingForm , Redeem
+from forms import CreateUserForm , ExistingMember, ShippingForm , Redeem , profilepic
 from flask_wtf import FlaskForm
 from wtforms import validators
 
@@ -252,8 +252,9 @@ def loaded(id_user):
 
 @app.route('/', methods = ['GET' , 'POST'])
 def Home_Page():
+    formid = request.args.get('formid', 1, type=int)
     form2 = CreateUserForm()
-    if form2.validate_on_submit():
+    if form2.validate_on_submit() and formid== 2:
         hash = generate_password_hash(form2.password.data , method = 'sha256')
         user_ID = int(id(form2.username.data))
         user_by_name = User.query.filter_by(username=form2.username.data).first()
@@ -266,17 +267,20 @@ def Home_Page():
             db.session.commit()
             return '<h1> New user has been added! </h1>'
     forms = ExistingMember()
-    if forms.validate_on_submit():
-        user = User.query.filter_by(username = forms.username.data).first()
-        if user:
-            if check_password_hash(user.password , forms.password.data):
-                login_user(user , remember = forms.remember.data)
-                if user.status == 'Enabled':
-                    return render_template('index.html' , form1 = form2 , form = forms)
-                else:
-                    return '<h1> your account has been disabled </h1>'
-            return '<h1> invalid password </h1>'
-        return '<h1> invalid username </h1>'
+    if formid== 1:
+        print('hello')
+        if forms.validate_on_submit():
+            print('hello1')
+            user = User.query.filter_by(username = forms.username.data).first()
+            if user:
+                if check_password_hash(user.password , forms.password.data):
+                    login_user(user , remember = forms.remember.data)
+                    if user.status == 'Enabled':
+                        return render_template('index.html' , form1 = form2 , form = forms)
+                    else:
+                        return '<h1> your account has been disabled </h1>'
+                return '<h1> invalid password </h1>'
+            return '<h1> invalid username </h1>'
         # return '<h1>' + form1.username.data + " " + form1.password.data + "</h1>"
     return render_template('index.html' , form1 = form2 , form = forms)
 
@@ -355,7 +359,7 @@ def dash():
 #update profile picture
 @app.route('/admin/updateProfilePic.html' , methods = ['POST' , 'GET'])
 def updateProfilePic():
-    form = CreateUserForm()
+    form = profilepic()
     name_to_update = User.query.get(current_user.id)
     if request.method == 'POST':
         # convert to bytes
@@ -1105,7 +1109,7 @@ def Table():
 
 @app.route('/dropTables')
 def dropTables():
-    Transaction.__table__.drop(engine)
+    User.__table__.drop(engine)
     return redirect(url_for('Home_Page'))
 
 @app.route('/refund')
