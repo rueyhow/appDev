@@ -343,12 +343,16 @@ def dash():
     info = Shipping.query.filter_by(email=current_user.email).first()
     if request.method == 'POST':
         # UPDATING USER INFORMATION
-        name_to_update.username = request.form['username']
-        name_to_update.email = request.form['email']
-        info.email = name_to_update.email
+        username_verification = User.query.filter_by(username=form.username.data).first()
+        if username_verification:
+            flash('username is taken')
+        else:
+            name_to_update.username = request.form['username']
+            name_to_update.email = request.form['email']
+            info.email = name_to_update.email
+            flash('User updated successfully')
         try:
             db.session.commit()
-            flash('User updated successfully')
             return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table , user_transaction = user_transaction)
         except:
             flash('error')
@@ -423,11 +427,11 @@ def updateuser(id):
     if request.method == 'POST':
         username_verification = User.query.filter_by(username=updateForm.username.data).first()
         if username_verification:
-            return '<h4> username is taken <h4>'
+            flash('username has been taken')
         else:
             ID.username = updateForm.username.data
             ID.email = updateForm.email.data
-            flash(updateForm.username.data , " has been updated")
+            flash(updateForm.username.data + " has been updated")
             db.session.commit()
         return redirect(url_for('dash'))
     return render_template('updateuser.html' , form = updateForm , user = ID)
