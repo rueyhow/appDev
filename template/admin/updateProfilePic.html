@@ -7,9 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static' , filename = 'css/updateProfilePic.css')}}">
 </head>
 <body>
-  <div class="card border-info" style="max-width: 540px;">
+  <!-- <div class="card border-info" style="max-width: 540px;">
     <div class="row g-0">
       <div class="col-md-4">
         {% if current_user.base64 == 'None' %}
@@ -43,7 +44,15 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
+
+
+
+
+
+
+
 </body>
+<script src="{{url_for('static' , filename = 'js/updateProfile.js')}}"></script>
 </html>
 {% endblock %}
