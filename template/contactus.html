@@ -27,7 +27,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #BDC0C1;
+  
+  
 }
 .profile-card{
   position: relative;
@@ -91,14 +92,15 @@
 }
 .title{
 text-align:center;
-background-color: #BDC0C1;
+background-color:transparent;
 bottom:200px;
 left:615px;
 position:relative;
 }
 .wrapper{
   display: inline-flex;
-  background-color: #BDC0C1;
+  background-color: transparent;
+  
 
 }
 .wrapper .icon{
@@ -191,9 +193,7 @@ position:relative;
 .wrapper .youtube:hover .tooltip:before{
   background: #DE463B;
 }
-body {
-  background-color:white;
-}
+
 ul {
   list-style-type: none;
   margin: 0;
@@ -244,35 +244,41 @@ li.dropdown {
 .dropdown:hover .dropdown-content {
   display: block;
 }
+body{
+  background: rgb(131,58,180);
+background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+}
 
 
     </style>
 </head>
 
-<body>
+<body >
+
   <ul>
     <li><a href="{{url_for('Home_Page')}}">Back</a></li>
     
   </ul>
   
-
+  
     <div class="main">
+      
         <h1 class="title">Our Team</h1>
         <div class="profile-card">
             <div class="img">
-                <img src="{{url_for('static' , filename = 'ourteam/image one.jpg')}}">
+                <img src="{{url_for('static' , filename = 'ourteam/imagethree.jfif')}}"height="170">
             </div>
             <div class="caption">
                 <h3>Rueyhow</h3>
                 <p>Gmail:Rueyhow@gmail.com</p>
                 <p>Number:98125532</p>
-                <p>Web develpoer</p>
+                <p>Web developer</p>
 
             </div>
         </div>
         <div class="profile-card">
             <div class="img">
-                <img src="{{url_for('static' , filename = 'ourteam/image one.jpg')}}">
+                <img src="{{url_for('static' , filename = 'ourteam/imageone.jfif')}}" height="170">
             </div>
             <div class="caption">
                 <h3>Thooyavan</h3>
@@ -284,7 +290,7 @@ li.dropdown {
         </div>
         <div class="profile-card">
             <div class="img">
-                <img src="{{url_for('static' , filename = 'ourteam/image one.jpg')}}">
+                <img src="{{url_for('static' , filename = 'ourteam/imagetwo.jfif')}}"height="170">
             </div>
             <div class="caption">
                 <h3>Irfan</h3>
@@ -296,7 +302,7 @@ li.dropdown {
         </div>
         <div class="profile-card">
             <div class="img">
-                <img src="{{url_for('static' , filename = 'ourteam/image one.jpg')}}">
+                <img src="{{url_for('static' , filename = 'ourteam/imagefive.jfif')}}" height="170" >
             </div>
             <div class="caption">
                 <h3>Putra</h3>
@@ -307,6 +313,7 @@ li.dropdown {
             </div>
 
         </div>
+        
     </div>
 
     <div class="wrapper">
@@ -314,7 +321,7 @@ li.dropdown {
             <div class="tooltip">
                Facebook
             </div>
-            <span><a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a></span>
+            <span><a href="https://www.facebook.com/SynergySoccer1/"><i class="fab fa-facebook-f"></i></a></span>
          </div>
          <div class="icon twitter">
             <div class="tooltip">
@@ -326,7 +333,7 @@ li.dropdown {
             <div class="tooltip">
                Instagram
             </div>
-            <span><a href="https://www.instagram.com/?hl=en"><i class="fab fa-instagram"></i></a></span>
+            <span><a href="https://www.instagram.com/synergy_soccer1/"><i class="fab fa-instagram"></i></a></span>
          </div>
          <div class="icon github">
             <div class="tooltip">
@@ -341,6 +348,7 @@ li.dropdown {
             <span><a href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a></span>
          </div>
       </div>
+   
 </body>
 
 </html>
