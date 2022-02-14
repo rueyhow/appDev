@@ -10,9 +10,8 @@ class CreateUserForm(FlaskForm):
     username = StringField('username' , [validators.Length(min=1 , max=15) , validators.DataRequired()])
     password = PasswordField('password' , [validators.Length(min=1 , max=100) , validators.DataRequired()])
     email = StringField('Email' , [validators.Length(min = 5 , max = 100) , validators.DataRequired()])
-    profile_pic = FileField('PROFILE PIC' , validators = [FileAllowed(['jpg' , 'png']) , validators.DataRequired()])
     phone_number = StringField('Phone Number' , [validators.Length(min=1 , max = 8) , validators.DataRequired()])
-    submit = SubmitField('Submit')
+    submit1 = SubmitField('Submit')
     
 
 class ExistingMember(FlaskForm):
@@ -21,6 +20,9 @@ class ExistingMember(FlaskForm):
     remember = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
+class profilepic(FlaskForm):
+    profile_pic = FileField('PROFILE PIC' , validators = [FileAllowed(['jpg' , 'png']) , validators.DataRequired()])
+    upload = SubmitField('Sign In')
 
 class Addproducts(Form):
     name = StringField('Name', [validators.DataRequired()])

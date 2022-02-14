@@ -65,7 +65,7 @@
                 <div class="modal-body">
                 
                     <div class="container">
-                        <form class="form-signin" method = 'POST'>
+                        <form action = "{{url_for('Home_Page' , formid=1)}}" class="form-signin" method = 'POST'>
                           <h2 class="form-signin-heading">Please sign in</h2>
                           {{ form.hidden_tag()}}
                           {{ wtf.form_field(form.username) }}
@@ -73,7 +73,8 @@
                           {{ wtf.form_field(form.remember) }}
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                            <!-- <button class="btn btn-lg btn-primary btn-block" type="submit" name = 'Sign In'>Sign in</button> -->
+                            {{wtf.form_field(form.submit)}}
                           </div>
                         </form>
                       </div>
@@ -95,7 +96,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="container" id = "container">
-                        <form action="" method = "POST" class = 'form-signin'>
+                        <form action = "{{url_for('Home_Page' , formid=2)}}"  method = "POST" class = 'form-signin'>
                             {{ form1.hidden_tag() }}
                             {{ wtf.form_field(form1.username , placeholder = 'username') }}
                             {{ wtf.form_field(form1.password , placeholder = '***********') }}
@@ -103,7 +104,8 @@
                             {{ wtf.form_field(form1.phone_number , placeholder = 'Enter Phone number here')}}
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up!</button>
+                                <!-- <button class="btn btn-lg btn-primary btn-block" type="submit" name = 'Sign Up'>Sign Up!</button> -->
+                                {{wtf.form_field(form1.submit1)}}
                               </div>
                         </form>
                     </div>
@@ -150,8 +152,10 @@
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
                             <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
                         </span>
-                        <h4 class="my-3">Money Back Gurranteed</h4>
-                        <p class="text-muted">We ensure 100% refunds within 2 weeks of purchase. Terms will vary</p>
+                        <h4 class="my-3">New User Coupons</h4>
+                        <p class="text-muted">We allow every single new user to generate coupons!
+                            Get up to 20% off your order when using coupons!
+                        </p>
                     </div>
                 </div>
             </div>
@@ -210,115 +214,109 @@
             </div>
         </section>
         <!-- Team-->
-        <section class="page-section bg-light" id="team">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Our Amazing Team</h2>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="team-member">
-                            <img class="mx-auto rounded-circle" src="{{ url_for('static', filename='images/team/3.jpg') }}" alt="..." />
-                            <h4>Ruey How</h4>
-                            <p class="text-muted">Lead Designer</p>
-                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="team-member">
-                            <img class="mx-auto rounded-circle" src="{{ url_for('static', filename='images/team/1.jpg') }}" alt="..." />
-                            <h4>Thooyavan</h4>
-                            <p class="text-muted">Lead Marketer</p>
-                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="team-member">
-                            <img class="mx-auto rounded-circle" src="assets/img/team/" alt="..." />
-                            <h4>Irfan</h4>
-                            <p class="text-muted">Lead Developer</p>
-                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-20">
-                    <div class="team-member">
-                        <img class="mx-auto rounded-circle" src="assets/img/team/" alt="..." />
-                        <h4>Putra</h4>
-                        <p class="text-muted">Lead Designer</p>
-                        <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-dark btn-social mx-2" href="#!"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8 mx-auto text-center"><p class="large text-muted">Feel free to contact any of us via our socials above</p></div>
-                </div>
-            </div>
-        </section>
+<section class="deneb_cta">
+	<div class="container">
+		<div class="cta_wrapper">
+			<div class="row align-items-center">
+				<div class="col-lg-7">
+					<div class="cta_content">
+						<h3>Have any feedback you want to give us?</h3>
+						<p>Send us your feeback now!</p>
+					</div>
+				</div>
+				<div class="col-lg-5">
+					<div class="button_box">
+						<a href="{{url_for('indexs')}}" class="btn btn-warning">Feedback Form</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<footer class="deneb_footer">
+	<div class="widget_wrapper" style="background-image: url(http://demo.tortoizthemes.com/deneb-html/deneb-ltr/assets/images/footer_bg.png);">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-4 col-md-6 col-12">
+					<div class="widget widegt_about">
+                        <div class="widget_title">
+							<h4>Description</h4>
+						</div>
+						<p>Synergy Soccer : Where we sell the most top end soccer equipment across the globe <br>
+                        We were just a group of friends that was passionate about soccer at a very young age <br>
+                        We always struggled to find quality equipment at a cheap price and now we are providing it to everyone
+                        </p>
+						<ul class="social">
+							<li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+							<li><a href="#"><i class="fab fa-twitter"></i></a></li>
+							<li><a href="#"><i class="fab fa-instagram"></i></a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-6 col-sm-12">
+					<div class="widget widget_link">
+						<div class="widget_title">
+							<h4>Links</h4>
+						</div>
+						<ul>
+							<li><a href="{{url_for('contactUs')}}">About Us</a></li>
+							<li><a href="{{url_for('home')}}">Shopping Page</a></li>
+							<li><a href="{{url_for('default_login')}}">Log In / Sign Up</a></li>
+							<li><a href="{{url_for('joinus')}}">Join Us</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-6 col-sm-12">
+					<div class="widget widget_contact">
+						<div class="widget_title">
+							<h4>Contact Us</h4>
+						</div>
+						<div class="contact_info">
+							<div class="single_info">
+								<div class="icon">
+									<i class="fas fa-phone-alt"></i>
+								</div>
+								<div class="info">
+									<p><a href="tel:+919246147999">1800-121-3637</a></p>
+									<p><a href="tel:+919246147999">+91 924-614-7999</a></p>
+								</div>
+							</div>
+							<div class="single_info">
+								<div class="icon">
+									<i class="fas fa-envelope"></i>
+								</div>
+								<div class="info">
+									<p><a href="mailto:info@deneb.com">info@deneb.com</a></p>
+									<p><a href="mailto:services@deneb.com">services@deneb.com</a></p>
+								</div>
+							</div>
+							<div class="single_info">
+								<div class="icon">
+									<i class="fas fa-map-marker-alt"></i>
+								</div>
+								<div class="info">
+									<p>125, Park street aven, Brocklyn,<span>Newyork.</span></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="copyright_area">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="copyright_text">
+						<p>Copyright &copy; 2020 All rights reserved.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
         <!-- Contact-->
-        <section class="page-section" id="contact">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Contact Us</h2>
-                    <h3 class="section-subheading text-muted">your feedback is always appreciated</h3>
-                </div>
-                <form id="contactForm" data-sb-form-api-token="API_TOKEN">
-                    <div class="row align-items-stretch mb-5">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <!-- Name input-->
-                                <input class="form-control" id="name" type="text" placeholder="Your Name *" data-sb-validations="required" />
-                                <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
-                            </div>
-                            <div class="form-group">
-                                <!-- Email address input-->
-                                <input class="form-control" id="email" type="email" placeholder="Your Email *" data-sb-validations="required,email" />
-                                <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
-                                <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
-                            </div>
-                            <div class="form-group mb-md-0">
-                                <!-- Phone number input-->
-                                <input class="form-control" id="phone" type="tel" placeholder="Your Phone *" data-sb-validations="required" />
-                                <div class="invalid-feedback" data-sb-feedback="phone:required">A phone number is required.</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-group-textarea mb-md-0">
-                                <!-- Message input-->
-                                <textarea class="form-control" id="message" placeholder="Your Message *" data-sb-validations="required"></textarea>
-                                <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Submit success message-->
-                    <!---->
-                    <!-- This is what your users will see when the form-->
-                    <!-- has successfully submitted-->
-                    <div class="d-none" id="submitSuccessMessage">
-                        <div class="text-center text-white mb-3">
-                            <div class="fw-bolder">Form submission successful!</div>
-                            To activate this form, sign up at
-                            <br />
-                            <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
-                        </div>
-                    </div>
-                    <!-- Submit error message-->
-                    <!---->
-                    <!-- This is what your users will see when there is-->
-                    <!-- an error submitting the form-->
-                    <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
-                    <!-- Submit Button-->
-                    <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase disabled" id="submitButton" type="submit">Send Message</button></div>
-                </form>
-            </div>
-        </section>
         <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
         <df-messenger
           intent="WELCOME"

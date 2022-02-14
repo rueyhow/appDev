@@ -90,7 +90,7 @@
                 <form action="{{url_for('couponApplied' , invoice = orders.invoice)}}" method = 'POST'>
                     {{ form1.csrf_token }}
                     {{ form1.code() }}
-                    <input type="submit" value = 'input coupon code'>
+                    <input type="submit" value = 'input coupon code' class = 'btn btn-success'>
                 </form>
                 </td>
            </tr>

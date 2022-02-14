@@ -12,7 +12,7 @@ from flask.helpers import url_for
 import pandas as pd
 from sqlalchemy.sql.sqltypes import NullType
 from wtforms import validators, Form
-from forms import CreateUserForm , ExistingMember, ShippingForm , Redeem
+from forms import CreateUserForm , ExistingMember, ShippingForm , Redeem , profilepic
 from flask_wtf import FlaskForm
 from wtforms import validators
 
@@ -252,8 +252,9 @@ def loaded(id_user):
 
 @app.route('/', methods = ['GET' , 'POST'])
 def Home_Page():
+    formid = request.args.get('formid', 1, type=int)
     form2 = CreateUserForm()
-    if form2.validate_on_submit():
+    if form2.validate_on_submit() and formid== 2:
         hash = generate_password_hash(form2.password.data , method = 'sha256')
         user_ID = int(id(form2.username.data))
         user_by_name = User.query.filter_by(username=form2.username.data).first()
@@ -266,17 +267,20 @@ def Home_Page():
             db.session.commit()
             return '<h1> New user has been added! </h1>'
     forms = ExistingMember()
-    if forms.validate_on_submit():
-        user = User.query.filter_by(username = forms.username.data).first()
-        if user:
-            if check_password_hash(user.password , forms.password.data):
-                login_user(user , remember = forms.remember.data)
-                if user.status == 'Enabled':
-                    return render_template('index.html' , form1 = form2 , form = forms)
-                else:
-                    return '<h1> your account has been disabled </h1>'
-            return '<h1> invalid password </h1>'
-        return '<h1> invalid username </h1>'
+    if formid== 1:
+        print('hello')
+        if forms.validate_on_submit():
+            print('hello1')
+            user = User.query.filter_by(username = forms.username.data).first()
+            if user:
+                if check_password_hash(user.password , forms.password.data):
+                    login_user(user , remember = forms.remember.data)
+                    if user.status == 'Enabled':
+                        return render_template('index.html' , form1 = form2 , form = forms)
+                    else:
+                        return '<h1> your account has been disabled </h1>'
+                return '<h1> invalid password </h1>'
+            return '<h1> invalid username </h1>'
         # return '<h1>' + form1.username.data + " " + form1.password.data + "</h1>"
     return render_template('index.html' , form1 = form2 , form = forms)
 
@@ -284,6 +288,7 @@ def Home_Page():
 @login_required
 def logout():
     logout_user()
+    clearcart()
     flash('You have been logged out')
     return redirect('/')
 
@@ -355,7 +360,7 @@ def dash():
 #update profile picture
 @app.route('/admin/updateProfilePic.html' , methods = ['POST' , 'GET'])
 def updateProfilePic():
-    form = CreateUserForm()
+    form = profilepic()
     name_to_update = User.query.get(current_user.id)
     if request.method == 'POST':
         # convert to bytes
@@ -751,6 +756,7 @@ def deleteitem(id):
 def clearcart():
     try:
         session.pop('Shoppingcart', None)
+        flash('cart has been cleared' , 'success')
         return redirect(url_for('home'))
     except Exception as e:
         print(e)
@@ -937,20 +943,24 @@ def couponApplied(invoice):
             # creating a temp dict
             to_update = dict(user.coupon_dict)
             # getting discount percentage
-            percentage = to_update[form1.code.data]
-            # changing to float
-            coupon_discount = float(percentage/100)
-            flash('coupon applied successfully' , 'success')
+            if form1.code.data in to_update:
+                percentage = to_update[form1.code.data]
+                # changing to float
+                coupon_discount = float(percentage/100)
+                flash('coupon applied successfully' , 'success')
+            else: 
+                coupon_discount = 0
+                flash('Invalid Coupon Entered' , 'danger')
             # delete from temp dict
-            del to_update[form1.code.data]
             try:
+                del to_update[form1.code.data]
                 user.coupon_dict = dict(to_update)
                 db.session.commit()
             except : print('fail')
             grandTotal = "%.2f" % (1.06 * float(subTotal) * (1-coupon_discount))
         else:
             grandTotal = "%.2f" % (1.06 * float(subTotal))
-    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1 , percentage = percentage)
+    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1 , percentage = percentage,discount=discount)
 
 # if customer use coupon
 @app.route('/payment/<percentage>',methods=['GET','POST'])
@@ -1055,7 +1065,11 @@ def thankyou():
 @app.route('/sales')
 def sales():
     transaction_table = Transaction.query.all()
-    return render_template('sales/sales.html' , transaction_table = transaction_table)
+    amt_list = []
+    for transaction in transaction_table:
+        amt_list.append(transaction.amount)
+    total_amt = sum(amt_list)
+    return render_template('sales/sales.html' , transaction_table = transaction_table, total_amt = total_amt)
 @app.route('/deleteTransaction/<int:id>')
 def deleteTransaction(id):
     customer = Transaction.query.filter_by(id=id)
@@ -1105,7 +1119,7 @@ def Table():
 
 @app.route('/dropTables')
 def dropTables():
-    Transaction.__table__.drop(engine)
+    User.__table__.drop(engine)
     return redirect(url_for('Home_Page'))
 
 @app.route('/refund')
