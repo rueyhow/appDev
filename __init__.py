@@ -427,6 +427,7 @@ def updateuser(id):
         else:
             ID.username = updateForm.username.data
             ID.email = updateForm.email.data
+            flash(updateForm.username.data , " has been updated")
             db.session.commit()
         return redirect(url_for('dash'))
     return render_template('updateuser.html' , form = updateForm , user = ID)
@@ -948,7 +949,8 @@ def couponApplied(invoice):
                 flash('coupon applied successfully' , 'success')
             else: 
                 coupon_discount = 0
-                flash('Invalid Coupon Entered' , 'danger')
+                flash('Invalid Coupon Entered , your cart has been cleared' , 'danger')
+                clearcart()
             # delete from temp dict
             try:
                 del to_update[form1.code.data]
