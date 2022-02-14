@@ -240,7 +240,9 @@ def categories():
 def contactUs():
     return render_template('/contactus.html')
 
-
+@app.route('/joinus')
+def joinus():
+    return render_template('/joinus.html')
 
 
 @login_manager.user_loader
@@ -902,6 +904,20 @@ def checkout():
         print(e)
         return redirect(url_for('home'))
         
+@app.route('/checkout/<invoice>' , methods = ['POST' , 'GET'])
+def check_out(invoice):
+    form1 = Redeem()
+    grandTotal = 0
+    subTotal = 0
+    info = Shipping.query.filter_by(email=current_user.email).first()
+    orders = CustomerOrders.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrders.id.desc()).first()
+    for key, product in orders.orders.items():
+        discount = (product['discount']/100) * float(product['price'])
+        subTotal += float(product['price']) * int(product['quantity'])
+        subTotal -= discount
+        tax =("%.2f" %(.06 * float(subTotal)))
+        grandTotal = "%.2f" % (1.06 * float(subTotal))
+    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1,discount=discount)
 
 @app.route('/checkout/<invoice>/couponApplied' , methods = ['POST' , 'GET'])
 def couponApplied(invoice):
@@ -936,24 +952,7 @@ def couponApplied(invoice):
             grandTotal = "%.2f" % (1.06 * float(subTotal))
     return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1 , percentage = percentage)
 
-@app.route('/checkout/<invoice>' , methods = ['POST' , 'GET'])
-def check_out(invoice):
-    form1 = Redeem()
-    grandTotal = 0
-    subTotal = 0
-    info = Shipping.query.filter_by(email=current_user.email).first()
-    orders = CustomerOrders.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrders.id.desc()).first()
-    for key, product in orders.orders.items():
-        discount = (product['discount']/100) * float(product['price'])
-        subTotal += float(product['price']) * int(product['quantity'])
-        subTotal -= discount
-        tax =("%.2f" %(.06 * float(subTotal)))
-        grandTotal = "%.2f" % (1.06 * float(subTotal))
-    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1)
-
-
-
-
+# if customer use coupon
 @app.route('/payment/<percentage>',methods=['GET','POST'])
 def payment_discount(percentage):
     percentage = percentage
@@ -1025,6 +1024,7 @@ def payment():
 
 @app.route('/orderconfirmation')
 def order_confirmation():
+    percentage = 0
     grandTotal = 0
     subTotal = 0
     info = Shipping.query.filter_by(email=current_user.email).first()
@@ -1038,7 +1038,7 @@ def order_confirmation():
 
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
     msg.body = 'Order Confirmation'
-    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal)
+    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal,percentage=percentage)
     msg.html = html
     mail.send(msg)
     return redirect(url_for('thankyou'))
