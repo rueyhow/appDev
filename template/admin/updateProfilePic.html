@@ -7,23 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="{{url_for('static' , filename = 'css/updateProfilePic.css')}}">
+    <link rel="stylesheet" href="{{url_for('static' , filename = 'css/profilepic.css')}}">
 </head>
 <body>
-  <!-- <div class="card border-info" style="max-width: 540px;">
-    <div class="row g-0">
-      <div class="col-md-4">
-        {% if current_user.base64 == 'None' %}
-        <img src="../../../static/images/profilepics/default.png" class = 'img-fluid rounded-start'>
-        {% elif current_user.base64 != 'None' %}
-        <img src="data:image/png;base64, {{current_user.base64}}" class ='img-fluid rounded-start'>
-        {% endif %}
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title">Profile Picture</h5>
           <form action="updateProfilePic.html" method = 'POST' , enctype="multipart/form-data">
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">upload picture</button>
                                 <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                       <div class="modal-content">
@@ -40,14 +27,40 @@
                                     </div>
                                 </div>
                 </form>
-          <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-        </div>
-      </div>
+
+
+
+
+
+<!-- test1 -->
+
+
+<section >
+    <div class="container">
+    	<div class="row">
+    		<!--Profile Card 3-->
+    		<div class="col-md-4" id = "card3">
+    		    <div class="card profile-card-3">
+    		        <div class="background-block">
+    		            <img src="https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="profile-sample1" class="background"/>
+    		        </div>
+    		        <div class="profile-thumb-block">
+                  {% if current_user.base64 == 'None' %}
+                  <img src="../../../static/images/profilepics/default.png" class = 'profile'>
+                  {% elif current_user.base64 != 'None' %}
+                  <img src="data:image/png;base64, {{current_user.base64}}" class ='profile'>
+                  {% endif %}
+    		        </div>
+    		        <div class="card-content">
+                    <h2>{{current_user.username}}<small>User</small></h3>
+                      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">upload picture</button>
+                    </div>
+                </div>
+    		</div>
+    
+    	</div>
     </div>
-  </div> -->
-
-
-
+</section>
 
 
 

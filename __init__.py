@@ -523,7 +523,7 @@ def addcat():
         obtaincategory = request.form.get('category')
         category = Category(name=obtaincategory)
         db.session.add(category)
-        flash(f'The brand {obtaincategory} was added to your database','success')
+        flash(f'The Category {obtaincategory} was added to your database','success')
         db.session.commit()
         return redirect(url_for('addcat'))
     return render_template('products/addbrand.html', title='Add category')
@@ -990,10 +990,11 @@ def order_confirmation_discount(percentage):
          subTotal -= discount
          tax = ("%.2f" %(.06 * float(subTotal)))
          grandTotal = "%.2f" % (1.06 * float(subTotal) * (1- float(int(percentage)/100)))
+         discounted = "%.2f" % (1.06 * float(subTotal) - (1.06 * float(subTotal) * (1- float(int(percentage)/100))))
 
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
     msg.body = 'Order Confirmation'
-    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal,percentage=percentage)
+    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal,percentage=percentage,discounted=discounted)
     msg.html = html
     mail.send(msg)
     return redirect(url_for('thankyou'))

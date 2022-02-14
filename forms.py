@@ -4,13 +4,13 @@ from wtforms import Form, SubmitField,IntegerField,FloatField,StringField,TextAr
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField , FileAllowed, FileRequired
 from wtforms.fields.simple import FileField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired, Length, Optional
 
 class CreateUserForm(FlaskForm):
     username = StringField('username' , [validators.Length(min=1 , max=15) , validators.DataRequired()])
     password = PasswordField('password' , [validators.Length(min=1 , max=100) , validators.DataRequired()])
     email = StringField('Email' , [validators.Length(min = 5 , max = 100) , validators.DataRequired()])
-    profile_pic = FileField('PROFILE PIC' , validators = [FileAllowed(['jpg' , 'png'])])
+    profile_pic = FileField('PROFILE PIC' , validators = [FileAllowed(['jpg' , 'png']) , validators.DataRequired()])
     phone_number = StringField('Phone Number' , [validators.Length(min=1 , max = 8) , validators.DataRequired()])
     submit = SubmitField('Submit')
     
@@ -44,7 +44,7 @@ class ShippingForm(FlaskForm):
     fname = StringField("First Name",validators=[DataRequired(), Length(min=1,max=255)])
     lname = StringField("Last Name",validators=[DataRequired(), Length(min=1,max=255)])
     address = StringField("Street Address",validators=[DataRequired()])
-    addressl = StringField("Address Line 2",validators=[DataRequired()])
+    addressl = StringField("Address Line 2",validators=[Optional()])
     city = StringField("City",validators=[DataRequired()])
     state = StringField("State",validators=[DataRequired()])
     zipcode = StringField("ZipCode",validators=[DataRequired()])
