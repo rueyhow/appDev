@@ -4,7 +4,6 @@
 
 
 <div class="container">
-    <h3 class="text-center  p-2 h4">Brands</h3>
     <br>
     <table class="table table-striped table-hover">
         <thead>
@@ -13,6 +12,7 @@
         </thead>
         <tbody>
          {% if brands %}
+         <h3 class="text-center  p-2 h4">Brands</h3>
           {% for brand in brands %}
           <tr>
             <td>{{loop.index}}</td>
@@ -52,6 +52,7 @@
 
           {% endfor %}
           {% else %}
+          <h3 class="text-center  p-2 h4">Category</h3>
           {% for category in categories %}
           <tr>
             <td>{{loop.index}}</td>
