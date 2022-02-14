@@ -429,8 +429,6 @@ def updateuser(id):
             ID.email = updateForm.email.data
             db.session.commit()
         return redirect(url_for('dash'))
-    if request.method == 'POST':
-        return render_template('updateuser.html' , form = updateForm , user = ID)
     return render_template('updateuser.html' , form = updateForm , user = ID)
 
 @app.route('/feedback.html')
