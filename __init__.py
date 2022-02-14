@@ -240,7 +240,9 @@ def categories():
 def contactUs():
     return render_template('/contactus.html')
 
-
+@app.route('/joinus')
+def joinus():
+    return render_template('/joinus.html')
 
 
 @login_manager.user_loader
