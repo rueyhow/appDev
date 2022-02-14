@@ -12,6 +12,8 @@
         <link rel="stylesheet" href="{{ url_for('static' , filename = 'css/base.css') }}">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
         <link href="{{url_for('static' , filename = 'css/test.css')}}" rel="stylesheet" />
+        <style>
+        </style>
     </head>
     <body class="sb-nav-fixed">
         <!-- navbar -->
@@ -20,7 +22,7 @@
             <a class="navbar-brand ps-3" href="{{url_for('Home_Page')}}">Syngery Soccer</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-            <a href="{{url_for('getCart')}}" class="nav-link"> Cart ({{ session['Shoppingcart']|length }}) </a>
+            <a href="{{url_for('getCart')}}" class="nav-link" style = "color:white;" id = 'cartthing' > Cart ({{ session['Shoppingcart']|length }}) </a>
             <div class="profileicon">
                 <div class="nav_right">
                     <ul>
@@ -248,7 +250,7 @@
   
                 
                 <div class="subscribe">
-                    <a href="{{url_for('feedback')}}" class = 'btn btn-submit'>Provide Feedback</a>
+                    <a href="{{url_for('indexs')}}" class = 'btn btn-submit'>Provide Feedback</a>
                 </div>
               </div>
               <div class="col-md mb-4 mb-md-0">
@@ -256,18 +258,18 @@
                 <ul class="list-unstyled tweets">
                   <li class="d-flex">
                     <div>New Item Released : Man Utd 2021 Jersey <br>
-                    <a href="" style = 'text-decoration: underline !important;'>learn more</a>
+                    <a href="{{url_for('home')}}" style = 'text-decoration: underline !important;'>learn more</a>
                     </div>
                   </li>
                   <li class="d-flex">
 
                     <div>Hot Item : Liverpool 2021 Home Jersey <br>
-                    <a href="" style = 'text-decoration: underline !important;'>learn more</a>
+                    <a href="{{url_for('home')}}" style = 'text-decoration: underline !important;'>learn more</a>
                     </div>
                   </li>
                   <li class="d-flex">
-                    <div>Vouchers available! <br>
-                    <a href="" style = 'text-decoration: underline !important;'>learn more</a>
+                    <div>Coupons available! <br>
+                    <a href="{{url_for('coupon')}}" style = 'text-decoration: underline !important;'>learn more</a>
                     </div>
                   </li>
                 </ul>
@@ -275,15 +277,15 @@
   
   
               <div class="col-md-3 mb-4 mb-md-0">
-                <h3>Our Team</h3>
+                <h3>Some Of our items</h3>
                 <div class="row gallery">
                   <div class="col-6">
-                    <a href="#"><img src="images/img_1.jpg" alt="Image" class="img-fluid"></a>
-                    <a href="#"><img src="images/img_2.jpg" alt="Image" class="img-fluid"></a>
+                    <a href="#"><img src="{{url_for('static' , filename = 'images/00dbf1128b787e53d334.jpg')}}" alt="Image" class="img-fluid"></a>
+                    <a href="#"><img src="{{url_for('static' , filename = 'images/a5f549d3bb2d07128eef.jpg')}}" alt="Image" class="img-fluid"></a>
                   </div>
                   <div class="col-6">
-                    <a href="#"><img src="images/img_3.jpg" alt="Image" class="img-fluid"></a>
-                    <a href="#"><img src="images/img_4.jpg" alt="Image" class="img-fluid"></a>
+                    <a href="#"><img src="{{url_for('static' , filename = 'images/151c14c4e057500335df.jpg')}}" alt="Image" class="img-fluid"></a>
+                    <a href="#"><img src="{{url_for('static' , filename = 'images/ffade0a56e8a91b9391f.jpg')}}"  alt="Image" class="img-fluid"></a>
                   </div>
                 </div>
               </div>
@@ -295,25 +297,16 @@
                             <!-- Facebook -->
                             <a
                               class="btn btn-link btn-floating btn-lg text-dark m-1"
-                              href="#!"
+                              href="https://www.facebook.com/SynergySoccerClub/"
                               role="button"
                               data-mdb-ripple-color="dark"
                               ><i class="fab fa-facebook-f"></i
                             ></a>
-                      
-                            <!-- Twitter -->
-                            <a
-                              class="btn btn-link btn-floating btn-lg text-dark m-1"
-                              href="#!"
-                              role="button"
-                              data-mdb-ripple-color="dark"
-                              ><i class="fab fa-twitter"></i
-                            ></a>
-                      
+     
                             <!-- Google -->
                             <a
                               class="btn btn-link btn-floating btn-lg text-dark m-1"
-                              href="#!"
+                              href="mailto:syngerysoccer7@example.com"
                               role="button"
                               data-mdb-ripple-color="dark"
                               ><i class="fab fa-google"></i
@@ -322,27 +315,10 @@
                             <!-- Instagram -->
                             <a
                               class="btn btn-link btn-floating btn-lg text-dark m-1"
-                              href="#!"
+                              href="https://www.instagram.com/synergy_soccer1/"
                               role="button"
-                              data-mdb-ripple-color="dark"
+                              data-mdb-ripple-color="dark" target = "_blank"
                               ><i class="fab fa-instagram"></i
-                            ></a>
-                      
-                            <!-- Linkedin -->
-                            <a
-                              class="btn btn-link btn-floating btn-lg text-dark m-1"
-                              href="#!"
-                              role="button"
-                              data-mdb-ripple-color="dark"
-                              ><i class="fab fa-linkedin"></i
-                            ></a>
-                            <!-- Github -->
-                            <a
-                              class="btn btn-link btn-floating btn-lg text-dark m-1"
-                              href="#!"
-                              role="button"
-                              data-mdb-ripple-color="dark"
-                              ><i class="fab fa-github"></i
                             ></a>
                           </section>
                           <!-- Section: Social media -->

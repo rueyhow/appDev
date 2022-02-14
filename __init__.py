@@ -288,6 +288,7 @@ def Home_Page():
 @login_required
 def logout():
     logout_user()
+    clearcart()
     flash('You have been logged out')
     return redirect('/')
 
@@ -755,6 +756,7 @@ def deleteitem(id):
 def clearcart():
     try:
         session.pop('Shoppingcart', None)
+        flash('cart has been cleared' , 'success')
         return redirect(url_for('home'))
     except Exception as e:
         print(e)
@@ -941,13 +943,17 @@ def couponApplied(invoice):
             # creating a temp dict
             to_update = dict(user.coupon_dict)
             # getting discount percentage
-            percentage = to_update[form1.code.data]
-            # changing to float
-            coupon_discount = float(percentage/100)
-            flash('coupon applied successfully' , 'success')
+            if form1.code.data in to_update:
+                percentage = to_update[form1.code.data]
+                # changing to float
+                coupon_discount = float(percentage/100)
+                flash('coupon applied successfully' , 'success')
+            else: 
+                coupon_discount = 0
+                flash('Invalid Coupon Entered' , 'danger')
             # delete from temp dict
-            del to_update[form1.code.data]
             try:
+                del to_update[form1.code.data]
                 user.coupon_dict = dict(to_update)
                 db.session.commit()
             except : print('fail')
@@ -1059,7 +1065,11 @@ def thankyou():
 @app.route('/sales')
 def sales():
     transaction_table = Transaction.query.all()
-    return render_template('sales/sales.html' , transaction_table = transaction_table)
+    amt_list = []
+    for transaction in transaction_table:
+        amt_list.append(transaction.amount)
+    total_amt = sum(amt_list)
+    return render_template('sales/sales.html' , transaction_table = transaction_table, total_amt = total_amt)
 @app.route('/deleteTransaction/<int:id>')
 def deleteTransaction(id):
     customer = Transaction.query.filter_by(id=id)
