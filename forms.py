@@ -10,7 +10,7 @@ class CreateUserForm(FlaskForm):
     username = StringField('username' , [validators.Length(min=1 , max=15) , validators.DataRequired()])
     password = PasswordField('password' , [validators.Length(min=1 , max=100) , validators.DataRequired()])
     email = StringField('Email' , [validators.Length(min = 5 , max = 100) , validators.DataRequired()])
-    profile_pic = FileField('PROFILE PIC' , validators = [FileAllowed(['jpg' , 'png'])])
+    profile_pic = FileField('PROFILE PIC' , validators = [FileAllowed(['jpg' , 'png']) , validators.DataRequired()])
     phone_number = StringField('Phone Number' , [validators.Length(min=1 , max = 8) , validators.DataRequired()])
     submit = SubmitField('Submit')
     
