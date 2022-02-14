@@ -480,68 +480,68 @@ def get_category(id):
     return render_template('products/index.html',get_cat_prod=get_cat_prod,brands=brands(),categories=categories(),get_cat=get_cat)
 
 
-@app.route('/addbrand', methods=['GET','POST'])
+@app.route('/brand', methods=['GET','POST'])
 def addbrand():
     if request.method == "POST":
-        getbrand = request.form.get('brand')
-        brand = Brand(name=getbrand)
+        obtainbrand = request.form.get('brand')
+        brand = Brand(name=obtainbrand)
         db.session.add(brand)
-        flash(f'The brand {getbrand} was added to your database','success')
+        flash(f'The brand {obtainbrand} was added to your database','success')
         db.session.commit()
         return redirect(url_for('addbrand'))
     return render_template('products/addbrand.html', title='Add brand',brands='brands')
 
 @app.route('/updatebrand/<int:id>',methods=['GET','POST'])
 def updatebrand(id):
-    updatebrand = Brand.query.get_or_404(id)
+    update = Brand.query.get_or_404(id)
     brand = request.form.get('brand')
     if request.method =="POST":
-        updatebrand.name = brand
-        flash(f'The brand {updatebrand.name} was changed to {brand}','success')
+        update.name = brand
+        flash(f'The brand {update.name} was changed to {brand}','success')
         db.session.commit()
         return redirect(url_for('brands'))
-    brand = updatebrand.name
-    return render_template('products/addbrand.html', title='Udate brand',brands='brands',updatebrand=updatebrand)
+    brand = update.name
+    return render_template('products/addbrand.html', title='Update brand',brands='brands',updatebrand=brand)
 
 
 @app.route('/deletebrand/<int:id>', methods=['GET','POST'])
 def deletebrand(id):
-    brand = Brand.query.get_or_404(id)
+    deletebrand = Brand.query.get_or_404(id)
     if request.method=="POST":
-        db.session.delete(brand)
-        flash(f"The brand {brand.name} was deleted from your database","success")
+        db.session.delete(deletebrand)
+        flash(f"The brand {deletebrand.name} was deleted from your database","success")
         db.session.commit()
         return redirect(url_for('admin'))
-    flash(f"The brand {brand.name} can't be  deleted from your database","warning")
+    flash(f"The brand {deletebrand.name} can't be  deleted from your database","warning")
     return redirect(url_for('admin'))
 
-@app.route('/addcat',methods=['GET','POST'])
+@app.route('/category',methods=['GET','POST'])
 def addcat():
     if request.method =="POST":
-        getcat = request.form.get('category')
-        category = Category(name=getcat)
+        obtaincategory = request.form.get('category')
+        category = Category(name=obtaincategory)
         db.session.add(category)
-        flash(f'The brand {getcat} was added to your database','success')
+        flash(f'The brand {obtaincategory} was added to your database','success')
         db.session.commit()
         return redirect(url_for('addcat'))
     return render_template('products/addbrand.html', title='Add category')
 
 
-@app.route('/updatecat/<int:id>',methods=['GET','POST'])
+@app.route('/updatecategory/<int:id>',methods=['GET','POST'])
 def updatecat(id):
-    updatecat = Category.query.get_or_404(id)
+    updatecategory = Category.query.get_or_404(id)
     category = request.form.get('category')  
     if request.method =="POST":
-        updatecat.name = category
-        flash(f'The category {updatecat.name} was changed to {category}','success')
+        updatecategory.name = category
+        flash(f'The category {updatecategory.name} was changed to {category}','success')
         db.session.commit()
         return redirect(url_for('categories'))
-    category = updatecat.name
-    return render_template('products/addbrand.html', title='Update cat',updatecat=updatecat)
+    category = updatecategory.name
+    return render_template('products/addbrand.html', title='Update cat',updatecat=updatecategory)
 
 
 
-@app.route('/deletecat/<int:id>', methods=['GET','POST'])
+@app.route('/deletecategory/<int:id>', methods=['GET','POST'])
 def deletecat(id):
     category = Category.query.get_or_404(id)
     if request.method=="POST":
@@ -564,13 +564,13 @@ def addproduct():
         discount = form.discount.data
         stock = form.stock.data
         colors = form.colors.data
-        desc = form.description.data
+        description = form.description.data
         brand = request.form.get('brand')
         category = request.form.get('category')
         image_1 = photos.save(request.files.get('image_1'), name=secrets.token_hex(10) + ".")
         image_2 = photos.save(request.files.get('image_2'), name=secrets.token_hex(10) + ".")
         image_3 = photos.save(request.files.get('image_3'), name=secrets.token_hex(10) + ".")
-        addproduct = Addproduct(name=name,price=price,discount=discount,stock=stock,colors=colors,desc=desc,category_id=category,brand_id=brand,image_1=image_1,image_2=image_2,image_3=image_3)
+        addproduct = Addproduct(name=name,price=price,discount=discount,stock=stock,colors=colors,desc=description,category_id=category,brand_id=brand,image_1=image_1,image_2=image_2,image_3=image_3)
         db.session.add(addproduct)
         flash(f'The product {name} was added in database','success')
         db.session.commit()
