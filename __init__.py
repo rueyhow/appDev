@@ -1021,6 +1021,7 @@ def payment():
 
 @app.route('/orderconfirmation')
 def order_confirmation():
+    percentage = 0
     grandTotal = 0
     subTotal = 0
     info = Shipping.query.filter_by(email=current_user.email).first()
@@ -1034,7 +1035,7 @@ def order_confirmation():
 
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
     msg.body = 'Order Confirmation'
-    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal)
+    html = render_template('email.html',info=info,orders=orders,tax=tax,grandTotal=grandTotal,subTotal=subTotal,percentage=percentage)
     msg.html = html
     mail.send(msg)
     return redirect(url_for('thankyou'))
