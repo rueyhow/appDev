@@ -240,7 +240,7 @@ def categories():
 def contactUs():
     return render_template('/contactus.html')
 
-@app.route('/joinus')
+@app.route('/joinus',methods=['GET','POST'])
 def joinus():
     return render_template('/joinus.html')
 
