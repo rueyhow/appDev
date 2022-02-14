@@ -990,7 +990,7 @@ def order_confirmation_discount(percentage):
          subTotal -= discount
          tax = ("%.2f" %(.06 * float(subTotal)))
          grandTotal = "%.2f" % (1.06 * float(subTotal) * (1- float(int(percentage)/100)))
-         discounted = "%.2f" % (float(grandTotal) - (1.06 * float(subTotal) * (1- float(int(percentage)/100))))
+         discounted = "%.2f" % (1.06 * float(subTotal) - (1.06 * float(subTotal) * (1- float(int(percentage)/100))))
 
     msg = Message('Order Confirmation',sender='synergysoccer7@gmail.com',recipients=[info.email])
     msg.body = 'Order Confirmation'
