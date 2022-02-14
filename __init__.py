@@ -101,7 +101,7 @@ login_manager.init_app(app)
 login_manager.login_view = '/login'
 upload_folder = 'static/images/profilepics'
 app.config['upload_folder'] = upload_folder
-percentage = 0
+
 
 
 
