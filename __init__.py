@@ -954,7 +954,7 @@ def couponApplied(invoice):
             grandTotal = "%.2f" % (1.06 * float(subTotal) * (1-coupon_discount))
         else:
             grandTotal = "%.2f" % (1.06 * float(subTotal))
-    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1 , percentage = percentage)
+    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1 , percentage = percentage,discount=discount)
 
 # if customer use coupon
 @app.route('/payment/<percentage>',methods=['GET','POST'])
