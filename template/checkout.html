@@ -54,7 +54,7 @@
            <tr>
             <td>
                 {% if percentage %}
-                <form action="{{url_for('payment' , percentage = percentage)}}" method="POST">
+                <form action="{{url_for('payment_discount' , percentage = percentage)}}" method="POST">
                     {% set amount =  grandTotal.replace('.','') %}
                     <input type="hidden" name="amount" value="{{amount}}">
                     <input type="hidden" name="invoice" value="{{invoice}}">
@@ -68,7 +68,7 @@
                    </script>
              </form>
                 {% else %}
-                <form action="{{url_for('payment' , percentage = percentage)}}" method="POST">
+                <form action="{{url_for('payment')}}" method="POST">
                     {% set amount =  grandTotal.replace('.','') %}
                     <input type="hidden" name="amount" value="{{amount}}">
                     <input type="hidden" name="invoice" value="{{invoice}}">

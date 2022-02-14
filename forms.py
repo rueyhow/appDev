@@ -4,7 +4,7 @@ from wtforms import Form, SubmitField,IntegerField,FloatField,StringField,TextAr
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField , FileAllowed, FileRequired
 from wtforms.fields.simple import FileField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired, Length, Optional
 
 class CreateUserForm(FlaskForm):
     username = StringField('username' , [validators.Length(min=1 , max=15) , validators.DataRequired()])
@@ -44,7 +44,7 @@ class ShippingForm(FlaskForm):
     fname = StringField("First Name",validators=[DataRequired(), Length(min=1,max=255)])
     lname = StringField("Last Name",validators=[DataRequired(), Length(min=1,max=255)])
     address = StringField("Street Address",validators=[DataRequired()])
-    addressl = StringField("Address Line 2",validators=[DataRequired()])
+    addressl = StringField("Address Line 2",validators=[Optional()])
     city = StringField("City",validators=[DataRequired()])
     state = StringField("State",validators=[DataRequired()])
     zipcode = StringField("ZipCode",validators=[DataRequired()])
