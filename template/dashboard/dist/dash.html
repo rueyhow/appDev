@@ -20,6 +20,7 @@ Login
         <title>Dashboard - SB Admin</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="{{url_for('static' , filename = 'css/styles.css')}}" rel="stylesheet" />
+        <link rel="stylesheet" href="{{url_for('static' , filename = 'css/updateProfilePic.css')}}">
     </head>
 
     <body>
@@ -27,31 +28,36 @@ Login
                     <div class="container-fluid px-6">
                         <h1 class="mt-4">User Profile</h1>
                         <div class="row">
-                          <div class="card" id = 'userInfo'>
-                              <div class="card-header">User Information</div>
-                              <div class="card-body">
-                              <p class="card-text">
-                                
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            
-                                        <strong>Username: </strong>{{current_user.username}} <br>
-                                        <strong>Email : </strong>{{current_user.email}} <br>
-                                        <strong>Phone Number : </strong> {{current_user.phone_number}} <br>
-                                        <strong>Date Joined : </strong>{{current_user.date}} <br>
-                                        <a href="{{url_for('updateProfilePic')}}" class = 'btn btn-success'>Update Profile Picture</a>
-                                        </div>
-                                 
-                                        <div class="col-sm-6">
-                                            {% if current_user.base64 == 'None' %}
-                                            <img src="../../../static/images/profilepics/default.png" alt="" align = 'right' class = 'rounded-circle'>
-                                            {% elif current_user.base64 != 'None' %}
-                                            <img src="data:image/png;base64, {{current_user.base64}}" align = 'right' class ='rounded-circle'>
-                                            {% endif %}
-                                        </div>
+                            <div class="wrapper">
+                                <div class="profile-card js-profile-card">
+                                  <div class="profile-card__img">
+                                    {% if current_user.base64 == 'None' %}
+                                    <img src="../../../static/images/profilepics/default.png" alt="" align = 'right' class = 'rounded-circle'>
+                                    {% elif current_user.base64 != 'None' %}
+                                    <img src="data:image/png;base64, {{current_user.base64}}" align = 'right' class ='rounded-circle'>
+                                    {% endif %}
+                                  </div>
+                              
+                                  <div class="profile-card__cnt js-profile-cnt">
+                                    <div class="profile-card__name">{{current_user.username}}</div>
+                                    <div class="profile-card__txt"><strong>Email : </strong>{{current_user.email}}</div>
+                                    <div class="profile-card-loc">
+                                      <span class="profile-card-loc__icon">
+                                        <svg class="icon"><use xlink:href="#icon-location"></use></svg>
+                                      </span>
+                              
+                                      <span class="profile-card-loc__txt">
+                                        <div class="div">Date Joined : {{current_user.date}} </div><br>
+                                        Phone Number : {{current_user.phone_number}}
+                                      </span>
                                     </div>
+                                    <div class="profile-card-ctr">
+                                      
+                                        <a href="{{url_for('updateProfilePic')}}" class = "profile-card__button button--blue js-message-btn">Update Profile Picture</a>
+                                      <a href="{{url_for('home')}}" class = "profile-card__button button--orange">Shop Now</a>
+                                    </div>
+                                  </div>
                             </div>
-                          </div>
                         </div>
                         <div class="row">
                                 <h1>Update Your Profile</h1><br>
@@ -248,8 +254,7 @@ Login
                 </main>
                 
         </div>
-        
-        
+    
         <script src="{{url_for('static' , filename = 'js/datatables-simple-demo.js')}}"></script>
         <script src="{{url_for('static' , filename = 'js/datatable2.js')}}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
