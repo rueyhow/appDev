@@ -902,6 +902,20 @@ def checkout():
         print(e)
         return redirect(url_for('home'))
         
+@app.route('/checkout/<invoice>' , methods = ['POST' , 'GET'])
+def check_out(invoice):
+    form1 = Redeem()
+    grandTotal = 0
+    subTotal = 0
+    info = Shipping.query.filter_by(email=current_user.email).first()
+    orders = CustomerOrders.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrders.id.desc()).first()
+    for key, product in orders.orders.items():
+        discount = (product['discount']/100) * float(product['price'])
+        subTotal += float(product['price']) * int(product['quantity'])
+        subTotal -= discount
+        tax =("%.2f" %(.06 * float(subTotal)))
+        grandTotal = "%.2f" % (1.06 * float(subTotal))
+    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1)
 
 @app.route('/checkout/<invoice>/couponApplied' , methods = ['POST' , 'GET'])
 def couponApplied(invoice):
@@ -935,24 +949,6 @@ def couponApplied(invoice):
         else:
             grandTotal = "%.2f" % (1.06 * float(subTotal))
     return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1 , percentage = percentage)
-
-@app.route('/checkout/<invoice>' , methods = ['POST' , 'GET'])
-def check_out(invoice):
-    form1 = Redeem()
-    grandTotal = 0
-    subTotal = 0
-    info = Shipping.query.filter_by(email=current_user.email).first()
-    orders = CustomerOrders.query.filter_by(customer_id=current_user.id,invoice=invoice).order_by(CustomerOrders.id.desc()).first()
-    for key, product in orders.orders.items():
-        discount = (product['discount']/100) * float(product['price'])
-        subTotal += float(product['price']) * int(product['quantity'])
-        subTotal -= discount
-        tax =("%.2f" %(.06 * float(subTotal)))
-        grandTotal = "%.2f" % (1.06 * float(subTotal))
-    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1)
-
-
-
 
 @app.route('/payment/<percentage>',methods=['GET','POST'])
 def payment_discount(percentage):
