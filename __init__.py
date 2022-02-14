@@ -523,7 +523,7 @@ def addcat():
         obtaincategory = request.form.get('category')
         category = Category(name=obtaincategory)
         db.session.add(category)
-        flash(f'The brand {obtaincategory} was added to your database','success')
+        flash(f'The Category {obtaincategory} was added to your database','success')
         db.session.commit()
         return redirect(url_for('addcat'))
     return render_template('products/addbrand.html', title='Add category')
