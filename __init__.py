@@ -915,7 +915,7 @@ def check_out(invoice):
         subTotal -= discount
         tax =("%.2f" %(.06 * float(subTotal)))
         grandTotal = "%.2f" % (1.06 * float(subTotal))
-    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1)
+    return render_template('checkout.html',info=info,orders=orders,grandTotal=grandTotal,subTotal=subTotal,tax=tax , form1 = form1,discount=discount)
 
 @app.route('/checkout/<invoice>/couponApplied' , methods = ['POST' , 'GET'])
 def couponApplied(invoice):
