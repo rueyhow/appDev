@@ -603,7 +603,7 @@ def updateproduct(id):
         product.discount = form.discount.data
         product.stock = form.stock.data 
         product.colors = form.colors.data
-        product.desc = form.discription.data
+        product.desc = form.description.data
         product.category_id = category
         product.brand_id = brand
         if request.files.get('image_1'):
@@ -627,7 +627,7 @@ def updateproduct(id):
 
         flash('The product was updated','success')
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
     form.name.data = product.name
     form.price.data = product.price
     form.discount.data = product.discount
