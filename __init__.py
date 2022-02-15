@@ -345,12 +345,12 @@ def dash():
         # UPDATING USER INFORMATION
         username_verification = User.query.filter_by(username=form.username.data).first()
         if username_verification:
-            flash('username is taken')
+            flash('username is taken' , 'danger')
         else:
             name_to_update.username = request.form['username']
             name_to_update.email = request.form['email']
             info.email = name_to_update.email
-            flash('User updated successfully')
+            flash('User updated successfully' , 'success')
         try:
             db.session.commit()
             return render_template('dashboard/dist/dash.html' , name_to_update = name_to_update , form = form , users_table = users_table , user_transaction = user_transaction)
@@ -955,6 +955,7 @@ def couponApplied(invoice):
                 coupon_discount = 0
                 flash('Invalid Coupon Entered , your cart has been cleared' , 'danger')
                 clearcart()
+                return redirect(url_for('home'))
             # delete from temp dict
             try:
                 del to_update[form1.code.data]
