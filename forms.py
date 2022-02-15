@@ -22,7 +22,7 @@ class ExistingMember(FlaskForm):
 
 class profilepic(FlaskForm):
     profile_pic = FileField('PROFILE PIC' , validators = [FileAllowed(['jpg' , 'png']) , validators.DataRequired()])
-    upload = SubmitField('Sign In')
+    upload = SubmitField('Upload')
 
 class Addproducts(Form):
     name = StringField('Name', [validators.DataRequired()])
