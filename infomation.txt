@@ -1,0 +1,5 @@
+pip install -r requirements.txt at the start
+admin account:
+    username : rueyhow
+    password : rahow3216
+    
