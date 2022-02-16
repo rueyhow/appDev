@@ -951,6 +951,7 @@ def couponApplied(invoice):
                 # changing to float
                 coupon_discount = float(percentage/100)
                 flash('coupon applied successfully' , 'success')
+                del to_update[form1.code.data]
             else: 
                 coupon_discount = 0
                 flash('Invalid Coupon Entered , your cart has been cleared' , 'danger')
@@ -958,7 +959,6 @@ def couponApplied(invoice):
                 return redirect(url_for('home'))
             # delete from temp dict
             try:
-                del to_update[form1.code.data]
                 user.coupon_dict = dict(to_update)
                 db.session.commit()
             except : print('fail')
